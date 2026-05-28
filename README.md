@@ -176,6 +176,11 @@ Después de la inicialización, completa las preguntas bootstrap en:
 AI-SYSTEM/BOOTSTRAP/bootstrap-questions.md
 ```
 
+O pide al agente que comience con la generación de las plantillas de nota.
+```
+"Comienza con el bootstrap"
+```
+
 Estas preguntas abarcan 27 temas en 6 categorías:
 
 - **IDENTITY** (6 preguntas) - Quién eres, valores, comunicación
@@ -245,4 +250,4 @@ Proyecto personal para gestión de knowledge base.
 
 ## Autor
 
-Nataly Barroso (nataly.barroso@labs.xuvuk.com)
+Nataly Barroso (barrosonataly.dev@gmail.com)
