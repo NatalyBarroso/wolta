@@ -1,0 +1,31 @@
+[build-system]
+requires = ["setuptools>=65.0"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "wolta"
+version = "0.1.0"
+description = "CLI tool for initializing a personal knowledge base in Obsidian"
+readme = "README.md"
+requires-python = ">=3.9"
+authors = [
+    {name = "Nataly Barroso", email = "nataly.barroso@labs.xuvuk.com"},
+]
+dependencies = [
+    "click>=8.0.0",
+    "pyyaml>=6.0",
+]
+
+[project.scripts]
+wolta = "wolta.cli:main"
+
+[project.optional-dependencies]
+dev = [
+    "pytest>=7.0",
+    "pytest-cov>=4.0",
+    "black>=23.0",
+    "ruff>=0.1.0",
+]
+
+[tool.setuptools]
+packages = ["wolta", "wolta.commands", "wolta.generators", "wolta.utils"]
