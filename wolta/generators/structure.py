@@ -3,6 +3,23 @@
 from datetime import datetime
 from pathlib import Path
 
+from wolta import __version__ as CLI_VERSION
+from wolta.utils.version_manager import VersionManager
+
+
+def _inject_wolta_version(content: str, version: str) -> str:
+    """Insert a `wolta_version` field into the YAML frontmatter of a managed file.
+
+    Adds the line right after the opening `---` delimiter. Operates on the
+    assembled string (not inside the literal) so it is safe regardless of
+    whether the source used an f-string, `.format()`, or a plain string, and
+    never collides with literal braces in the body (T2.3.2 R-03).
+    """
+    lines = content.split("\n")
+    if lines and lines[0].strip() == "---":
+        lines.insert(1, f'wolta_version: "{version}"')
+    return "\n".join(lines)
+
 
 class StructureGenerator:
     """Generates the complete folder and file structure for a Wolta vault."""
@@ -93,6 +110,7 @@ class StructureGenerator:
         # Create special folders
         self._create_templates_folder()
         self._create_wolta_config_folder()
+        self._create_version_file()
         self._create_raw_folder()
 
         # Create reference documents
@@ -102,6 +120,7 @@ class StructureGenerator:
         # Create agent instruction files (Option B: skill logic in vault)
         self._create_claude_md()
         self._create_bootstrap_generate_skill()
+        self._create_raw_ingest_skill()
         self._create_ingest_protocol()
         self._create_source_adapter_template()
         self._create_source_files_adapter()
@@ -181,7 +200,8 @@ This folder contains Wolta-specific configuration files and metadata.
 ## Metadata
 
 - Created: {created}
-- Version: 0.1.0
+
+> La versión del schema del vault vive en `.wolta/version` (fuente de verdad). No edites esa información aquí.
 
 ## Next Steps
 
@@ -190,6 +210,14 @@ This folder contains Wolta-specific configuration files and metadata.
 3. Populate knowledge base categories
 """.format(created=datetime.now().isoformat())
             config_file.write_text(content, encoding="utf-8")
+
+    def _create_version_file(self) -> None:
+        """Write .wolta/version with the initial schema state (D-08, T2.3.2).
+
+        Delegates to VersionManager so there is a single writer of the
+        vault version. The schema version is taken from the CLI's __version__.
+        """
+        VersionManager(str(self.vault_path)).initialize(CLI_VERSION)
 
     def _create_raw_folder(self) -> None:
         """Create raw/ staging directory for unprocessed source files.
@@ -297,6 +325,8 @@ modified: {created}
 tags: [design, architecture, kb-structure]
 status: "active"
 ---
+
+<!-- wolta:managed:start id="vault-spec" v="{version}" -->
 
 # DESIGN — Especificación de KB-PERSONAL
 
@@ -470,7 +500,13 @@ graphify /path/to/vault --update --no-cluster
 
 **Última actualización:** {created}
 **Status:** Activa — Lista para uso con bootstrap completado
-""".format(created=datetime.now().strftime("%Y-%m-%d"))
+
+<!-- wolta:managed:end id="vault-spec" -->
+
+## Notas del usuario
+
+<!-- Espacio libre. wolta nunca toca lo que esté fuera de los markers. -->
+""".format(created=datetime.now().strftime("%Y-%m-%d"), version=CLI_VERSION)
 
         design_file.write_text(content, encoding="utf-8")
 
@@ -488,6 +524,7 @@ graphify /path/to/vault --update --no-cluster
         today = datetime.now().strftime("%Y-%m-%d")
         content = f"""# WOLTA — Instrucciones de Proyecto para el Agente Claude
 
+<!-- wolta:managed:start id="agent-instructions" v="{CLI_VERSION}" -->
 Este vault es una **knowledge base personal** construida con Obsidian y diseñada para ser consultada y operada por agentes Claude. Contiene información personal, profesional y de aprendizaje del propietario.
 
 ---
@@ -626,6 +663,11 @@ Si `kb_populated: true`, el vault ya fue poblado. Si no, las notas aún no se ha
 ---
 
 *Generado por wolta init · {today}*
+<!-- wolta:managed:end id="agent-instructions" -->
+
+## Notas del usuario
+
+<!-- Espacio libre para tus instrucciones. wolta nunca toca lo que esté fuera de los markers. -->
 """
         claude_file.write_text(content, encoding="utf-8")
 
@@ -871,6 +913,7 @@ Luego actualiza el frontmatter de `BOOTSTRAP-QUESTIONNAIRE.md` agregando:
 - No modifiques `BOOTSTRAP-QUESTIONNAIRE.md` ni `BOOTSTRAP-MAPPING.md` durante la ejecución (solo el frontmatter al finalizar).
 - No crees notas fuera de las carpetas definidas.
 """
+        content = _inject_wolta_version(content, CLI_VERSION)
         skill_file.write_text(content, encoding="utf-8")
 
     def _create_raw_ingest_skill(self) -> None:
@@ -1113,6 +1156,7 @@ Pendientes registrados en AI-SYSTEM/CONTEXT/ingestion-backlog.md: [N]
 - No modifiques archivos en `raw/processed/` ni en `AI-SYSTEM/BOOTSTRAP/`.
 - El campo `context_for_claude: true` es obligatorio en todas las notas creadas o actualizadas.
 """
+        content = _inject_wolta_version(content, CLI_VERSION)
         skill_file.write_text(content, encoding="utf-8")
 
     def _create_ingest_protocol(self) -> None:
@@ -1255,6 +1299,7 @@ Pendientes registrados en AI-SYSTEM/CONTEXT/ingestion-backlog.md: [N]
 - Nunca modifiques archivos en `raw/processed/`, `AI-SYSTEM/BOOTSTRAP/`, ni este archivo.
 - Si el adapter no produce bloques (fuente vacía o sin contenido útil), informa al usuario y termina sin error.
 """
+        content = _inject_wolta_version(content, CLI_VERSION)
         protocol_file.write_text(content, encoding="utf-8")
 
     def _create_source_adapter_template(self) -> None:
@@ -1358,6 +1403,7 @@ Ejemplos:
 *Adapter creado:* [FECHA]
 *Basado en:* INGEST-PROTOCOL.md
 """
+        content = _inject_wolta_version(content, CLI_VERSION)
         template_file.write_text(content, encoding="utf-8")
 
     def _create_source_files_adapter(self) -> None:
@@ -1474,6 +1520,7 @@ Para archivos de directorios externos:
 - Los archivos en `raw/` que el usuario marcó como "no procesar" (con prefijo `_`) deben ignorarse
 - Este adapter es el fallback: si el usuario pide ingestar desde una fuente sin adapter, ofrece exportar el contenido a `raw/` para usarlo con este adapter
 """
+        content = _inject_wolta_version(content, CLI_VERSION)
         adapter_file.write_text(content, encoding="utf-8")
 
     def _create_readme_file(self) -> None:
