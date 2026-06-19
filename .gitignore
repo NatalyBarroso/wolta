@@ -2,6 +2,8 @@
 __pycache__/
 *.py[cod]
 *$py.class
+*.pyc
+.pytest_cache/
 
 # C extensions
 *.so
@@ -68,3 +70,6 @@ vaults/
 test-vault/
 .wolta/
 wolta-*/
+
+# Backups
+*.bak
