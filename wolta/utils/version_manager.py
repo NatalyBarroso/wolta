@@ -8,7 +8,7 @@ schema version (decision D-08 of T2.3.1). The version lives here, not in
 import json
 from datetime import datetime
 from pathlib import Path
-from typing import Any, Dict
+from typing import Any, Dict, List
 
 # Version assumed for vaults initialized before version tracking existed
 # (no `.wolta/version` file present). See R-02 of T2.3.1.
@@ -72,3 +72,22 @@ class VersionManager:
                 "applied_migrations": [],
             }
         )
+
+    def record_migration(self, target: str, files_changed: List[str]) -> None:
+        """Append a migration to the audit trail and advance the schema version.
+
+        Updates `schema_version` to `target`, stamps `last_upgrade_at`, and adds
+        an entry to `applied_migrations` with the files the migration changed.
+        """
+        data = self._read_raw()
+        now = datetime.now().isoformat()
+        data["applied_migrations"].append(
+            {
+                "target": target,
+                "applied_at": now,
+                "files_changed": list(files_changed),
+            }
+        )
+        data["schema_version"] = target
+        data["last_upgrade_at"] = now
+        self._write(data)

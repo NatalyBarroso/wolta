@@ -6,6 +6,8 @@ from typing import Optional
 
 import click
 
+from wolta.core import files as core_files
+from wolta.core.manifest import MANIFEST, Policy
 from wolta.generators.bootstrap import BootstrapGenerator
 from wolta.generators.structure import StructureGenerator
 from wolta.generators.templates import TemplateGenerator
@@ -136,12 +138,16 @@ def init_command(
             )
             raise SystemExit(1)
 
-        # Step 4: Create initialization marker
+        # Step 4: Create initialization marker and seed managed-file checksums
         try:
             marker_dir = full_vault_path / ".wolta"
             marker_dir.mkdir(exist_ok=True)
             marker_file = marker_dir / "initialized"
             marker_file.touch()
+            # Seed checksums of managed full-file artifacts so the first upgrade
+            # can detect user edits (T2.3.3 / D-04).
+            managed = [rel for rel, pol in MANIFEST.items() if pol == Policy.MANAGED]
+            core_files.seed_checksums(full_vault_path, managed)
             bar.update(1)
         except Exception as e:
             click.echo(click.style(f"Error creating marker file: {e}", fg="red"), err=True)

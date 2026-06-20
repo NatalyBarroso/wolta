@@ -14,6 +14,7 @@ authors = [
 dependencies = [
     "click>=8.0.0",
     "pyyaml>=6.0",
+    "packaging>=21.0",
 ]
 
 [project.scripts]
@@ -28,4 +29,4 @@ dev = [
 ]
 
 [tool.setuptools]
-packages = ["wolta", "wolta.commands", "wolta.generators", "wolta.utils"]
+packages = ["wolta", "wolta.commands", "wolta.generators", "wolta.utils", "wolta.core", "wolta.migrations"]

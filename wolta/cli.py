@@ -4,6 +4,7 @@ import click
 
 from wolta import __version__
 from wolta.commands.init import init_command
+from wolta.commands.upgrade import upgrade_command
 
 
 @click.group(invoke_without_command=True)
@@ -22,6 +23,7 @@ def main(ctx: click.Context) -> None:
 
 # Register commands
 main.add_command(init_command)
+main.add_command(upgrade_command)
 
 
 if __name__ == "__main__":
