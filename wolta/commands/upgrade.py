@@ -65,7 +65,7 @@ def upgrade_command(vault_path, dry_run, to_version) -> None:
     if not _is_vault(vault):
         click.echo(
             click.style(
-                f"Error: {vault} no parece un vault wolta (falta .wolta/ o CLAUDE.md).",
+                f"Error: {vault} does not look like a wolta vault (missing .wolta/ or CLAUDE.md).",
                 fg="red",
             ),
             err=True,
@@ -76,12 +76,12 @@ def upgrade_command(vault_path, dry_run, to_version) -> None:
     current = vm.get_vault_version()
     target = to_version or __version__
 
-    # ---------------- Fase 1: pre-flight (sin modificar nada) ----------------
+    # ---------------- Phase 1: pre-flight (without modifying anything) ----------------
     if Version(target) > Version(__version__):
         click.echo(
             click.style(
-                f"Error: --to-version {target} es mayor que la versión del CLI "
-                f"({__version__}). Actualiza wolta-cli para migrar a esa versión.",
+                f"Error: --to-version {target} is greater than the CLI version "
+                f"({__version__}). Update wolta-cli to migrate to that version.",
                 fg="red",
             ),
             err=True,
@@ -91,15 +91,15 @@ def upgrade_command(vault_path, dry_run, to_version) -> None:
     if Version(current) < Version(MIN_UPGRADABLE_VERSION):
         click.echo(
             click.style(
-                f"El vault está en {current}. La versión mínima para upgrade "
-                f"automático es {MIN_UPGRADABLE_VERSION}.",
+                f"The vault is at {current}. The minimum version for an automatic "
+                f"upgrade is {MIN_UPGRADABLE_VERSION}.",
                 fg="red",
             ),
             err=True,
         )
         click.echo(
-            "Camino recomendado: instala un wolta-cli antiguo que aún tenga las "
-            "migraciones, actualiza por escalones y vuelve a la última versión.",
+            "Recommended path: install an old wolta-cli that still has the "
+            "migrations, upgrade in steps, and return to the latest version.",
             err=True,
         )
         raise SystemExit(1)
@@ -109,19 +109,19 @@ def upgrade_command(vault_path, dry_run, to_version) -> None:
             core_sections.validate_markers((vault / rel).read_text(encoding="utf-8"))
         except core_sections.MarkerError as exc:
             click.echo(
-                click.style(f"Error: markers managed corruptos en {rel}: {exc}", fg="red"),
+                click.style(f"Error: corrupt managed markers in {rel}: {exc}", fg="red"),
                 err=True,
             )
-            click.echo("Corrige los markers y reintenta. No se modificó nada.", err=True)
+            click.echo("Fix the markers and try again. Nothing was modified.", err=True)
             raise SystemExit(1)
 
     pend = pending(current, target)
 
     if not pend:
-        click.echo(click.style(f"✓ El vault ya está al día (schema {current}).", fg="green"))
+        click.echo(click.style(f"✓ The vault is already up to date (schema {current}).", fg="green"))
         return
 
-    # Pase dry para calcular el conjunto de archivos a tocar (sin escribir).
+    # Dry pass to compute the set of files to touch (without writing).
     dry_ctx = _make_context(vault, dry_run=True)
     files_to_change: List[str] = []
     for migration in pend:
@@ -132,10 +132,10 @@ def upgrade_command(vault_path, dry_run, to_version) -> None:
         _report(current, target, pend, files_to_change, applied=False)
         return
 
-    # ---------------- Fase 2: snapshot ----------------
+    # ---------------- Phase 2: snapshot ----------------
     snap = core_snapshot.create_snapshot(vault, files_to_change)
 
-    # ---------------- Fase 3: apply ----------------
+    # ---------------- Phase 3: apply ----------------
     real_ctx = _make_context(vault, dry_run=False)
     changed_all: List[str] = []
     try:
@@ -145,30 +145,30 @@ def upgrade_command(vault_path, dry_run, to_version) -> None:
             changed_all += changed
     except Exception as exc:  # noqa: BLE001 - any failure must roll back
         core_snapshot.rollback(vault, snap)
-        click.echo(click.style(f"Error durante la migración: {exc}", fg="red"), err=True)
+        click.echo(click.style(f"Error during the migration: {exc}", fg="red"), err=True)
         click.echo(
-            click.style("Se restauró el vault a su estado previo (rollback).", fg="yellow"),
+            click.style("The vault was restored to its previous state (rollback).", fg="yellow"),
             err=True,
         )
         raise SystemExit(1)
 
-    # ---------------- Fase 4: commit / report ----------------
+    # ---------------- Phase 4: commit / report ----------------
     changed_all = list(dict.fromkeys(changed_all))
     _report(current, target, pend, changed_all, applied=True, snapshot=snap)
 
 
 def _report(current, target, pend, files, *, applied, snapshot=None) -> None:
-    head = "UPGRADE APLICADO" if applied else "DRY-RUN — NO se aplicó nada"
+    head = "UPGRADE APPLIED" if applied else "DRY-RUN — nothing was applied"
     click.echo(click.style(f"== {head} ==", bold=True))
-    click.echo(f"Versión: {current} -> {target}")
+    click.echo(f"Version: {current} -> {target}")
     click.echo(
-        f"Migraciones ({len(pend)}): " + ", ".join(m.target_version for m in pend)
+        f"Migrations ({len(pend)}): " + ", ".join(m.target_version for m in pend)
     )
     if files:
-        click.echo("Archivos:")
+        click.echo("Files:")
         for rel in files:
             click.echo(f"  - {rel}")
     else:
-        click.echo("Archivos: (ninguno)")
+        click.echo("Files: (none)")
     if applied and snapshot is not None:
         click.echo(f"Backup: {snapshot}")

@@ -13,10 +13,10 @@ from packaging.version import Version
 
 from wolta.migrations.base import Migration, MigrationContext
 
-# Floor of support for the whole migration set (D-11). While the migration
-# chain is complete this stays at "0.1.0" and excludes nobody; it is raised
-# only when old migrations are squashed/removed.
-MIN_UPGRADABLE_VERSION = "0.1.0"
+# Floor of support for the whole migration set (D-11). Set to "0.0.0" so that
+# pre-versioning vaults (treated as 0.0.0) are eligible for the 0.0.x -> 0.1.0
+# migration (T2.3.4 D-01). It is raised only when old migrations are squashed.
+MIN_UPGRADABLE_VERSION = "0.0.0"
 
 __all__ = ["MIN_UPGRADABLE_VERSION", "all_migrations", "pending", "MigrationContext"]
 

@@ -44,7 +44,7 @@ def test_claude_md_has_balanced_managed_markers(vault):
     assert text.count('wolta:managed:start id="agent-instructions"') == 1
     assert text.count('wolta:managed:end id="agent-instructions"') == 1
     # the user section sits OUTSIDE the managed block
-    assert "## Notas del usuario" in text
+    assert "## User notes" in text
 
 
 def test_design_md_has_balanced_managed_markers(vault):

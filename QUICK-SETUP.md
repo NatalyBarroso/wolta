@@ -1,194 +1,194 @@
-# Wolta CLI - Inicio Rápido
+# Wolta CLI - Quick Start
 
-**¿Primera vez?** Lee esto primero (2 minutos).
-
----
-
-## ¿Qué es Wolta?
-
-Herramienta CLI que crea un vault Obsidian con estructura predefinida para tu knowledge base personal. Una ejecución genera:
-- 16 carpetas (7 categorías + AI-SYSTEM)
-- 24 archivos markdown con frontmatter
-- 27 preguntas bootstrap para completar tu KB
-- Estructura lista para agentes Claude
+**First time?** Read this first (2 minutes).
 
 ---
 
-## Instalación (elige una)
+## What is Wolta?
 
-### Opción 1: pip
+A CLI tool that creates an Obsidian vault with a predefined structure for your personal knowledge base. A single run generates:
+- 16 folders (7 categories + AI-SYSTEM)
+- 24 markdown files with frontmatter
+- 27 bootstrap questions to complete your KB
+- A structure ready for Claude agents
+
+---
+
+## Installation (choose one)
+
+### Option 1: pip
 ```bash
 pip install -e .
-wolta init --name mi-vault
+wolta init --name my-vault
 ```
 
-### Opción 2: uv (más rápido)
+### Option 2: uv (faster)
 ```bash
 uv pip install -e .
-wolta init --name mi-vault
+wolta init --name my-vault
 ```
 
-### Opción 3: Python directo (sin instalar)
+### Option 3: Plain Python (no install)
 ```bash
-python main.py init --name mi-vault
+python main.py init --name my-vault
 ```
 
 ---
 
-## Ejemplos de Uso
+## Usage Examples
 
-### Vault default
+### Default vault
 ```bash
 python main.py init
-# Crea: wolta/
+# Creates: wolta/
 ```
 
-### Con nombre personalizado
+### With a custom name
 ```bash
 python main.py init --name joanna
-# Crea: wolta-joanna/
+# Creates: wolta-joanna/
 ```
 
-### En una ruta específica
+### At a specific path
 ```bash
 python main.py init --vault-path ~/Documents --name personal-kb
-# Crea: ~/Documents/wolta-personal-kb/
+# Creates: ~/Documents/wolta-personal-kb/
 ```
 
-### Re-inicializar existente
+### Re-initialize an existing one
 ```bash
 python main.py init --name joanna --force
 ```
 
 ---
 
-## Qué se genera
+## What gets generated
 
 ```
 wolta-[name]/
-├── IDENTITY/              (Quién eres)
-├── PREFERENCES/           (Cómo te gusta trabajar)
-├── WORK/                  (Tu vida profesional)
-├── PROJECTS/              (Proyectos actuales)
-├── PERSONAL-SPACE/        (Hobbies e intereses)
-├── KNOWLEDGE/             (Áreas de aprendizaje)
+├── IDENTITY/              (Who you are)
+├── PREFERENCES/           (How you like to work)
+├── WORK/                  (Your professional life)
+├── PROJECTS/              (Current projects)
+├── PERSONAL-SPACE/        (Hobbies and interests)
+├── KNOWLEDGE/             (Learning areas)
 ├── AI-SYSTEM/
-│   ├── BOOTSTRAP/         (27 preguntas)
+│   ├── BOOTSTRAP/         (27 questions)
 │   ├── CONTEXT/
 │   ├── AGENTS/
 │   ├── SESSIONS/
 │   ├── SKILLS/
 │   └── WORKFLOWS/
-├── TEMPLATES/             (Plantillas)
+├── TEMPLATES/             (Templates)
 └── .wolta/                (Metadata)
 ```
 
-**Total:** 24 archivos markdown listos
+**Total:** 24 markdown files ready
 
 ---
 
-## Las 27 Preguntas Bootstrap
+## The 27 Bootstrap Questions
 
-Se generan automáticamente en:
+They are generated automatically in:
 ```
 AI-SYSTEM/BOOTSTRAP/bootstrap-questions.md
 ```
 
-Organizadas en 6 categorías:
-- IDENTITY (6) - Quién eres, valores, comunicación
-- PREFERENCES (6) - Día ideal, herramientas
-- WORK (5) - Rol, empresa, carrera
-- PROJECTS (4) - Qué haces, planes futuros
-- PERSONAL-SPACE (5) - Entretenimiento, ocio
-- KNOWLEDGE (5) - Aprendizaje, especialidades
+Organized into 6 categories:
+- IDENTITY (6) - Who you are, values, communication
+- PREFERENCES (6) - Ideal day, tools
+- WORK (5) - Role, company, career
+- PROJECTS (4) - What you do, future plans
+- PERSONAL-SPACE (5) - Entertainment, leisure
+- KNOWLEDGE (5) - Learning, specialties
 
 ---
 
-## Próximos Pasos Después de Crear
+## Next Steps After Creating
 
-1. **Abrir en Obsidian**
+1. **Open in Obsidian**
    ```
-   File → Open folder as vault → [tu carpeta wolta-*]
-   ```
-
-2. **Completar Preguntas Bootstrap**
-   ```
-   Edita: AI-SYSTEM/BOOTSTRAP/bootstrap-questions.md
-   Responde: Las 27 preguntas
+   File → Open folder as vault → [your wolta-* folder]
    ```
 
-3. **Llenar Categorías**
+2. **Complete the Bootstrap Questions**
    ```
-   Completa información en cada carpeta
+   Edit: AI-SYSTEM/BOOTSTRAP/bootstrap-questions.md
+   Answer: All 27 questions
+   ```
+
+3. **Fill in the Categories**
+   ```
+   Complete the information in each folder
    (IDENTITY, PREFERENCES, WORK, etc.)
    ```
 
-4. **Usar con Claude**
+4. **Use with Claude**
    ```
-   Tu KB estará lista para consultas con agentes Claude
+   Your KB will be ready for queries with Claude agents
    ```
 
 ---
 
-## Validaciones Automáticas
+## Automatic Validations
 
-✅ Nombre: Solo alfanuméricos y guiones  
-✅ Longitud: Máximo 50 caracteres  
-✅ Ruta: Debe existir  
-✅ Permisos: Se verifica escritura  
-✅ Idempotencia: No sobrescribe sin --force  
+✅ Name: Only alphanumerics and hyphens  
+✅ Length: Maximum 50 characters  
+✅ Path: Must exist  
+✅ Permissions: Write access is checked  
+✅ Idempotency: Does not overwrite without --force  
 
 ---
 
-## Archivos Clave
+## Key Files
 
-| Archivo | Propósito |
-|---------|-----------|
+| File | Purpose |
+|------|---------|
 | `main.py` | Entry point |
-| `pyproject.toml` | Configuración pip/uv |
-| `README.md` | Documentación completa |
-| `PROYECTO-COMPLETADO.md` | Detalles técnicos |
+| `pyproject.toml` | pip/uv configuration |
+| `README.md` | Full documentation |
+| `PROYECTO-COMPLETADO.md` | Technical details |
 
 ---
 
-## Documentación
+## Documentation
 
-- **README.md** - Documentación completa
-- **PROYECTO-COMPLETADO.md** - Detalles técnicos y arquitectura
-- **INICIO-RAPIDO.md** - Este archivo
+- **README.md** - Full documentation
+- **PROYECTO-COMPLETADO.md** - Technical details and architecture
+- **QUICK-SETUP.md** - This file
 
 ---
 
-## ¿Problemas?
+## Trouble?
 
 ### "Command not found: wolta"
-→ Usa: `python main.py init` en lugar de `wolta init`
+→ Use: `python main.py init` instead of `wolta init`
 
 ### "Permission denied"
-→ Usa: `--vault-path` en un directorio donde tengas permisos
+→ Use: `--vault-path` in a directory where you have permissions
 
 ### "Vault already initialized"
-→ Usa: `--force` para re-inicializar
+→ Use: `--force` to re-initialize
 
 ---
 
-## Soporte Rápido
+## Quick Support
 
-Comando de ayuda:
+Help command:
 ```bash
 python main.py init --help
 ```
 
-Versión:
+Version:
 ```bash
 python main.py --version
 ```
 
 ---
 
-**¡Listo! Ahora ejecuta:**
+**Done! Now run:**
 ```bash
-python main.py init --name tu-nombre
+python main.py init --name your-name
 ```
 
-Tu vault se creará en segundos. 🚀
+Your vault will be created in seconds. 🚀

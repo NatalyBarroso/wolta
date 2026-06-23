@@ -10,9 +10,10 @@ from datetime import datetime
 from pathlib import Path
 from typing import Any, Dict, List
 
-# Version assumed for vaults initialized before version tracking existed
-# (no `.wolta/version` file present). See R-02 of T2.3.1.
-SCHEMA_DEFAULT = "0.1.0"
+# Version assumed for vaults without a `.wolta/version` file. These are
+# pre-versioning (pre-T2.3.2) vaults, treated as 0.0.0 so the 0.0.x -> 0.1.0
+# migration applies to them (T2.3.4 D-01; supersedes the earlier R-02 choice).
+SCHEMA_DEFAULT = "0.0.0"
 
 
 class VersionManager:

@@ -38,7 +38,7 @@ class BootstrapGenerator:
         """Create INDEX-BOOTSTRAP.md as the hub for bootstrap resources."""
         index_file = bootstrap_dir / "INDEX-BOOTSTRAP.md"
         content = f"""---
-title: "INDEX-BOOTSTRAP - Población Inicial de la KB"
+title: "INDEX-BOOTSTRAP - Initial KB Population"
 type: "index"
 index_module: "BOOTSTRAP"
 created: {datetime.now().strftime("%Y-%m-%d")}
@@ -48,85 +48,85 @@ status: "active"
 context_for_claude: false
 ---
 
-# BOOTSTRAP — Población Inicial de la Knowledge Base
+# BOOTSTRAP — Initial Population of the Knowledge Base
 
-Hub de control para poblar la KB personal desde cero. Recursos operativos del agente.
+Control hub for populating the personal KB from scratch. Operational resources for the agent.
 
 ---
 
-## Documentos Principales
+## Main Documents
 
 ### [[BOOTSTRAP-QUESTIONNAIRE]]
-**31 preguntas reflexivas en 6 categorías**
-- IDENTITY (6 preguntas)
-- PREFERENCES (6 preguntas)
-- WORK (5 preguntas)
-- PROJECTS (4 preguntas)
-- PERSONAL-SPACE (5 preguntas)
-- KNOWLEDGE (5 preguntas)
+**31 reflective questions across 6 categories**
+- IDENTITY (6 questions)
+- PREFERENCES (6 questions)
+- WORK (5 questions)
+- PROJECTS (4 questions)
+- PERSONAL-SPACE (5 questions)
+- KNOWLEDGE (5 questions)
 
-**Uso:** Responde para generar notas iniciales del vault
-**Tiempo:** 45-90 minutos
-**Salida:** ~20-30 notas nuevas en el vault
+**Use:** Answer to generate the vault's initial notes
+**Time:** 45-90 minutes
+**Output:** ~20-30 new notes in the vault
 
 ### [[BOOTSTRAP-MAPPING]]
-**Referencia rápida de mapeo Pregunta → Nota**
-- Tabla de mapeos por categoría
-- Frontmatter estándar para nuevas notas
-- Proceso paso-a-paso para integración
-- Estructura esperada después de completar
+**Quick reference for the Question → Note mapping**
+- Mapping table by category
+- Standard frontmatter for new notes
+- Step-by-step integration process
+- Expected structure after completion
 
-**Uso:** Consulta mientras creas notas desde respuestas
-**Referencia:** Rápida, no requiere lectura completa
+**Use:** Consult while creating notes from answers
+**Reference:** Quick, does not require a full read
 
 ---
 
-## Flujo de Bootstrap
+## Bootstrap Flow
 
 ```
-1. Responde BOOTSTRAP-QUESTIONNAIRE.md
+1. Answer BOOTSTRAP-QUESTIONNAIRE.md
    ↓
-2. Consulta BOOTSTRAP-MAPPING.md
+2. Consult BOOTSTRAP-MAPPING.md
    ↓
-3. Crea notas siguiendo el mapping
+3. Create notes following the mapping
    ↓
-4. Ejecuta: graphify . --update --no-cluster
+4. Run: graphify . --update --no-cluster
    ↓
-5. Valida en Obsidian
+5. Validate in Obsidian
    ↓
-   KB poblada e integrada
+   KB populated and integrated
 ```
 
 ---
 
-## Próximas Acciones
+## Next Actions
 
-- [ ] Responder BOOTSTRAP-QUESTIONNAIRE.md
-- [ ] Crear notas en IDENTITY/ desde P.ID.1-6
-- [ ] Crear notas en PREFERENCES/ desde P.PREF.1-6
-- [ ] Crear notas en WORK/ desde P.WORK.1-5
-- [ ] Crear notas en PROJECTS/ desde P.PROJ.1-4
-- [ ] Crear notas en PERSONAL-SPACE/ desde P.PERS.1-5
-- [ ] Crear notas en KNOWLEDGE/ desde P.KNOW.1-5
-- [ ] Ejecutar `graphify . --update --no-cluster`
-- [ ] Validar en Obsidian que todas las notas cargan
-- [ ] Revisar graph.html para ver nuevas conexiones
-
----
-
-## Mantenimiento
-
-**Periodicidad:** Cada 2-3 meses
-- Revisa BOOTSTRAP-QUESTIONNAIRE.md
-- Actualiza respuestas que hayan cambiado
-- Modifica notas correspondientes
-- Ejecuta graphify nuevamente
+- [ ] Answer BOOTSTRAP-QUESTIONNAIRE.md
+- [ ] Create notes in IDENTITY/ from P.ID.1-6
+- [ ] Create notes in PREFERENCES/ from P.PREF.1-6
+- [ ] Create notes in WORK/ from P.WORK.1-5
+- [ ] Create notes in PROJECTS/ from P.PROJ.1-4
+- [ ] Create notes in PERSONAL-SPACE/ from P.PERS.1-5
+- [ ] Create notes in KNOWLEDGE/ from P.KNOW.1-5
+- [ ] Run `graphify . --update --no-cluster`
+- [ ] Validate in Obsidian that all notes load
+- [ ] Review graph.html to see the new connections
 
 ---
 
-**Hub creado:** {datetime.now().strftime("%Y-%m-%d")}
-**Status:** Activo y listo para usar
-**Responsable:** Nataly
+## Maintenance
+
+**Frequency:** Every 2-3 months
+- Review BOOTSTRAP-QUESTIONNAIRE.md
+- Update answers that have changed
+- Modify the corresponding notes
+- Run graphify again
+
+---
+
+**Hub created:** {datetime.now().strftime("%Y-%m-%d")}
+**Status:** Active and ready to use
+**Owner:** Nataly
 """
         index_file.write_text(content, encoding="utf-8")
 
@@ -140,7 +140,7 @@ Hub de control para poblar la KB personal desde cero. Recursos operativos del ag
         """Build BOOTSTRAP-QUESTIONNAIRE.md with complete structure."""
         lines = []
         lines.append("---")
-        lines.append('title: "BOOTSTRAP-QUESTIONNAIRE - Poblador Inicial de KB"')
+        lines.append('title: "BOOTSTRAP-QUESTIONNAIRE - Initial KB Populator"')
         lines.append('type: "index"')
         lines.append(f"created: {datetime.now().strftime('%Y-%m-%d')}")
         lines.append(f"modified: {datetime.now().strftime('%Y-%m-%d')}")
@@ -149,20 +149,20 @@ Hub de control para poblar la KB personal desde cero. Recursos operativos del ag
         lines.append("context_for_claude: true")
         lines.append("---")
         lines.append("")
-        lines.append("# BOOTSTRAP QUESTIONNAIRE — Pobla tu Knowledge Base")
+        lines.append("# BOOTSTRAP QUESTIONNAIRE — Populate your Knowledge Base")
         lines.append("")
         lines.append(
-            "**Instrucción:** Este documento te guiará a través de 31 preguntas reflexivas. Responde cada una con sinceridad. Cada respuesta generará una nota en tu vault, categorizada automáticamente."
+            "**Instruction:** This document will guide you through 31 reflective questions. Answer each one honestly. Each answer will generate a note in your vault, categorized automatically."
         )
         lines.append("")
         lines.append(
-            "**Duración recomendada:** 45-90 minutos (puedes pausar y volver)  "
+            "**Recommended duration:** 45-90 minutes (you can pause and come back)  "
         )
         lines.append(
-            "**Longitud de respuestas:** 2-5 párrafos por pregunta (sin límite máximo)  "
+            "**Answer length:** 2-5 paragraphs per question (no maximum limit)  "
         )
         lines.append(
-            "**Próxima revisión:** Cada 2-3 meses para mantener la KB actualizada"
+            "**Next review:** Every 2-3 months to keep the KB up to date"
         )
         lines.append("")
         lines.append("---")
@@ -194,79 +194,79 @@ Hub de control para poblar la KB personal desde cero. Recursos operativos del ag
     def _build_section_identity(self) -> list:
         """Build IDENTITY section with answer spaces."""
         lines = []
-        lines.append("## IDENTITY — Quién Eres (6 preguntas)")
+        lines.append("## IDENTITY — Who You Are (6 questions)")
         lines.append("")
         lines.append(
-            "*Estas respuestas poblarán:* `IDENTITY/identity-profile.md`, `identity-values.md`, `identity-voice.md`, `identity-bio.md`"
+            "*These answers will populate:* `IDENTITY/identity-profile.md`, `identity-values.md`, `identity-voice.md`, `identity-bio.md`"
         )
         lines.append("")
 
         # P.ID.1
-        lines.append("### P.ID.1 — Perfil Personal")
+        lines.append("### P.ID.1 — Personal Profile")
         lines.append(
-            "**¿Cómo te describirías ante alguien que nunca te ha conocido?**  "
+            "**How would you describe yourself to someone who has never met you?**  "
         )
         lines.append(
-            "No hablamos de tu puesto de trabajo ni tu currículum, sino simplemente de quién eres como persona."
+            "We are not talking about your job or your resume, but simply about who you are as a person."
         )
         lines.append("")
-        lines.append("*Nota destino:* `IDENTITY/identity-profile.md`")
+        lines.append("*Target note:* `IDENTITY/identity-profile.md`")
         lines.append("")
-        lines.append("**Tu respuesta:**")
+        lines.append("**Your answer:**")
         lines.append("```")
-        lines.append("[Escribe aquí — 2-5 párrafos sobre quién eres esencialmente]")
+        lines.append("[Write here — 2-5 paragraphs about who you essentially are]")
         lines.append("```")
         lines.append("")
         lines.append("---")
         lines.append("")
 
         # P.ID.2
-        lines.append("### P.ID.2 — Valores Fundamentales")
-        lines.append("**¿Cuáles son las cosas que más importan en tu vida?**  ")
+        lines.append("### P.ID.2 — Core Values")
+        lines.append("**What are the things that matter most in your life?**  ")
         lines.append(
-            "¿Los principios o valores que guían realmente tus decisiones día a día?"
+            "The principles or values that truly guide your day-to-day decisions?"
         )
         lines.append("")
-        lines.append("*Nota destino:* `IDENTITY/identity-values.md`")
+        lines.append("*Target note:* `IDENTITY/identity-values.md`")
         lines.append("")
-        lines.append("**Tu respuesta:**")
+        lines.append("**Your answer:**")
         lines.append("```")
-        lines.append("[Escribe aquí — Enumera y explica tus valores principales]")
+        lines.append("[Write here — List and explain your main values]")
         lines.append("```")
         lines.append("")
         lines.append("---")
         lines.append("")
 
         # P.ID.3
-        lines.append("### P.ID.3 — Momentos Marcadores")
-        lines.append("**Piensa en los momentos que más te han marcado en tu vida.**  ")
+        lines.append("### P.ID.3 — Defining Moments")
+        lines.append("**Think about the moments that have shaped you most in your life.**  ")
         lines.append(
-            "¿Hay algún evento, lugar o persona que haya moldeado quién eres hoy?"
+            "Is there an event, place, or person that has shaped who you are today?"
         )
         lines.append("")
-        lines.append("*Nota destino:* `IDENTITY/identity-bio.md` (sección histórica)")
+        lines.append("*Target note:* `IDENTITY/identity-bio.md` (history section)")
         lines.append("")
-        lines.append("**Tu respuesta:**")
+        lines.append("**Your answer:**")
         lines.append("```")
-        lines.append("[Escribe aquí — Describe 2-3 eventos o personas clave]")
+        lines.append("[Write here — Describe 2-3 key events or people]")
         lines.append("```")
         lines.append("")
         lines.append("---")
         lines.append("")
 
         # P.ID.4
-        lines.append("### P.ID.4 — Tu Voz Natural")
-        lines.append("**¿Cómo prefieres que la gente te hable?**  ")
+        lines.append("### P.ID.4 — Your Natural Voice")
+        lines.append("**How do you prefer people to talk to you?**  ")
         lines.append(
-            "¿Cuál es tu forma natural de comunicarte, de escribir, de expresar lo que piensas?"
+            "What is your natural way of communicating, writing, and expressing what you think?"
         )
         lines.append("")
-        lines.append("*Nota destino:* `IDENTITY/identity-voice.md`")
+        lines.append("*Target note:* `IDENTITY/identity-voice.md`")
         lines.append("")
-        lines.append("**Tu respuesta:**")
+        lines.append("**Your answer:**")
         lines.append("```")
         lines.append(
-            "[Escribe aquí — Describe tu tono, estilo comunicativo, preferencias]"
+            "[Write here — Describe your tone, communication style, preferences]"
         )
         lines.append("```")
         lines.append("")
@@ -274,32 +274,32 @@ Hub de control para poblar la KB personal desde cero. Recursos operativos del ag
         lines.append("")
 
         # P.ID.5
-        lines.append("### P.ID.5 — Creencias Profundas")
-        lines.append("**¿Qué crees realmente sobre el trabajo, la vida, el éxito?**  ")
+        lines.append("### P.ID.5 — Deep Beliefs")
+        lines.append("**What do you truly believe about work, life, and success?**  ")
         lines.append(
-            "¿Hay algo que rechaces profundamente o algo en lo que creas sin dudarlo?"
+            "Is there something you deeply reject or something you believe without question?"
         )
         lines.append("")
-        lines.append("*Nota destino:* `IDENTITY/identity-values.md` (creencias)")
+        lines.append("*Target note:* `IDENTITY/identity-values.md` (beliefs)")
         lines.append("")
-        lines.append("**Tu respuesta:**")
+        lines.append("**Your answer:**")
         lines.append("```")
-        lines.append("[Escribe aquí — Explora tus creencias sobre temas fundamentales]")
+        lines.append("[Write here — Explore your beliefs about fundamental topics]")
         lines.append("```")
         lines.append("")
         lines.append("---")
         lines.append("")
 
         # P.ID.6
-        lines.append("### P.ID.6 — Lema Personal")
-        lines.append("**¿Hay una frase, idea o principio que te defina?**  ")
-        lines.append("Algo que repetirías a ti mismo en momentos difíciles.")
+        lines.append("### P.ID.6 — Personal Motto")
+        lines.append("**Is there a phrase, idea, or principle that defines you?**  ")
+        lines.append("Something you would repeat to yourself in hard times.")
         lines.append("")
-        lines.append("*Nota destino:* `IDENTITY/identity-profile.md` (epígrafe)")
+        lines.append("*Target note:* `IDENTITY/identity-profile.md` (epigraph)")
         lines.append("")
-        lines.append("**Tu respuesta:**")
+        lines.append("**Your answer:**")
         lines.append("```")
-        lines.append("[Escribe aquí — Tu frase, mantra o principio personal]")
+        lines.append("[Write here — Your phrase, mantra, or personal principle]")
         lines.append("```")
         lines.append("")
         lines.append("---")
@@ -310,26 +310,26 @@ Hub de control para poblar la KB personal desde cero. Recursos operativos del ag
     def _build_section_preferences(self) -> list:
         """Build PREFERENCES section with answer spaces."""
         lines = []
-        lines.append("## PREFERENCES — Cómo Te Gusta Trabajar y Vivir (6 preguntas)")
+        lines.append("## PREFERENCES — How You Like to Work and Live (6 questions)")
         lines.append("")
         lines.append(
-            "*Estas respuestas poblarán:* `PREFERENCES/preferences-work-style.md`, `preferences-tools.md`, `preferences-lifestyle.md`"
+            "*These answers will populate:* `PREFERENCES/preferences-work-style.md`, `preferences-tools.md`, `preferences-lifestyle.md`"
         )
         lines.append("")
 
         # P.PREF.1
-        lines.append("### P.PREF.1 — Tu Día Ideal")
-        lines.append("**¿Cómo sería tu día ideal?**  ")
+        lines.append("### P.PREF.1 — Your Ideal Day")
+        lines.append("**What would your ideal day look like?**  ")
         lines.append(
-            "¿A qué hora te despiertas, cómo estructuras tu tiempo, cuándo tienes energía para las cosas importantes?"
+            "What time do you wake up, how do you structure your time, when do you have energy for the important things?"
         )
         lines.append("")
-        lines.append("*Nota destino:* `PREFERENCES/preferences-lifestyle.md`")
+        lines.append("*Target note:* `PREFERENCES/preferences-lifestyle.md`")
         lines.append("")
-        lines.append("**Tu respuesta:**")
+        lines.append("**Your answer:**")
         lines.append("```")
         lines.append(
-            "[Escribe aquí — Describe tu día ideal desde despertarse hasta dormir]"
+            "[Write here — Describe your ideal day from waking up to going to sleep]"
         )
         lines.append("```")
         lines.append("")
@@ -337,81 +337,81 @@ Hub de control para poblar la KB personal desde cero. Recursos operativos del ag
         lines.append("")
 
         # P.PREF.2
-        lines.append("### P.PREF.2 — Entorno de Concentración")
-        lines.append("**¿Cuál es el entorno perfecto para que te concentres?**  ")
-        lines.append("¿Ruido, silencio, café, casa, oficina, naturaleza?")
+        lines.append("### P.PREF.2 — Focus Environment")
+        lines.append("**What is the perfect environment for you to concentrate?**  ")
+        lines.append("Noise, silence, coffee, home, office, nature?")
         lines.append("")
-        lines.append("*Nota destino:* `PREFERENCES/preferences-work-style.md`")
+        lines.append("*Target note:* `PREFERENCES/preferences-work-style.md`")
         lines.append("")
-        lines.append("**Tu respuesta:**")
+        lines.append("**Your answer:**")
         lines.append("```")
-        lines.append("[Escribe aquí — Detalla tus condiciones ideales de trabajo]")
+        lines.append("[Write here — Detail your ideal working conditions]")
         lines.append("```")
         lines.append("")
         lines.append("---")
         lines.append("")
 
         # P.PREF.3
-        lines.append("### P.PREF.3 — Herramientas Imprescindibles")
+        lines.append("### P.PREF.3 — Essential Tools")
         lines.append(
-            "**¿Qué herramientas o apps consideras que son imprescindibles en tu día a día?**  "
+            "**What tools or apps do you consider essential in your day-to-day?**  "
         )
-        lines.append("¿Por qué las elegiste sobre otras?")
+        lines.append("Why did you choose them over others?")
         lines.append("")
-        lines.append("*Nota destino:* `PREFERENCES/preferences-tools.md`")
+        lines.append("*Target note:* `PREFERENCES/preferences-tools.md`")
         lines.append("")
-        lines.append("**Tu respuesta:**")
+        lines.append("**Your answer:**")
         lines.append("```")
-        lines.append("[Escribe aquí — Lista tus herramientas favoritas y por qué]")
+        lines.append("[Write here — List your favorite tools and why]")
         lines.append("```")
         lines.append("")
         lines.append("---")
         lines.append("")
 
         # P.PREF.4
-        lines.append("### P.PREF.4 — Modo de Comunicación")
+        lines.append("### P.PREF.4 — Communication Mode")
         lines.append(
-            "**Si tuvieras que elegir: ¿prefieres comunicarte escribiendo, hablando, o una mezcla?**  "
+            "**If you had to choose: do you prefer to communicate by writing, talking, or a mix?**  "
         )
-        lines.append("¿Síncronamente o asincronamente?")
+        lines.append("Synchronously or asynchronously?")
         lines.append("")
-        lines.append("*Nota destino:* `PREFERENCES/preferences-work-style.md`")
+        lines.append("*Target note:* `PREFERENCES/preferences-work-style.md`")
         lines.append("")
-        lines.append("**Tu respuesta:**")
+        lines.append("**Your answer:**")
         lines.append("```")
-        lines.append("[Escribe aquí — Explora tus preferencias comunicativas]")
+        lines.append("[Write here — Explore your communication preferences]")
         lines.append("```")
         lines.append("")
         lines.append("---")
         lines.append("")
 
         # P.PREF.5
-        lines.append("### P.PREF.5 — Hábitos No Negociables")
-        lines.append("**¿Hay hábitos que no cambiarías por nada?**  ")
+        lines.append("### P.PREF.5 — Non-Negotiable Habits")
+        lines.append("**Are there habits you would not change for anything?**  ")
         lines.append(
-            "(ejercicio, meditación, leer antes de dormir, una rutina matutina, etc.)"
+            "(exercise, meditation, reading before sleep, a morning routine, etc.)"
         )
         lines.append("")
-        lines.append("*Nota destino:* `PREFERENCES/preferences-lifestyle.md`")
+        lines.append("*Target note:* `PREFERENCES/preferences-lifestyle.md`")
         lines.append("")
-        lines.append("**Tu respuesta:**")
+        lines.append("**Your answer:**")
         lines.append("```")
-        lines.append("[Escribe aquí — Tus rutinas y hábitos fundamentales]")
+        lines.append("[Write here — Your fundamental routines and habits]")
         lines.append("```")
         lines.append("")
         lines.append("---")
         lines.append("")
 
         # P.PREF.6
-        lines.append("### P.PREF.6 — Relación con el Dinero")
-        lines.append("**¿Cuál es tu relación con el dinero y la posesión de cosas?**  ")
-        lines.append("¿Te importa tener mucho, pocas cosas, o algo intermedio?")
+        lines.append("### P.PREF.6 — Relationship with Money")
+        lines.append("**What is your relationship with money and owning things?**  ")
+        lines.append("Do you care about having a lot, few things, or something in between?")
         lines.append("")
-        lines.append("*Nota destino:* `PREFERENCES/preferences-lifestyle.md`")
+        lines.append("*Target note:* `PREFERENCES/preferences-lifestyle.md`")
         lines.append("")
-        lines.append("**Tu respuesta:**")
+        lines.append("**Your answer:**")
         lines.append("```")
-        lines.append("[Escribe aquí — Tu filosofía sobre dinero y posesiones]")
+        lines.append("[Write here — Your philosophy about money and possessions]")
         lines.append("```")
         lines.append("")
         lines.append("---")
@@ -422,83 +422,83 @@ Hub de control para poblar la KB personal desde cero. Recursos operativos del ag
     def _build_section_work(self) -> list:
         """Build WORK section with answer spaces."""
         lines = []
-        lines.append("## WORK — Tu Vida Profesional (5 preguntas)")
+        lines.append("## WORK — Your Professional Life (5 questions)")
         lines.append("")
         lines.append(
-            "*Estas respuestas poblarán:* `WORK/work-current-role.md`, `work-company.md`, `work-overview.md`, `work-team.md`"
+            "*These answers will populate:* `WORK/work-current-role.md`, `work-company.md`, `work-overview.md`, `work-team.md`"
         )
         lines.append("")
 
-        lines.append("### P.WORK.1 — Contexto Laboral Actual")
-        lines.append("**Cuéntame sobre tu trabajo actual.**  ")
+        lines.append("### P.WORK.1 — Current Work Context")
+        lines.append("**Tell me about your current job.**  ")
         lines.append(
-            "¿Dónde trabajas, qué haces, y en qué áreas sientes que contribuyes más?"
+            "Where do you work, what do you do, and in which areas do you feel you contribute most?"
         )
         lines.append("")
-        lines.append("*Nota destino:* `WORK/work-overview.md`")
+        lines.append("*Target note:* `WORK/work-overview.md`")
         lines.append("")
-        lines.append("**Tu respuesta:**")
+        lines.append("**Your answer:**")
         lines.append("```")
         lines.append(
-            "[Escribe aquí — Descripción de tu puesto, empresa, responsabilidades]"
+            "[Write here — Description of your role, company, responsibilities]"
         )
         lines.append("```")
         lines.append("")
         lines.append("---")
         lines.append("")
 
-        lines.append("### P.WORK.2 — Tu Día de Trabajo Ideal")
-        lines.append("**¿Cómo sería tu día de trabajo ideal y cómo sería uno malo?**  ")
-        lines.append("¿Qué condiciones o circunstancias hacen que des lo mejor de ti?")
+        lines.append("### P.WORK.2 — Your Ideal Work Day")
+        lines.append("**What would your ideal work day look like, and what would a bad one look like?**  ")
+        lines.append("What conditions or circumstances make you give your best?")
         lines.append("")
-        lines.append("*Nota destino:* `WORK/work-current-role.md`")
+        lines.append("*Target note:* `WORK/work-current-role.md`")
         lines.append("")
-        lines.append("**Tu respuesta:**")
+        lines.append("**Your answer:**")
         lines.append("```")
-        lines.append("[Escribe aquí — Qué te energiza y qué te drena en el trabajo]")
-        lines.append("```")
-        lines.append("")
-        lines.append("---")
-        lines.append("")
-
-        lines.append("### P.WORK.3 — Especialidad Técnica")
-        lines.append("**¿Cuál es tu formación técnica o área de especialidad?**  ")
-        lines.append("¿En qué temas te sientes realmente cómodo y confiado?")
-        lines.append("")
-        lines.append("*Nota destino:* `WORK/work-current-role.md` (expertise)")
-        lines.append("")
-        lines.append("**Tu respuesta:**")
-        lines.append("```")
-        lines.append("[Escribe aquí — Tu background, habilidades, áreas de dominio]")
+        lines.append("[Write here — What energizes you and what drains you at work]")
         lines.append("```")
         lines.append("")
         lines.append("---")
         lines.append("")
 
-        lines.append("### P.WORK.4 — Personas Clave Profesionales")
-        lines.append("**¿Quiénes son las personas clave en tu vida profesional?**  ")
-        lines.append("¿Cómo son tus relaciones con colegas, jefe, equipo?")
+        lines.append("### P.WORK.3 — Technical Specialty")
+        lines.append("**What is your technical background or area of specialty?**  ")
+        lines.append("In which topics do you feel truly comfortable and confident?")
         lines.append("")
-        lines.append("*Nota destino:* `WORK/work-team.md`")
+        lines.append("*Target note:* `WORK/work-current-role.md` (expertise)")
         lines.append("")
-        lines.append("**Tu respuesta:**")
+        lines.append("**Your answer:**")
         lines.append("```")
-        lines.append("[Escribe aquí — Describe tus relaciones profesionales clave]")
+        lines.append("[Write here — Your background, skills, areas of mastery]")
         lines.append("```")
         lines.append("")
         lines.append("---")
         lines.append("")
 
-        lines.append("### P.WORK.5 — Trayectoria Profesional")
+        lines.append("### P.WORK.4 — Key Professional People")
+        lines.append("**Who are the key people in your professional life?**  ")
+        lines.append("What are your relationships with colleagues, boss, and team like?")
+        lines.append("")
+        lines.append("*Target note:* `WORK/work-team.md`")
+        lines.append("")
+        lines.append("**Your answer:**")
+        lines.append("```")
+        lines.append("[Write here — Describe your key professional relationships]")
+        lines.append("```")
+        lines.append("")
+        lines.append("---")
+        lines.append("")
+
+        lines.append("### P.WORK.5 — Professional Trajectory")
         lines.append(
-            "**Pensando en tu carrera hasta ahora, ¿qué roles has tenido y qué aprendiste de cada experiencia?**"
+            "**Thinking about your career so far, what roles have you had and what did you learn from each experience?**"
         )
         lines.append("")
-        lines.append("*Nota destino:* `WORK/work-overview.md` (sección histórica)")
+        lines.append("*Target note:* `WORK/work-overview.md` (history section)")
         lines.append("")
-        lines.append("**Tu respuesta:**")
+        lines.append("**Your answer:**")
         lines.append("```")
-        lines.append("[Escribe aquí — Tu historia profesional y lo aprendido]")
+        lines.append("[Write here — Your professional history and what you learned]")
         lines.append("```")
         lines.append("")
         lines.append("---")
@@ -509,77 +509,77 @@ Hub de control para poblar la KB personal desde cero. Recursos operativos del ag
     def _build_section_projects(self) -> list:
         """Build PROJECTS section with answer spaces."""
         lines = []
-        lines.append("## PROJECTS — Qué Estás Haciendo (4 preguntas)")
+        lines.append("## PROJECTS — What You Are Doing (4 questions)")
         lines.append("")
         lines.append(
-            "*Estas respuestas poblarán:* `PROJECTS/[project-name].md` (notas nuevas por proyecto)"
+            "*These answers will populate:* `PROJECTS/[project-name].md` (new notes per project)"
         )
         lines.append("")
 
-        lines.append("### P.PROJ.1 — Proyectos Activos")
+        lines.append("### P.PROJ.1 — Active Projects")
         lines.append(
-            "**¿En qué proyectos estás trabajando ahora mismo, ya sean profesionales o personales?**  "
+            "**What projects are you working on right now, whether professional or personal?**  "
         )
-        lines.append("¿En qué estado se encuentran?")
+        lines.append("What state are they in?")
         lines.append("")
         lines.append(
-            "*Nota destino:* `PROJECTS/[project-name].md` (crear una por proyecto)"
+            "*Target note:* `PROJECTS/[project-name].md` (create one per project)"
         )
         lines.append("")
-        lines.append("**Tu respuesta:**")
+        lines.append("**Your answer:**")
         lines.append("```")
-        lines.append("[Escribe aquí — Lista tus proyectos activos con estado actual]")
+        lines.append("[Write here — List your active projects with their current status]")
         lines.append("```")
         lines.append("")
         lines.append("---")
         lines.append("")
 
-        lines.append("### P.PROJ.2 — Proyectos Futuros")
+        lines.append("### P.PROJ.2 — Future Projects")
         lines.append(
-            "**¿Hay algún proyecto personal o creativo que te emocionaría sacar adelante en los próximos meses?**"
+            "**Is there a personal or creative project you would be excited to pursue in the coming months?**"
         )
         lines.append("")
-        lines.append("*Nota destino:* `PROJECTS/[project-name].md` (ideation)")
+        lines.append("*Target note:* `PROJECTS/[project-name].md` (ideation)")
         lines.append("")
-        lines.append("**Tu respuesta:**")
+        lines.append("**Your answer:**")
         lines.append("```")
-        lines.append("[Escribe aquí — Proyectos que te atraen pero no has iniciado]")
-        lines.append("```")
-        lines.append("")
-        lines.append("---")
-        lines.append("")
-
-        lines.append("### P.PROJ.3 — Proyectos de Orgullo")
-        lines.append(
-            "**Mirando hacia atrás, ¿hay algún proyecto del que estés especialmente orgulloso?**  "
-        )
-        lines.append("¿Qué lo hizo especial?")
-        lines.append("")
-        lines.append(
-            "*Nota destino:* `PROJECTS/[project-name].md` (archived with reflection)"
-        )
-        lines.append("")
-        lines.append("**Tu respuesta:**")
-        lines.append("```")
-        lines.append(
-            "[Escribe aquí — Proyectos completados de los que te sientes bien]"
-        )
+        lines.append("[Write here — Projects that appeal to you but you have not started]")
         lines.append("```")
         lines.append("")
         lines.append("---")
         lines.append("")
 
-        lines.append("### P.PROJ.4 — Visión a Largo Plazo")
+        lines.append("### P.PROJ.3 — Proud Projects")
         lines.append(
-            "**¿Qué te gustaría estar haciendo en 2 o 3 años, tanto a nivel profesional como personal?**  "
+            "**Looking back, is there a project you are especially proud of?**  "
         )
-        lines.append("¿Hacia dónde quieres ir?")
+        lines.append("What made it special?")
         lines.append("")
-        lines.append("*Nota destino:* `PROJECTS/INDEX-PROJECTS.md` (vision section)")
+        lines.append(
+            "*Target note:* `PROJECTS/[project-name].md` (archived with reflection)"
+        )
         lines.append("")
-        lines.append("**Tu respuesta:**")
+        lines.append("**Your answer:**")
         lines.append("```")
-        lines.append("[Escribe aquí — Tu dirección a mediano plazo]")
+        lines.append(
+            "[Write here — Completed projects you feel good about]"
+        )
+        lines.append("```")
+        lines.append("")
+        lines.append("---")
+        lines.append("")
+
+        lines.append("### P.PROJ.4 — Long-Term Vision")
+        lines.append(
+            "**What would you like to be doing in 2 or 3 years, both professionally and personally?**  "
+        )
+        lines.append("Where do you want to go?")
+        lines.append("")
+        lines.append("*Target note:* `PROJECTS/INDEX-PROJECTS.md` (vision section)")
+        lines.append("")
+        lines.append("**Your answer:**")
+        lines.append("```")
+        lines.append("[Write here — Your medium-term direction]")
         lines.append("```")
         lines.append("")
         lines.append("---")
@@ -590,84 +590,84 @@ Hub de control para poblar la KB personal desde cero. Recursos operativos del ag
     def _build_section_personal_space(self) -> list:
         """Build PERSONAL-SPACE section with answer spaces."""
         lines = []
-        lines.append("## PERSONAL-SPACE — Tu Ocio y Entretenimiento (5 preguntas)")
+        lines.append("## PERSONAL-SPACE — Your Leisure and Entertainment (5 questions)")
         lines.append("")
         lines.append(
-            "*Estas respuestas poblarán:* `PERSONAL-SPACE/personal-hobbies.md`, `personal-interests.md`"
+            "*These answers will populate:* `PERSONAL-SPACE/personal-hobbies.md`, `personal-interests.md`"
         )
         lines.append("")
 
-        lines.append("### P.PERS.1 — Películas y Series")
+        lines.append("### P.PERS.1 — Movies and Series")
         lines.append(
-            "**¿Cuáles son tus películas, series o documentales favoritos?**  "
+            "**What are your favorite movies, series, or documentaries?**  "
         )
-        lines.append("¿Qué tienen que te marcó o te sigue atrayendo?")
+        lines.append("What is it about them that marked you or still draws you in?")
         lines.append("")
         lines.append(
-            "*Nota destino:* `PERSONAL-SPACE/personal-interests.md` (watchlist)"
+            "*Target note:* `PERSONAL-SPACE/personal-interests.md` (watchlist)"
         )
         lines.append("")
-        lines.append("**Tu respuesta:**")
+        lines.append("**Your answer:**")
         lines.append("```")
-        lines.append("[Escribe aquí — Tus películas/series favoritas y por qué]")
+        lines.append("[Write here — Your favorite movies/series and why]")
         lines.append("```")
         lines.append("")
         lines.append("---")
         lines.append("")
 
-        lines.append("### P.PERS.2 — Libros que Importan")
-        lines.append("**¿Qué libros has leído que realmente te hayan dejado algo?**  ")
-        lines.append("¿Hay alguno que releas o que recomiendes?")
+        lines.append("### P.PERS.2 — Books that Matter")
+        lines.append("**What books have you read that really left you with something?**  ")
+        lines.append("Is there one you reread or recommend?")
         lines.append("")
         lines.append(
-            "*Nota destino:* `PERSONAL-SPACE/personal-interests.md` (readlist)"
+            "*Target note:* `PERSONAL-SPACE/personal-interests.md` (readlist)"
         )
         lines.append("")
-        lines.append("**Tu respuesta:**")
+        lines.append("**Your answer:**")
         lines.append("```")
-        lines.append("[Escribe aquí — Tus libros favoritos e impactantes]")
-        lines.append("```")
-        lines.append("")
-        lines.append("---")
-        lines.append("")
-
-        lines.append("### P.PERS.3 — Tiempo Libre")
-        lines.append("**¿Cómo pasas tu tiempo libre cuando no estás trabajando?**  ")
-        lines.append("¿Qué actividades te hacen sentir más vivo?")
-        lines.append("")
-        lines.append("*Nota destino:* `PERSONAL-SPACE/personal-hobbies.md`")
-        lines.append("")
-        lines.append("**Tu respuesta:**")
-        lines.append("```")
-        lines.append("[Escribe aquí — Tus pasatiempos, actividades de ocio]")
+        lines.append("[Write here — Your favorite and impactful books]")
         lines.append("```")
         lines.append("")
         lines.append("---")
         lines.append("")
 
-        lines.append("### P.PERS.4 — Inspiración y Citas")
-        lines.append("**¿Hay frases, citas o ideas que te inspiren especialmente?**  ")
-        lines.append("¿Algo que repitas en tu cabeza cuando lo necesitas?")
+        lines.append("### P.PERS.3 — Free Time")
+        lines.append("**How do you spend your free time when you are not working?**  ")
+        lines.append("What activities make you feel most alive?")
         lines.append("")
-        lines.append("*Nota destino:* `PERSONAL-SPACE/personal-interests.md` (quotes)")
+        lines.append("*Target note:* `PERSONAL-SPACE/personal-hobbies.md`")
         lines.append("")
-        lines.append("**Tu respuesta:**")
+        lines.append("**Your answer:**")
         lines.append("```")
-        lines.append("[Escribe aquí — Tus frases y citas inspiradoras]")
+        lines.append("[Write here — Your hobbies and leisure activities]")
         lines.append("```")
         lines.append("")
         lines.append("---")
         lines.append("")
 
-        lines.append("### P.PERS.5 — Música y Podcasts")
-        lines.append("**¿Qué tipo de música o podcasts sueles escuchar?**  ")
-        lines.append("¿Hay temas que te causen curiosidad, risa o calma?")
+        lines.append("### P.PERS.4 — Inspiration and Quotes")
+        lines.append("**Are there phrases, quotes, or ideas that especially inspire you?**  ")
+        lines.append("Something you repeat in your head when you need it?")
         lines.append("")
-        lines.append("*Nota destino:* `PERSONAL-SPACE/personal-interests.md` (audio)")
+        lines.append("*Target note:* `PERSONAL-SPACE/personal-interests.md` (quotes)")
         lines.append("")
-        lines.append("**Tu respuesta:**")
+        lines.append("**Your answer:**")
         lines.append("```")
-        lines.append("[Escribe aquí — Tu gusto musical y temas de podcast]")
+        lines.append("[Write here — Your inspiring phrases and quotes]")
+        lines.append("```")
+        lines.append("")
+        lines.append("---")
+        lines.append("")
+
+        lines.append("### P.PERS.5 — Music and Podcasts")
+        lines.append("**What kind of music or podcasts do you usually listen to?**  ")
+        lines.append("Are there topics that spark your curiosity, laughter, or calm?")
+        lines.append("")
+        lines.append("*Target note:* `PERSONAL-SPACE/personal-interests.md` (audio)")
+        lines.append("")
+        lines.append("**Your answer:**")
+        lines.append("```")
+        lines.append("[Write here — Your musical taste and podcast topics]")
         lines.append("```")
         lines.append("")
         lines.append("---")
@@ -678,83 +678,83 @@ Hub de control para poblar la KB personal desde cero. Recursos operativos del ag
     def _build_section_knowledge(self) -> list:
         """Build KNOWLEDGE section with answer spaces."""
         lines = []
-        lines.append("## KNOWLEDGE — Lo Que Aprendes (5 preguntas)")
+        lines.append("## KNOWLEDGE — What You Learn (5 questions)")
         lines.append("")
         lines.append(
-            "*Estas respuestas poblarán:* `KNOWLEDGE/[specialty].md` (notas por área de especialización)"
+            "*These answers will populate:* `KNOWLEDGE/[specialty].md` (notes by area of specialization)"
         )
         lines.append("")
 
-        lines.append("### P.KNOW.1 — Aprendizaje Actual")
-        lines.append("**¿Hay algo que estés aprendiendo en estos momentos?**  ")
-        lines.append("Un curso, un lenguaje, una habilidad que persigues.")
+        lines.append("### P.KNOW.1 — Current Learning")
+        lines.append("**Is there something you are learning right now?**  ")
+        lines.append("A course, a language, a skill you are pursuing.")
         lines.append("")
-        lines.append("*Nota destino:* `KNOWLEDGE/knowledge-current-learning.md`")
+        lines.append("*Target note:* `KNOWLEDGE/knowledge-current-learning.md`")
         lines.append("")
-        lines.append("**Tu respuesta:**")
+        lines.append("**Your answer:**")
         lines.append("```")
-        lines.append("[Escribe aquí — Tus aprendizajes en progreso]")
+        lines.append("[Write here — Your learning in progress]")
         lines.append("```")
         lines.append("")
         lines.append("---")
         lines.append("")
 
-        lines.append("### P.KNOW.2 — Especialización Futura")
+        lines.append("### P.KNOW.2 — Future Specialization")
         lines.append(
-            "**¿Hay alguna área específica en tu campo que te llame la atención para especializarte o profundizar?**  "
+            "**Is there a specific area in your field that draws you to specialize or go deeper?**  "
         )
-        lines.append("Incluso si ahora es solo un interés vago.")
+        lines.append("Even if right now it is only a vague interest.")
         lines.append("")
-        lines.append("*Nota destino:* `KNOWLEDGE/knowledge-interests.md`")
+        lines.append("*Target note:* `KNOWLEDGE/knowledge-interests.md`")
         lines.append("")
-        lines.append("**Tu respuesta:**")
+        lines.append("**Your answer:**")
         lines.append("```")
-        lines.append("[Escribe aquí — Áreas que quieres explorar o dominar]")
+        lines.append("[Write here — Areas you want to explore or master]")
         lines.append("```")
         lines.append("")
         lines.append("---")
         lines.append("")
 
-        lines.append("### P.KNOW.3 — Expertise Actual")
-        lines.append("**¿En qué temas sientes que realmente sabes de qué hablas?**  ")
-        lines.append("¿Y en cuáles te gustaría mejorar?")
+        lines.append("### P.KNOW.3 — Current Expertise")
+        lines.append("**On which topics do you feel you really know what you are talking about?**  ")
+        lines.append("And which ones would you like to improve?")
         lines.append("")
-        lines.append("*Nota destino:* `KNOWLEDGE/knowledge-expertise.md`")
+        lines.append("*Target note:* `KNOWLEDGE/knowledge-expertise.md`")
         lines.append("")
-        lines.append("**Tu respuesta:**")
+        lines.append("**Your answer:**")
         lines.append("```")
-        lines.append("[Escribe aquí — Tu expertise actual y áreas de mejora]")
-        lines.append("```")
-        lines.append("")
-        lines.append("---")
-        lines.append("")
-
-        lines.append("### P.KNOW.4 — Fuentes de Aprendizaje")
-        lines.append("**¿De dónde aprendes típicamente?**  ")
-        lines.append(
-            "¿Blogs, libros, YouTube, comunidades en línea, conversando con otros?"
-        )
-        lines.append("")
-        lines.append("*Nota destino:* `KNOWLEDGE/knowledge-sources.md`")
-        lines.append("")
-        lines.append("**Tu respuesta:**")
-        lines.append("```")
-        lines.append("[Escribe aquí — Tus canales y fuentes de aprendizaje favoritas]")
+        lines.append("[Write here — Your current expertise and areas for improvement]")
         lines.append("```")
         lines.append("")
         lines.append("---")
         lines.append("")
 
-        lines.append("### P.KNOW.5 — Conceptos Fundamentales")
+        lines.append("### P.KNOW.4 — Learning Sources")
+        lines.append("**Where do you typically learn from?**  ")
         lines.append(
-            "**¿Hay algún concepto, insight o idea que hayas aprendido que consideres fundamental y que quieras retener?**"
+            "Blogs, books, YouTube, online communities, talking with others?"
         )
         lines.append("")
-        lines.append("*Nota destino:* `KNOWLEDGE/knowledge-insights.md`")
+        lines.append("*Target note:* `KNOWLEDGE/knowledge-sources.md`")
         lines.append("")
-        lines.append("**Tu respuesta:**")
+        lines.append("**Your answer:**")
         lines.append("```")
-        lines.append("[Escribe aquí — Ideas clave que quieres preservar]")
+        lines.append("[Write here — Your favorite learning channels and sources]")
+        lines.append("```")
+        lines.append("")
+        lines.append("---")
+        lines.append("")
+
+        lines.append("### P.KNOW.5 — Fundamental Concepts")
+        lines.append(
+            "**Is there a concept, insight, or idea you have learned that you consider fundamental and want to retain?**"
+        )
+        lines.append("")
+        lines.append("*Target note:* `KNOWLEDGE/knowledge-insights.md`")
+        lines.append("")
+        lines.append("**Your answer:**")
+        lines.append("```")
+        lines.append("[Write here — Key ideas you want to preserve]")
         lines.append("```")
         lines.append("")
         lines.append("---")
@@ -765,62 +765,62 @@ Hub de control para poblar la KB personal desde cero. Recursos operativos del ag
     def _build_instructions(self) -> list:
         """Build instructions section."""
         lines = []
-        lines.append("## INSTRUCCIONES DE INTEGRACIÓN")
+        lines.append("## INTEGRATION INSTRUCTIONS")
         lines.append("")
-        lines.append("### Paso 1: Completa el Cuestionario")
-        lines.append("- Responde las 31 preguntas en este documento")
-        lines.append("- Tómate tiempo (no es una carrera)")
-        lines.append("- Sé específico y detallado")
+        lines.append("### Step 1: Complete the Questionnaire")
+        lines.append("- Answer the 31 questions in this document")
+        lines.append("- Take your time (it is not a race)")
+        lines.append("- Be specific and detailed")
         lines.append("")
-        lines.append("### Paso 2: Mapeo a Notas")
-        lines.append("Una vez completado, cada respuesta se convierte en una nota:")
+        lines.append("### Step 2: Mapping to Notes")
+        lines.append("Once complete, each answer becomes a note:")
         lines.append("")
         lines.append(
-            "Consulta **BOOTSTRAP-MAPPING.md** para ver exactamente dónde va cada respuesta."
+            "Consult **BOOTSTRAP-MAPPING.md** to see exactly where each answer goes."
         )
         lines.append("")
-        lines.append("### Paso 3: Crea las Notas")
-        lines.append("En Obsidian:")
-        lines.append("1. Ve a la carpeta correcta (ej: IDENTITY/)")
-        lines.append("2. Crea nuevo archivo")
-        lines.append("3. Nómbralo según convención")
-        lines.append("4. Copia frontmatter estándar")
-        lines.append("5. Agrega contenido de la respuesta")
+        lines.append("### Step 3: Create the Notes")
+        lines.append("In Obsidian:")
+        lines.append("1. Go to the correct folder (e.g. IDENTITY/)")
+        lines.append("2. Create a new file")
+        lines.append("3. Name it according to the convention")
+        lines.append("4. Copy the standard frontmatter")
+        lines.append("5. Add the content of the answer")
         lines.append("")
-        lines.append("### Paso 4: Actualiza Graphify")
+        lines.append("### Step 4: Update Graphify")
         lines.append("```bash")
         lines.append("graphify . --update --no-cluster")
         lines.append("```")
         lines.append("")
-        lines.append("### Paso 5: Valida")
-        lines.append("- Abre vault en Obsidian")
-        lines.append("- Verifica que carguen todas las notas")
-        lines.append("- Revisa Graph View para ver conexiones")
+        lines.append("### Step 5: Validate")
+        lines.append("- Open the vault in Obsidian")
+        lines.append("- Verify that all notes load")
+        lines.append("- Review the Graph View to see the connections")
         lines.append("")
         lines.append("---")
         lines.append("")
-        lines.append("**Instrucciones finales:**")
+        lines.append("**Final instructions:**")
         lines.append(
-            "1. **Responde con honestidad**: No hay respuestas correctas. Esto es para ti."
+            "1. **Answer honestly**: There are no correct answers. This is for you."
         )
         lines.append(
-            "2. **Tómate tu tiempo**: No tengas prisa. Reflexiona genuinamente sobre cada pregunta."
+            "2. **Take your time**: Do not rush. Genuinely reflect on each question."
         )
         lines.append(
-            "3. **Sé específico**: Los detalles y ejemplos concretos harán tu KB mucho más útil."
+            "3. **Be specific**: Concrete details and examples will make your KB much more useful."
         )
         lines.append(
-            "4. **Actualiza regularmente**: Vuelve a estas preguntas cada 2-3 meses. Tu KB debe crecer contigo."
+            "4. **Update regularly**: Come back to these questions every 2-3 months. Your KB should grow with you."
         )
         lines.append(
-            "5. **Largo no es problema**: Responde todo lo que necesites. Más contexto = mejor KB."
+            "5. **Length is not a problem**: Write as much as you need. More context = a better KB."
         )
         lines.append("")
         lines.append("---")
         lines.append("")
         timestamp = datetime.now().strftime("%Y-%m-%d")
-        lines.append(f"**Total completado:** 31 preguntas en 6 categorías")
-        lines.append(f"**Generado:** {timestamp}")
+        lines.append(f"**Total completed:** 31 questions across 6 categories")
+        lines.append(f"**Generated:** {timestamp}")
         lines.append(f"**Version:** 1.0")
         lines.append("")
 
@@ -840,10 +840,10 @@ Hub de control para poblar la KB personal desde cero. Recursos operativos del ag
                 "description": "Bootstrap questionnaire for Wolta KB initialization"
             },
             "instructions": {
-                "how_to_respond": "Responde con sinceridad. No hay respuestas correctas.",
-                "recommended_length": "2-5 parrafos por pregunta (sin limite maximo)",
-                "estimated_duration": "45-90 minutos total",
-                "agent_mode": "Si dices 'Comienza con el bootstrap', el agente hara las preguntas una a una"
+                "how_to_respond": "Answer honestly. There are no correct answers.",
+                "recommended_length": "2-5 paragraphs per question (no maximum limit)",
+                "estimated_duration": "45-90 minutes total",
+                "agent_mode": "If you say 'Start the bootstrap', the agent will ask the questions one by one"
             }
         }
 
@@ -865,11 +865,11 @@ context_for_claude: true
 
 ## Trigger Detection
 
-When user says any of these, activate bootstrap interactive mode:
-- "comienza con el bootstrap"
-- "comienza bootstrap"
-- "inicia bootstrap"
-- "responder preguntas de bootstrap"
+When the user says any of these, activate bootstrap interactive mode:
+- "start the bootstrap"
+- "start bootstrap"
+- "begin bootstrap"
+- "answer bootstrap questions"
 
 ## What to Do
 
@@ -877,35 +877,35 @@ When user says any of these, activate bootstrap interactive mode:
 2. Ask 31 questions one by one with format: [CATEGORY - X/31]
 3. Record each response
 4. Update BOOTSTRAP-QUESTIONNAIRE.md with responses
-5. Show progress: "Vamos por X/31"
+5. Show progress: "We are at X/31"
 
 ## Question Format
 
 ```
 [IDENTITY - 1/31]
 
-**P.ID.1 — Perfil Personal**
+**P.ID.1 — Personal Profile**
 
 [Question text]
 
 [Context if available]
 
-Adelante, te escucho.
+Go ahead, I'm listening.
 ```
 
 ## Response Recording
 
 1. User answers
-2. You confirm: "Entendido. Registrado."
+2. You confirm: "Got it. Recorded."
 3. Ask next question
-4. Continue until 31 or user says "pausa"
+4. Continue until 31 or user says "pause"
 
 ## Session End
 
 After all 31 questions:
 ```
-Excelente. He completado las 31 preguntas.
-Ahora actualizare el archivo BOOTSTRAP-QUESTIONNAIRE.md
+Excellent. I have completed the 31 questions.
+Now I will update the BOOTSTRAP-QUESTIONNAIRE.md file
 ```
 
 Then update the file with all responses.
@@ -915,9 +915,9 @@ Then update the file with all responses.
 - No emoticons/emojis
 - Accept any response length
 - Do NOT critique responses
-- Record exactly what user says
-- Maintain Spanish language
-- Show X/31 progress always
+- Record exactly what the user says
+- Match the user's language
+- Always show X/31 progress
 
 ---
 
@@ -955,7 +955,7 @@ class BootstrapUpdater:
             return False
 
         section = self.markdown_content[match.start():match.end()]
-        response_pattern = r"\\*\\*Tu respuesta:\\*\\*\\n```\\n(.*?)\\n```"
+        response_pattern = r"\\*\\*Your answer:\\*\\*\\n```\\n(.*?)\\n```"
         response_match = re.search(response_pattern, section, re.DOTALL)
 
         if not response_match:
@@ -998,7 +998,7 @@ def update_bootstrap(file_path: str, responses: Dict[str, str]) -> bool:
         """Build BOOTSTRAP-MAPPING.md content."""
         lines = []
         lines.append("---")
-        lines.append('title: "BOOTSTRAP-MAPPING - Referencia de Mapeo P→Nota"')
+        lines.append('title: "BOOTSTRAP-MAPPING - Question→Note Mapping Reference"')
         lines.append('type: "index"')
         lines.append(f"created: {datetime.now().strftime('%Y-%m-%d')}")
         lines.append(f"modified: {datetime.now().strftime('%Y-%m-%d')}")
@@ -1007,163 +1007,163 @@ def update_bootstrap(file_path: str, responses: Dict[str, str]) -> bool:
         lines.append("context_for_claude: false")
         lines.append("---")
         lines.append("")
-        lines.append("# BOOTSTRAP MAPPING — Pregunta → Nota de KB")
+        lines.append("# BOOTSTRAP MAPPING — Question → KB Note")
         lines.append("")
         lines.append(
-            "**Referencia rápida para convertir respuestas del cuestionario en notas del vault.**"
-        )
-        lines.append("")
-        lines.append("---")
-        lines.append("")
-
-        lines.append("## IDENTITY — Quién Eres (6 preguntas → 4 notas)")
-        lines.append("")
-        lines.append("| # | Pregunta | Nota Destino | Sección |")
-        lines.append("|---|----------|--------------|---------|")
-        lines.append(
-            "| P.ID.1 | ¿Cómo te describirías? | `IDENTITY/identity-profile.md` | Perfil principal |"
-        )
-        lines.append(
-            "| P.ID.2 | ¿Cuáles son tus valores? | `IDENTITY/identity-values.md` | Valores fundamentales |"
-        )
-        lines.append(
-            '| P.ID.3 | Momentos que te marcaron | `IDENTITY/identity-bio.md` | Sección: "Mi Historia" |'
-        )
-        lines.append(
-            "| P.ID.4 | ¿Cómo prefieres que te hablen? | `IDENTITY/identity-voice.md` | Tu voz y comunicación |"
-        )
-        lines.append(
-            "| P.ID.5 | ¿Qué crees sobre trabajo/éxito? | `IDENTITY/identity-values.md` | Creencias profundas |"
-        )
-        lines.append(
-            "| P.ID.6 | ¿Tu frase/principio personal? | `IDENTITY/identity-profile.md` | Epígrafe o lema |"
+            "**Quick reference for turning questionnaire answers into vault notes.**"
         )
         lines.append("")
         lines.append("---")
         lines.append("")
 
-        lines.append("## PREFERENCES — Cómo Te Gusta Trabajar (6 preguntas → 3 notas)")
+        lines.append("## IDENTITY — Who You Are (6 questions → 4 notes)")
         lines.append("")
-        lines.append("| # | Pregunta | Nota Destino | Sección |")
-        lines.append("|---|----------|--------------|---------|")
+        lines.append("| # | Question | Target Note | Section |")
+        lines.append("|---|----------|-------------|---------|")
         lines.append(
-            "| P.PREF.1 | ¿Cómo sería tu día ideal? | `PREFERENCES/preferences-lifestyle.md` | Rutina diaria |"
+            "| P.ID.1 | How would you describe yourself? | `IDENTITY/identity-profile.md` | Main profile |"
         )
         lines.append(
-            "| P.PREF.2 | Entorno perfecto | `PREFERENCES/preferences-work-style.md` | Ambiente de trabajo |"
+            "| P.ID.2 | What are your values? | `IDENTITY/identity-values.md` | Core values |"
         )
         lines.append(
-            "| P.PREF.3 | Herramientas imprescindibles | `PREFERENCES/preferences-tools.md` | Stack de herramientas |"
+            '| P.ID.3 | Moments that shaped you | `IDENTITY/identity-bio.md` | Section: "My History" |'
         )
         lines.append(
-            "| P.PREF.4 | Modo de comunicación | `PREFERENCES/preferences-work-style.md` | Preferencias comunicativas |"
+            "| P.ID.4 | How do you prefer to be addressed? | `IDENTITY/identity-voice.md` | Your voice and communication |"
         )
         lines.append(
-            "| P.PREF.5 | Hábitos no negociables | `PREFERENCES/preferences-lifestyle.md` | Rutinas y hábitos |"
+            "| P.ID.5 | What do you believe about work/success? | `IDENTITY/identity-values.md` | Deep beliefs |"
         )
         lines.append(
-            "| P.PREF.6 | Relación con dinero | `PREFERENCES/preferences-lifestyle.md` | Filosofía personal |"
-        )
-        lines.append("")
-        lines.append("---")
-        lines.append("")
-
-        lines.append("## WORK — Tu Vida Profesional (5 preguntas → 4 notas)")
-        lines.append("")
-        lines.append("| # | Pregunta | Nota Destino | Sección |")
-        lines.append("|---|----------|--------------|---------|")
-        lines.append(
-            "| P.WORK.1 | Tu trabajo actual | `WORK/work-overview.md` | Contexto general |"
-        )
-        lines.append(
-            "| P.WORK.2 | Día ideal vs malo | `WORK/work-current-role.md` | Dinámicas de energía |"
-        )
-        lines.append(
-            "| P.WORK.3 | Tu formación/especialidad | `WORK/work-current-role.md` | Expertise |"
-        )
-        lines.append(
-            "| P.WORK.4 | Personas clave | `WORK/work-team.md` | Relaciones profesionales |"
-        )
-        lines.append(
-            "| P.WORK.5 | Trayectoria profesional | `WORK/work-overview.md` | Historia profesional |"
+            "| P.ID.6 | Your personal phrase/principle? | `IDENTITY/identity-profile.md` | Epigraph or motto |"
         )
         lines.append("")
         lines.append("---")
         lines.append("")
 
-        lines.append("## PROJECTS — Qué Estás Haciendo (4 preguntas → Dinámico)")
+        lines.append("## PREFERENCES — How You Like to Work (6 questions → 3 notes)")
         lines.append("")
-        lines.append("| # | Pregunta | Nota Destino | Tipo |")
-        lines.append("|---|----------|--------------|------|")
+        lines.append("| # | Question | Target Note | Section |")
+        lines.append("|---|----------|-------------|---------|")
         lines.append(
-            "| P.PROJ.1 | Proyectos activos | `PROJECTS/[project-name].md` | Uno por proyecto |"
+            "| P.PREF.1 | What would your ideal day be? | `PREFERENCES/preferences-lifestyle.md` | Daily routine |"
         )
         lines.append(
-            "| P.PROJ.2 | Proyectos futuros | `PROJECTS/[project-name].md` | Uno por proyecto ideado |"
+            "| P.PREF.2 | Perfect environment | `PREFERENCES/preferences-work-style.md` | Work environment |"
         )
         lines.append(
-            "| P.PROJ.3 | Proyectos de orgullo | `PROJECTS/[project-name].md` | Uno por proyecto archived |"
+            "| P.PREF.3 | Essential tools | `PREFERENCES/preferences-tools.md` | Tool stack |"
         )
         lines.append(
-            '| P.PROJ.4 | Visión a largo plazo | `PROJECTS/INDEX-PROJECTS.md` | Sección: "2-3 año vision" |'
+            "| P.PREF.4 | Communication mode | `PREFERENCES/preferences-work-style.md` | Communication preferences |"
+        )
+        lines.append(
+            "| P.PREF.5 | Non-negotiable habits | `PREFERENCES/preferences-lifestyle.md` | Routines and habits |"
+        )
+        lines.append(
+            "| P.PREF.6 | Relationship with money | `PREFERENCES/preferences-lifestyle.md` | Personal philosophy |"
+        )
+        lines.append("")
+        lines.append("---")
+        lines.append("")
+
+        lines.append("## WORK — Your Professional Life (5 questions → 4 notes)")
+        lines.append("")
+        lines.append("| # | Question | Target Note | Section |")
+        lines.append("|---|----------|-------------|---------|")
+        lines.append(
+            "| P.WORK.1 | Your current job | `WORK/work-overview.md` | General context |"
+        )
+        lines.append(
+            "| P.WORK.2 | Ideal vs bad day | `WORK/work-current-role.md` | Energy dynamics |"
+        )
+        lines.append(
+            "| P.WORK.3 | Your background/specialty | `WORK/work-current-role.md` | Expertise |"
+        )
+        lines.append(
+            "| P.WORK.4 | Key people | `WORK/work-team.md` | Professional relationships |"
+        )
+        lines.append(
+            "| P.WORK.5 | Professional trajectory | `WORK/work-overview.md` | Professional history |"
+        )
+        lines.append("")
+        lines.append("---")
+        lines.append("")
+
+        lines.append("## PROJECTS — What You Are Doing (4 questions → Dynamic)")
+        lines.append("")
+        lines.append("| # | Question | Target Note | Type |")
+        lines.append("|---|----------|-------------|------|")
+        lines.append(
+            "| P.PROJ.1 | Active projects | `PROJECTS/[project-name].md` | One per project |"
+        )
+        lines.append(
+            "| P.PROJ.2 | Future projects | `PROJECTS/[project-name].md` | One per ideated project |"
+        )
+        lines.append(
+            "| P.PROJ.3 | Proud projects | `PROJECTS/[project-name].md` | One per archived project |"
+        )
+        lines.append(
+            '| P.PROJ.4 | Long-term vision | `PROJECTS/INDEX-PROJECTS.md` | Section: "2-3 year vision" |'
         )
         lines.append("")
         lines.append("---")
         lines.append("")
 
         lines.append(
-            "## PERSONAL-SPACE — Ocio y Entretenimiento (5 preguntas → 2 notas)"
+            "## PERSONAL-SPACE — Leisure and Entertainment (5 questions → 2 notes)"
         )
         lines.append("")
-        lines.append("| # | Pregunta | Nota Destino | Subsección |")
-        lines.append("|---|----------|--------------|-----------|")
+        lines.append("| # | Question | Target Note | Subsection |")
+        lines.append("|---|----------|-------------|-----------|")
         lines.append(
-            "| P.PERS.1 | Películas/series favoritas | `PERSONAL-SPACE/personal-interests.md` | Watchlist |"
+            "| P.PERS.1 | Favorite movies/series | `PERSONAL-SPACE/personal-interests.md` | Watchlist |"
         )
         lines.append(
-            "| P.PERS.2 | Libros impactantes | `PERSONAL-SPACE/personal-interests.md` | Readlist |"
+            "| P.PERS.2 | Impactful books | `PERSONAL-SPACE/personal-interests.md` | Readlist |"
         )
         lines.append(
-            "| P.PERS.3 | Tiempo libre y hobbies | `PERSONAL-SPACE/personal-hobbies.md` | Actividades principales |"
+            "| P.PERS.3 | Free time and hobbies | `PERSONAL-SPACE/personal-hobbies.md` | Main activities |"
         )
         lines.append(
-            "| P.PERS.4 | Frases/citas inspiradoras | `PERSONAL-SPACE/personal-interests.md` | Quotes |"
+            "| P.PERS.4 | Inspiring phrases/quotes | `PERSONAL-SPACE/personal-interests.md` | Quotes |"
         )
         lines.append(
-            "| P.PERS.5 | Música y podcasts | `PERSONAL-SPACE/personal-interests.md` | Audio |"
-        )
-        lines.append("")
-        lines.append("---")
-        lines.append("")
-
-        lines.append("## KNOWLEDGE — Lo Que Aprendes (5 preguntas → 5 notas)")
-        lines.append("")
-        lines.append("| # | Pregunta | Nota Destino | Contenido |")
-        lines.append("|---|----------|--------------|----------|")
-        lines.append(
-            "| P.KNOW.1 | Aprendizaje actual | `KNOWLEDGE/knowledge-current-learning.md` | Cursos, idiomas, habilidades en progreso |"
-        )
-        lines.append(
-            "| P.KNOW.2 | Especialización futura | `KNOWLEDGE/knowledge-interests.md` | Áreas a explorar |"
-        )
-        lines.append(
-            "| P.KNOW.3 | Tu expertise actual | `KNOWLEDGE/knowledge-expertise.md` | Lo que sabes bien + áreas de mejora |"
-        )
-        lines.append(
-            "| P.KNOW.4 | Fuentes de aprendizaje | `KNOWLEDGE/knowledge-sources.md` | Canales: blogs, libros, YouTube, etc. |"
-        )
-        lines.append(
-            "| P.KNOW.5 | Conceptos fundamentales | `KNOWLEDGE/knowledge-insights.md` | Ideas clave a retener |"
+            "| P.PERS.5 | Music and podcasts | `PERSONAL-SPACE/personal-interests.md` | Audio |"
         )
         lines.append("")
         lines.append("---")
         lines.append("")
 
-        lines.append("## FRONTMATTER ESTÁNDAR PARA TODAS LAS NOTAS")
+        lines.append("## KNOWLEDGE — What You Learn (5 questions → 5 notes)")
+        lines.append("")
+        lines.append("| # | Question | Target Note | Content |")
+        lines.append("|---|----------|-------------|----------|")
+        lines.append(
+            "| P.KNOW.1 | Current learning | `KNOWLEDGE/knowledge-current-learning.md` | Courses, languages, skills in progress |"
+        )
+        lines.append(
+            "| P.KNOW.2 | Future specialization | `KNOWLEDGE/knowledge-interests.md` | Areas to explore |"
+        )
+        lines.append(
+            "| P.KNOW.3 | Your current expertise | `KNOWLEDGE/knowledge-expertise.md` | What you know well + areas for improvement |"
+        )
+        lines.append(
+            "| P.KNOW.4 | Learning sources | `KNOWLEDGE/knowledge-sources.md` | Channels: blogs, books, YouTube, etc. |"
+        )
+        lines.append(
+            "| P.KNOW.5 | Fundamental concepts | `KNOWLEDGE/knowledge-insights.md` | Key ideas to retain |"
+        )
+        lines.append("")
+        lines.append("---")
+        lines.append("")
+
+        lines.append("## STANDARD FRONTMATTER FOR ALL NOTES")
         lines.append("")
         lines.append("```yaml")
         lines.append("---")
-        lines.append('title: "[Título específico]"')
+        lines.append('title: "[Specific title]"')
         lines.append(
             'type: "identity | preference | work | project | personal | knowledge"'
         )
@@ -1176,14 +1176,14 @@ def update_bootstrap(file_path: str, responses: Dict[str, str]) -> bool:
         lines.append("```")
         lines.append("")
         lines.append(
-            "**Nota:** `context_for_claude: true` para que el agente cargue estas notas automáticamente en futuras sesiones."
+            "**Note:** `context_for_claude: true` so the agent loads these notes automatically in future sessions."
         )
         lines.append("")
         lines.append("---")
         lines.append("")
 
         lines.append(
-            "**Este documento es tu referencia rápida durante la integración.**"
+            "**This document is your quick reference during integration.**"
         )
         lines.append("")
 

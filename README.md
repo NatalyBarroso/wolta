@@ -1,133 +1,133 @@
-# Wolta CLI - Inicializador de Knowledge Base Personal
+# Wolta CLI - Personal Knowledge Base Initializer
 
-Herramienta de línea de comandos para inicializar y gestionar una knowledge base personal en Obsidian, integrada con agentes Claude para consultas inteligentes.
+Command-line tool to initialize and manage a personal knowledge base in Obsidian, integrated with Claude agents for intelligent queries.
 
-## Descripción
+## Description
 
-Wolta crea un vault estructurado en Obsidian con categorías predefinidas y preguntas bootstrap para completar tu knowledge base desde el primer día. El vault está diseñado para ser consultado por agentes Claude con comprensión contextual completa.
+Wolta creates a structured Obsidian vault with predefined categories and bootstrap questions to complete your knowledge base from day one. The vault is designed to be queried by Claude agents with full contextual understanding.
 
-**Estructura del Vault:**
-- **IDENTITY** - Perfil personal, valores, voz
-- **PREFERENCES** - Herramientas, estilo de trabajo, lifestyle
-- **WORK** - Rol actual, empresa, información del equipo
-- **PROJECTS** - Proyectos activos y estado
-- **PERSONAL-SPACE** - Hobbies e intereses
-- **KNOWLEDGE** - Recursos de aprendizaje
-- **AI-SYSTEM** - Contexto de agentes, workflows, skills
-  - **BOOTSTRAP** - Preguntas iniciales para completar
-  - **CONTEXT** - Contexto actual
-  - **AGENTS** - Configuración de agentes
-  - **SESSIONS** - Historial de sesiones
-  - **SKILLS** - Habilidades personalizadas
-  - **WORKFLOWS** - Flujos de trabajo
+**Vault Structure:**
+- **IDENTITY** - Personal profile, values, voice
+- **PREFERENCES** - Tools, work style, lifestyle
+- **WORK** - Current role, company, team information
+- **PROJECTS** - Active projects and status
+- **PERSONAL-SPACE** - Hobbies and interests
+- **KNOWLEDGE** - Learning resources
+- **AI-SYSTEM** - Agent context, workflows, skills
+  - **BOOTSTRAP** - Initial questions to complete
+  - **CONTEXT** - Current context
+  - **AGENTS** - Agent configuration
+  - **SESSIONS** - Session history
+  - **SKILLS** - Custom skills
+  - **WORKFLOWS** - Workflows
 
-## Instalación
+## Installation
 
-### Opción 1: Con pip (clásico)
+### Option 1: With pip (classic)
 
 ```bash
 pip install -e .
 ```
 
-Luego usa el comando global:
+Then use the global command:
 ```bash
 wolta init
 ```
 
-### Opción 2: Con uv (recomendado - más rápido)
+### Option 2: With uv (recommended - faster)
 
 ```bash
 uv pip install -e .
 ```
 
-Luego usa el comando global:
+Then use the global command:
 ```bash
 wolta init
 ```
 
-### Opción 3: Ejecución directa con Python
+### Option 3: Direct execution with Python
 
 ```bash
 python main.py init
 ```
 
-O con uv:
+Or with uv:
 ```bash
 uv run main.py init
 ```
 
-## Uso
+## Usage
 
-### Inicialización básica
+### Basic initialization
 
-Inicializar un vault en el directorio actual:
+Initialize a vault in the current directory:
 ```bash
 wolta init
 ```
 
-Crea una carpeta `wolta/` con la estructura por defecto.
+Creates a `wolta/` folder with the default structure.
 
-### Nombre personalizado para el vault
+### Custom name for the vault
 
-Personaliza el nombre de la carpeta del vault:
+Customize the name of the vault folder:
 ```bash
 wolta init --name joanna
 ```
 
-Crea: `wolta-joanna/` en lugar de `wolta/`
+Creates: `wolta-joanna/` instead of `wolta/`
 
-### Ruta personalizada
+### Custom path
 
-Especifica dónde se debe crear el vault:
+Specify where the vault should be created:
 ```bash
 wolta init --vault-path ~/Documents
 ```
 
-### Opciones combinadas
+### Combined options
 
 ```bash
 wolta init --vault-path ~/Documents --name my-kb
 ```
 
-Crea: `~/Documents/wolta-my-kb/`
+Creates: `~/Documents/wolta-my-kb/`
 
-### Forzar re-inicialización
+### Force re-initialization
 
-Re-inicializa un vault existente (sobrescribe):
+Re-initialize an existing vault (overwrites):
 ```bash
 wolta init --name joanna --force
 ```
 
-## Opciones del Comando
+## Command Options
 
-| Opción | Tipo | Default | Descripción |
+| Option | Type | Default | Description |
 |--------|------|---------|-------------|
-| `--vault-path` | Path | Directorio actual | Directorio donde se creará el vault |
-| `--name` | String | `wolta` | Nombre personalizado para la carpeta (crea `wolta-[name]/`) |
-| `--force` | Flag | False | Fuerza la re-inicialización de un vault existente |
-| `--help` | Flag | - | Muestra el mensaje de ayuda |
-| `--version` | Flag | - | Muestra el número de versión |
+| `--vault-path` | Path | Current directory | Directory where the vault will be created |
+| `--name` | String | `wolta` | Custom name for the folder (creates `wolta-[name]/`) |
+| `--force` | Flag | False | Forces the re-initialization of an existing vault |
+| `--help` | Flag | - | Shows the help message |
+| `--version` | Flag | - | Shows the version number |
 
-## Validación de Nombres
+## Name Validation
 
-Los nombres de vault deben cumplir estas reglas:
-- Solo caracteres alfanuméricos y guiones
-- 1-50 caracteres de largo
-- No pueden empezar ni terminar con guión
+Vault names must follow these rules:
+- Only alphanumeric characters and hyphens
+- 1-50 characters long
+- Cannot start or end with a hyphen
 
-**Ejemplos válidos:**
+**Valid examples:**
 - `my-kb`
 - `joanna123`
 - `kb-2026`
 
-**Ejemplos inválidos:**
-- `-invalid` (comienza con guión)
-- `invalid-` (termina con guión)
-- `invalid name` (contiene espacios)
+**Invalid examples:**
+- `-invalid` (starts with a hyphen)
+- `invalid-` (ends with a hyphen)
+- `invalid name` (contains spaces)
 
-## Salida
+## Output
 
-Después de una inicialización exitosa:
+After a successful initialization:
 
 ```
 ✓ Vault initialized successfully!
@@ -140,9 +140,9 @@ Next steps:
   3. Complete the bootstrap questions in AI-SYSTEM/BOOTSTRAP/bootstrap-questions.md
 ```
 
-## Estructura Generada
+## Generated Structure
 
-### Carpetas (8 principales + subcarpetas)
+### Folders (8 main + subfolders)
 ```
 wolta-[name]/
 ├── IDENTITY/
@@ -162,37 +162,37 @@ wolta-[name]/
 └── .wolta/
 ```
 
-### Archivos Creados
-- Archivos INDEX para cada categoría (ej: `INDEX-IDENTITY.md`)
-- Archivos específicos de categoría con frontmatter YAML
-- Archivo de preguntas bootstrap: `AI-SYSTEM/BOOTSTRAP/bootstrap-questions.md`
-- Archivo de plantilla: `TEMPLATES/template-note.md`
-- Marcador de configuración: `.wolta/initialized`
+### Created Files
+- INDEX files for each category (e.g. `INDEX-IDENTITY.md`)
+- Category-specific files with YAML frontmatter
+- Bootstrap questions file: `AI-SYSTEM/BOOTSTRAP/bootstrap-questions.md`
+- Template file: `TEMPLATES/template-note.md`
+- Configuration marker: `.wolta/initialized`
 
-## Preguntas Bootstrap
+## Bootstrap Questions
 
-Después de la inicialización, completa las preguntas bootstrap en:
+After initialization, complete the bootstrap questions in:
 ```
 AI-SYSTEM/BOOTSTRAP/bootstrap-questions.md
 ```
 
-O pide al agente que comience con la generación de las plantillas de nota.
+Or ask the agent to start generating the note templates.
 ```
-"Comienza con el bootstrap"
+"Start the bootstrap"
 ```
 
-Estas preguntas abarcan 27 temas en 6 categorías:
+These questions cover 27 topics across 6 categories:
 
-- **IDENTITY** (6 preguntas) - Quién eres, valores, comunicación
-- **PREFERENCES** (6 preguntas) - Tu forma de trabajar, herramientas, lifestyle
-- **WORK** (5 preguntas) - Rol, empresa, equipo, carrera
-- **PROJECTS** (4 preguntas) - Proyectos actuales y futuros
-- **PERSONAL-SPACE** (5 preguntas) - Entretenimiento, música, aprendizaje
-- **KNOWLEDGE** (5 preguntas) - Áreas de especialidad y aprendizaje
+- **IDENTITY** (6 questions) - Who you are, values, communication
+- **PREFERENCES** (6 questions) - How you work, tools, lifestyle
+- **WORK** (5 questions) - Role, company, team, career
+- **PROJECTS** (4 questions) - Current and future projects
+- **PERSONAL-SPACE** (5 questions) - Entertainment, music, learning
+- **KNOWLEDGE** (5 questions) - Areas of specialty and learning
 
-## Especificación de Frontmatter
+## Frontmatter Specification
 
-Todos los archivos generados incluyen frontmatter YAML:
+All generated files include YAML frontmatter:
 
 ```yaml
 ---
@@ -205,49 +205,49 @@ status: "active"
 ---
 ```
 
-## Desarrollo
+## Development
 
-### Ejecutar tests
+### Run tests
 
 ```bash
 pytest
 ```
 
-### Estilo de código
+### Code style
 
-Formatear con Black:
+Format with Black:
 ```bash
 black .
 ```
 
-Linter con Ruff:
+Lint with Ruff:
 ```bash
 ruff check .
 ```
 
-## Arquitectura
+## Architecture
 
-- `main.py` - Punto de entrada para `python main.py` y `uv run main.py`
-- `wolta/cli.py` - Grupo CLI de Click y registro de comandos
-- `wolta/commands/init.py` - Implementación del comando init
-- `wolta/generators/structure.py` - Generador de estructura de carpetas
-- `wolta/generators/bootstrap.py` - Generador de preguntas bootstrap
-- `wolta/utils/validators.py` - Utilidades de validación
+- `main.py` - Entry point for `python main.py` and `uv run main.py`
+- `wolta/cli.py` - Click CLI group and command registration
+- `wolta/commands/init.py` - init command implementation
+- `wolta/generators/structure.py` - Folder structure generator
+- `wolta/generators/bootstrap.py` - Bootstrap questions generator
+- `wolta/utils/validators.py` - Validation utilities
 
-## Próximos Pasos
+## Next Steps
 
-Después de inicializar tu vault:
+After initializing your vault:
 
-1. **Abrir en Obsidian** - File → Open folder as vault
-2. **Configurar Obsidian** - Settings → Configura nombre del vault, templates, attachments
-3. **Responder Preguntas Bootstrap** - Completa `AI-SYSTEM/BOOTSTRAP/bootstrap-questions.md`
-4. **Poblar Categorías** - Completa tu información en todas las categorías
-5. **Generar Grafo de Conocimiento** - Usa Graphify CLI para representación queryable
+1. **Open in Obsidian** - File → Open folder as vault
+2. **Configure Obsidian** - Settings → Configure the vault name, templates, attachments
+3. **Answer the Bootstrap Questions** - Complete `AI-SYSTEM/BOOTSTRAP/bootstrap-questions.md`
+4. **Populate Categories** - Fill in your information across all categories
+5. **Generate the Knowledge Graph** - Use the Graphify CLI for a queryable representation
 
-## Licencia
+## License
 
-Proyecto personal para gestión de knowledge base.
+Personal project for knowledge base management.
 
-## Autor
+## Author
 
 Nataly Barroso (barrosonataly.dev@gmail.com)

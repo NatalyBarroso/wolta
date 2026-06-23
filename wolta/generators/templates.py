@@ -11,27 +11,27 @@ class TemplateGenerator:
     TEMPLATES = {
         "Person.md": {
             "type": "identity",
-            "description": "Para capturar información sobre contactos y colaboradores",
+            "description": "To capture information about contacts and collaborators",
             "tags": ["person", "professional", "active"],
         },
         "Project.md": {
             "type": "project",
-            "description": "Para documentar proyectos en curso o completados",
+            "description": "To document ongoing or completed projects",
             "tags": ["project", "active"],
         },
         "Technical-Concept.md": {
             "type": "knowledge",
-            "description": "Para explicar tecnologías, arquitecturas y patrones",
+            "description": "To explain technologies, architectures, and patterns",
             "tags": ["knowledge", "active"],
         },
         "Decision.md": {
             "type": "project",
-            "description": "Para documentar decisiones arquitectónicas y técnicas (ADR)",
+            "description": "To document architectural and technical decisions (ADR)",
             "tags": ["decision", "architecture", "active"],
         },
         "General-Note.md": {
             "type": "knowledge",
-            "description": "Para capturar reflexiones e información miscelánea",
+            "description": "To capture reflections and miscellaneous information",
             "tags": ["note", "active"],
         },
     }
@@ -86,7 +86,7 @@ class TemplateGenerator:
 
         if filename == "Person.md":
             return f"""---
-title: "Nombre de la persona"
+title: "Person's name"
 type: "{note_type}"
 created: {date_str}
 modified: {date_str}
@@ -97,38 +97,38 @@ related_notes: []
 context_for_claude: false
 ---
 
-# [[Nombre de la persona]]
+# [[Person's name]]
 
 ## TL;DR
-[Resumen de 1-2 líneas: nombre, rol principal y por qué es importante en tu KB.]
+[1-2 line summary: name, main role, and why they matter in your KB.]
 
-## Información básica
-- **Rol/Función:** [Descripción del rol o función]
-- **Organización:** [Empresa, equipo o contexto]
-- **Ubicación:** [Ciudad, país o contexto remoto]
-- **Contacto:** [Email, teléfono, o enlace de contacto]
+## Basic information
+- **Role/Function:** [Description of the role or function]
+- **Organization:** [Company, team, or context]
+- **Location:** [City, country, or remote context]
+- **Contact:** [Email, phone, or contact link]
 
-## Descripción
-[Párrafo descriptivo sobre la persona: quién es, qué hace, relevancia en proyectos actuales.]
+## Description
+[Descriptive paragraph about the person: who they are, what they do, relevance in current projects.]
 
-## Relaciones y contexto
-- Participa en: [[project-example]], [[project-volta]]
-- Reporta a: [[identity-person-name]]
-- Colabora con: [[identity-person-a]], [[identity-person-b]]
+## Relationships and context
+- Participates in: [[project-example]], [[project-volta]]
+- Reports to: [[identity-person-name]]
+- Collaborates with: [[identity-person-a]], [[identity-person-b]]
 - Expertise: [[knowledge-technical-skill]], [[knowledge-domain]]
 
-## Notas
-[Observaciones, preferencias de comunicación, antecedentes relevantes o contexto adicional.]
+## Notes
+[Observations, communication preferences, relevant background, or additional context.]
 
-## Relaciones con otros módulos
-- [[project-example]] — Proyectos en los que participa
-- [[work-current-role]] — Contexto laboral relevante
-- [[knowledge-skill]] — Áreas de expertise
+## Relationships with other modules
+- [[project-example]] — Projects they participate in
+- [[work-current-role]] — Relevant work context
+- [[knowledge-skill]] — Areas of expertise
 """
 
         elif filename == "Project.md":
             return f"""---
-title: "Nombre del proyecto"
+title: "Project name"
 type: "{note_type}"
 created: {date_str}
 modified: {date_str}
@@ -139,52 +139,52 @@ start_date: {date_str}
 target_date:
 ---
 
-# [[Nombre del proyecto]]
+# [[Project name]]
 
 ## TL;DR
-[Resumen de 1-2 líneas: qué es el proyecto, estado actual y dueño principal.]
+[1-2 line summary: what the project is, current status, and main owner.]
 
-## Descripción
-[Resumen de qué es el proyecto y su propósito.]
+## Description
+[Summary of what the project is and its purpose.]
 
-## Información general
-- **Responsable:** [[identity-person-name]]
-- **Equipo:** [[identity-person-a]], [[identity-person-b]], [[identity-person-c]]
-- **Fechas:** Inicio: {date_str} | Fin estimado: [YYYY-MM-DD]
-- **Estado:** In Progress | Planning | On Hold | Completed | Cancelled
+## General information
+- **Owner:** [[identity-person-name]]
+- **Team:** [[identity-person-a]], [[identity-person-b]], [[identity-person-c]]
+- **Dates:** Start: {date_str} | Estimated end: [YYYY-MM-DD]
+- **Status:** In Progress | Planning | On Hold | Completed | Cancelled
 
-## Objetivos
-- [Objetivo 1]
-- [Objetivo 2]
-- [Objetivo 3]
+## Goals
+- [Goal 1]
+- [Goal 2]
+- [Goal 3]
 
-## Contexto
-[Descripción de por qué existe el proyecto, problema a resolver, o contexto empresarial.]
+## Context
+[Description of why the project exists, the problem to solve, or business context.]
 
-## Componentes y entregables
-- [[knowledge-technical-concept]] — [Descripción breve]
-- [[knowledge-another-concept]] — [Descripción breve]
+## Components and deliverables
+- [[knowledge-technical-concept]] — [Brief description]
+- [[knowledge-another-concept]] — [Brief description]
 
-## Decisiones clave
-- [[decision-architecture]] — Decisión arquitectónica
-- [[decision-technical]] — Decisión técnica
+## Key decisions
+- [[decision-architecture]] — Architectural decision
+- [[decision-technical]] — Technical decision
 
-## Riesgos y dependencias
-- **Riesgo 1:** [Descripción] | Mitigación: [...]
-- **Dependencia:** Relacionado con [[project-other]] o [[knowledge-domain]]
+## Risks and dependencies
+- **Risk 1:** [Description] | Mitigation: [...]
+- **Dependency:** Related to [[project-other]] or [[knowledge-domain]]
 
-## Notas y próximos pasos
-[Avances recientes, blockers, o acciones pendientes.]
+## Notes and next steps
+[Recent progress, blockers, or pending actions.]
 
-## Relaciones con otros módulos
-- [[identity-person]] — Equipo involucrado
-- [[knowledge-concept]] — Conceptos técnicos relacionados
-- [[project-dependent]] — Proyectos dependientes
+## Relationships with other modules
+- [[identity-person]] — Team involved
+- [[knowledge-concept]] — Related technical concepts
+- [[project-dependent]] — Dependent projects
 """
 
         elif filename == "Technical-Concept.md":
             return f"""---
-title: "Nombre del concepto técnico"
+title: "Technical concept name"
 type: "{note_type}"
 created: {date_str}
 modified: {date_str}
@@ -194,49 +194,49 @@ knowledge_domain: "backend-engineering"
 learnings: ["learning1", "learning2"]
 ---
 
-# [[Nombre del concepto técnico]]
+# [[Technical concept name]]
 
 ## TL;DR
-[Resumen de 1-2 líneas: qué es, para qué sirve y por qué importa.]
+[1-2 line summary: what it is, what it is for, and why it matters.]
 
-## Definición
-[Explicación clara y concisa de qué es este concepto.]
+## Definition
+[Clear and concise explanation of what this concept is.]
 
-## Contexto y por qué importa
-[Por qué este concepto es relevante en el contexto de VOLTA o el negocio.]
+## Context and why it matters
+[Why this concept is relevant in the context of VOLTA or the business.]
 
-## Componentes o pilares clave
-- [Componente 1 y explicación]
-- [Componente 2 y explicación]
+## Key components or pillars
+- [Component 1 and explanation]
+- [Component 2 and explanation]
 
-## Ejemplos de uso
+## Usage examples
 ```
-[Fragmento de código, diagrama o ejemplo práctico]
+[Code snippet, diagram, or practical example]
 ```
 
-## Relaciones
-- **Usa:** [[knowledge-concept-a]], [[knowledge-concept-b]]
-- **Usado por:** [[project-example]], [[decision-example]]
-- **Similar a:** [[knowledge-concept-c]]
-- **Contrasta con:** [[knowledge-concept-d]]
+## Relationships
+- **Uses:** [[knowledge-concept-a]], [[knowledge-concept-b]]
+- **Used by:** [[project-example]], [[decision-example]]
+- **Similar to:** [[knowledge-concept-c]]
+- **Contrasts with:** [[knowledge-concept-d]]
 
-## Recursos y referencias
-- [URL de documentación oficial]
-- [Artículo o tutorial recomendado]
+## Resources and references
+- [Official documentation URL]
+- [Recommended article or tutorial]
 - [[knowledge-personal-learning]]
 
-## Notas
-[Observaciones personales, casos de uso específicos, o advertencias.]
+## Notes
+[Personal observations, specific use cases, or caveats.]
 
-## Relaciones con otros módulos
-- [[project-using-concept]] — Proyectos que usan este concepto
-- [[identity-person-expert]] — Personas con expertise
-- [[decision-related]] — Decisiones relacionadas
+## Relationships with other modules
+- [[project-using-concept]] — Projects that use this concept
+- [[identity-person-expert]] — People with expertise
+- [[decision-related]] — Related decisions
 """
 
         elif filename == "Decision.md":
             return f"""---
-title: "Título de la decisión"
+title: "Decision title"
 type: "{note_type}"
 created: {date_str}
 modified: {date_str}
@@ -244,59 +244,59 @@ tags: [{tags_str}]
 status: "active"
 ---
 
-# [[Título de la decisión]]
+# [[Decision title]]
 
 ## TL;DR
-[Resumen de 1-2 líneas: qué se decidió y por qué.]
+[1-2 line summary: what was decided and why.]
 
-## Contexto
-[Descripción del problema o pregunta que requería decisión. Incluir restricciones, requisitos y contexto empresarial.]
+## Context
+[Description of the problem or question that required a decision. Include constraints, requirements, and business context.]
 
-## Opciones consideradas
+## Options considered
 
-### Opción A: [Nombre]
+### Option A: [Name]
 - **Pros:** [..., ...]
-- **Contras:** [..., ...]
+- **Cons:** [..., ...]
 
-### Opción B: [Nombre]
+### Option B: [Name]
 - **Pros:** [..., ...]
-- **Contras:** [..., ...]
+- **Cons:** [..., ...]
 
-### Opción C: [Nombre]
+### Option C: [Name]
 - **Pros:** [..., ...]
-- **Contras:** [..., ...]
+- **Cons:** [..., ...]
 
-## Decisión tomada
-**Elegida:** Opción [X]: [Nombre]
+## Decision made
+**Chosen:** Option [X]: [Name]
 
-## Justificación
-[Explicación clara de por qué se eligió esta opción sobre las otras. Incluir ponderación de criterios y trade-offs.]
+## Rationale
+[Clear explanation of why this option was chosen over the others. Include the weighting of criteria and trade-offs.]
 
-## Consecuencias esperadas
-- **Positivas:** [..., ...]
-- **Negativas o compromisos:** [..., ...]
+## Expected consequences
+- **Positive:** [..., ...]
+- **Negative or trade-offs:** [..., ...]
 
-## Personas involucradas
-- [[identity-person-1]] — Tomó la decisión
-- [[identity-person-2]] — Consultado
-- [[identity-person-3]] — Afectado
+## People involved
+- [[identity-person-1]] — Made the decision
+- [[identity-person-2]] — Consulted
+- [[identity-person-3]] — Affected
 
-## Componentes afectados
-- [[project-example]] — Proyecto impactado
-- [[knowledge-concept]] — Concepto técnico relacionado
+## Affected components
+- [[project-example]] — Impacted project
+- [[knowledge-concept]] — Related technical concept
 
-## Notas de seguimiento
-[Cómo se implementará, quién es responsable, timeline esperado.]
+## Follow-up notes
+[How it will be implemented, who is responsible, expected timeline.]
 
-## Relaciones con otros módulos
-- [[project-related]] — Proyecto en el que se toma esta decisión
-- [[decision-predecessor]] — Decision anterior que respalda esta
-- [[knowledge-concept]] — Conceptos técnicos involucrados
+## Relationships with other modules
+- [[project-related]] — Project in which this decision is made
+- [[decision-predecessor]] — Prior decision that supports this one
+- [[knowledge-concept]] — Technical concepts involved
 """
 
         else:  # General-Note.md
             return f"""---
-title: "Título de la nota"
+title: "Note title"
 type: "{note_type}"
 created: {date_str}
 modified: {date_str}
@@ -305,28 +305,28 @@ status: "active"
 knowledge_domain: "general"
 ---
 
-# [[Título de la nota]]
+# [[Note title]]
 
 ## TL;DR
-[Resumen de 1-2 líneas: qué es esta nota y por qué importa.]
+[1-2 line summary: what this note is and why it matters.]
 
-## Contenido
-[Cuerpo libre. Puede incluir párrafos, listas, fragmentos de código, preguntas o reflexiones.]
+## Content
+[Free body. Can include paragraphs, lists, code snippets, questions, or reflections.]
 
-## Contexto (opcional)
-[Dónde encaja esta nota en el sistema más grande. Qué problema resuelve o qué pregunta contesta.]
+## Context (optional)
+[Where this note fits in the larger system. What problem it solves or what question it answers.]
 
-## Acciones pendientes (si aplica)
-- [ ] [Acción 1]
-- [ ] [Acción 2]
+## Pending actions (if applicable)
+- [ ] [Action 1]
+- [ ] [Action 2]
 
-## Notas adicionales
-[Observaciones finales, referencias internas o advertencias.]
+## Additional notes
+[Final observations, internal references, or caveats.]
 
-## Relaciones con otros módulos
-- [[note-related]] — Notas relacionadas
-- [[project-o-person]] — Proyectos o personas relevantes
-- [[knowledge-concept]] — Conceptos relacionados
+## Relationships with other modules
+- [[note-related]] — Related notes
+- [[project-or-person]] — Relevant projects or people
+- [[knowledge-concept]] — Related concepts
 """
 
     def _create_templates_readme(self, templates_path: Path) -> None:
@@ -336,7 +336,7 @@ knowledge_domain: "general"
             return
 
         content = """---
-title: "Templates - Guía de uso para agente Claude"
+title: "Templates - Usage guide for the Claude agent"
 type: "index"
 created: {created}
 modified: {created}
@@ -344,56 +344,56 @@ tags: [templates, navigation, hub, ai]
 status: "active"
 ---
 
-# Templates - Guía de Uso
+# Templates - Usage Guide
 
-Estas plantillas estandarizan la captura de información en tu knowledge base. Cada plantilla incluye frontmatter YAML obligatorio que permite búsqueda, filtrado y procesamiento automático por agentes Claude.
+These templates standardize the capture of information in your knowledge base. Each template includes a mandatory YAML frontmatter that enables search, filtering, and automatic processing by Claude agents.
 
-## Categorías de plantillas
+## Template categories
 
-### 1. **Person.md** — Contactos y colaboradores
+### 1. **Person.md** — Contacts and collaborators
 - **Type:** `identity`
 - **Tags:** `[person, professional, active]`
-- **Cuándo usarla:** Para documentar personas clave en tu contexto laboral o personal
-- **Contenido:** Rol, organización, relaciones, expertise
-- **Ejemplo:** "person-john-doe.md", "person-maria-boss.md"
+- **When to use it:** To document key people in your work or personal context
+- **Content:** Role, organization, relationships, expertise
+- **Example:** "person-john-doe.md", "person-maria-boss.md"
 
-### 2. **Project.md** — Proyectos activos y pasados
+### 2. **Project.md** — Active and past projects
 - **Type:** `project`
 - **Tags:** `[project, active, [domain-work|personal]]`
-- **Cuándo usarla:** Para documentar cualquier proyecto (laboral o personal)
-- **Contenido:** Descripción, objetivos, equipo, fechas, estado, riesgos
-- **Ejemplo:** "project-volta.md", "project-home-renovation.md"
+- **When to use it:** To document any project (work or personal)
+- **Content:** Description, goals, team, dates, status, risks
+- **Example:** "project-volta.md", "project-home-renovation.md"
 
-### 3. **Technical-Concept.md** — Tecnologías, patrones, arquitecturas
+### 3. **Technical-Concept.md** — Technologies, patterns, architectures
 - **Type:** `knowledge`
 - **Tags:** `[knowledge, [backend|frontend|architecture|pattern], active]`
-- **Cuándo usarla:** Para explicar conceptos técnicos que necesitas recordar
-- **Contenido:** Definición, componentes, ejemplos, relaciones, recursos
-- **Ejemplo:** "knowledge-llm-basics.md", "knowledge-microservices.md"
+- **When to use it:** To explain technical concepts you need to remember
+- **Content:** Definition, components, examples, relationships, resources
+- **Example:** "knowledge-llm-basics.md", "knowledge-microservices.md"
 
-### 4. **Decision.md** — Decisiones arquitectónicas (ADR format)
-- **Type:** `project` (con tag `decision`)
+### 4. **Decision.md** — Architectural decisions (ADR format)
+- **Type:** `project` (with the `decision` tag)
 - **Tags:** `[decision, [architecture|business|process], active]`
-- **Cuándo usarla:** Para documentar decisiones importantes con su contexto y rationale
-- **Contenido:** Problema, opciones, decisión tomada, justificación, consecuencias
-- **Ejemplo:** "decision-database-postgres.md", "decision-react-framework.md"
+- **When to use it:** To document important decisions with their context and rationale
+- **Content:** Problem, options, decision made, rationale, consequences
+- **Example:** "decision-database-postgres.md", "decision-react-framework.md"
 
-### 5. **General-Note.md** — Reflexiones y notas misceláneas
+### 5. **General-Note.md** — Reflections and miscellaneous notes
 - **Type:** `knowledge`
-- **Tags:** `[note, [categoría-libre], active]`
-- **Cuándo usarla:** Para capturar reflexiones que no encajan en otras categorías
-- **Contenido:** Flexible (párrafos, listas, preguntas, ideas)
-- **Ejemplo:** "note-weekly-reflection.md", "note-api-design-thoughts.md"
+- **Tags:** `[note, [free-category], active]`
+- **When to use it:** To capture reflections that do not fit other categories
+- **Content:** Flexible (paragraphs, lists, questions, ideas)
+- **Example:** "note-weekly-reflection.md", "note-api-design-thoughts.md"
 
 ---
 
-## Frontmatter YAML obligatorio
+## Mandatory YAML frontmatter
 
-Todas las notas DEBEN incluir este frontmatter al inicio:
+All notes MUST include this frontmatter at the top:
 
 ```yaml
 ---
-title: "Título de la nota (máx 100 caracteres)"
+title: "Note title (max 100 characters)"
 type: "identity | preference | work | project | knowledge | personal | index"
 created: YYYY-MM-DD
 modified: YYYY-MM-DD
@@ -402,60 +402,60 @@ status: "active | archived | draft"
 ---
 ```
 
-**Campos obligatorios:**
-- `title`: Descripción clara del contenido
-- `type`: Categoría de la nota (según plantilla)
-- `created`: Fecha de creación
-- `modified`: Última fecha de edición
-- `tags`: Array de etiquetas (máx 5)
-- `status`: Estado actual de la nota
+**Mandatory fields:**
+- `title`: Clear description of the content
+- `type`: Category of the note (per template)
+- `created`: Creation date
+- `modified`: Last edit date
+- `tags`: Array of tags (max 5)
+- `status`: Current status of the note
 
-**Campos opcionales por tipo:**
+**Optional fields by type:**
 - **Person:** `identity_aspect`, `related_notes`, `context_for_claude`
 - **Project:** `project_status`, `start_date`, `target_date`
 - **Technical-Concept:** `knowledge_domain`, `learnings`
-- **Decision:** (ninguno especial, usa tags)
+- **Decision:** (none special, uses tags)
 - **General-Note:** `knowledge_domain`
 
 ---
 
-## Cómo usar las plantillas en Obsidian
+## How to use the templates in Obsidian
 
-### Opción 1: Insertar plantilla (recomendado)
-1. Abre el menú de Obsidian: `Ctrl+Shift+P` (Windows) o `Cmd+Shift+P` (Mac)
-2. Busca "Insert template"
-3. Elige la plantilla según el tipo de nota
-4. Completa el frontmatter YAML
-5. Rellena el contenido
+### Option 1: Insert template (recommended)
+1. Open the Obsidian menu: `Ctrl+Shift+P` (Windows) or `Cmd+Shift+P` (Mac)
+2. Search for "Insert template"
+3. Choose the template based on the type of note
+4. Complete the YAML frontmatter
+5. Fill in the content
 
-### Opción 2: Copiar manualmente
-1. Abre el archivo de plantilla en `TEMPLATES/[Template-Name].md`
-2. Copia todo el contenido
-3. Crea una nueva nota en la carpeta apropiada
-4. Pega el contenido y personaliza
+### Option 2: Copy manually
+1. Open the template file at `TEMPLATES/[Template-Name].md`
+2. Copy all the content
+3. Create a new note in the appropriate folder
+4. Paste the content and customize it
 
 ---
 
-## Sistema de tags (respeto a T0.1.1)
+## Tag system (per T0.1.1)
 
-Los tags deben seguir estas categorías:
+Tags should follow these categories:
 
-**Domain (Dominio):**
+**Domain:**
 - `work`, `personal`, `ai`
 
-**Subtema (Subtópico específico):**
+**Subtopic (specific subtopic):**
 - `backend`, `frontend`, `architecture`, `pattern`, `typescript`, etc.
 
-**Temporal (Estado temporal):**
+**Temporal (temporal status):**
 - `active`, `archived`, `draft`, `review`
 
-**Relación (Relación con otras notas):**
+**Relationship (relationship with other notes):**
 - `blocker`, `depends-on`, `decision`, `principle`, `needs-update`
 
-**Metadata (Metainformación):**
+**Metadata (meta-information):**
 - `index`, `navigation`, `hub`, `template`
 
-**Ejemplos de uso:**
+**Usage examples:**
 - Person: `[person, professional, active]`
 - Project: `[project, active, work, backend]`
 - Technical-Concept: `[knowledge, typescript, active, backend]`
@@ -464,14 +464,14 @@ Los tags deben seguir estas categorías:
 
 ---
 
-## Convenciones de nomenclatura
+## Naming conventions
 
-Las notas deben nombrarse con prefijo + descripción:
+Notes should be named with a prefix + description:
 
 ```
 [category]-[descriptive-name].md
 
-Ejemplos:
+Examples:
 - person-john-doe.md
 - person-maria-boss.md
 - project-volta.md
@@ -484,69 +484,69 @@ Ejemplos:
 - note-architecture-thoughts.md
 ```
 
-**Reglas:**
-- Usar inglés principalmente (excepto si traducir pierde significado)
-- Minúsculas y guiones (kebab-case)
-- Conciso pero descriptivo
-- Sin espacios ni caracteres especiales
+**Rules:**
+- Use English primarily (unless translating loses meaning)
+- Lowercase and hyphens (kebab-case)
+- Concise but descriptive
+- No spaces or special characters
 
 ---
 
-## 🔗 Links y relaciones
+## 🔗 Links and relationships
 
-Las plantillas incluyen una sección "Relaciones con otros módulos" para crear backlinks.
+The templates include a "Relationships with other modules" section to create backlinks.
 
-**Sintaxis de Obsidian:**
+**Obsidian syntax:**
 ```markdown
-[[note-name]] — Descripción de por qué está relacionada
+[[note-name]] — Description of why it is related
 
-[[project-volta]] — Proyecto principal en el que trabajo
-[[knowledge-llm-basics]] — Concepto técnico fundamental
-[[identity-values]] — Valores que guían mis decisiones
+[[project-volta]] — Main project I work on
+[[knowledge-llm-basics]] — Fundamental technical concept
+[[identity-values]] — Values that guide my decisions
 ```
 
-**Máximo 5 links por nota** para evitar saturar el grafo.
+**Maximum 5 links per note** to avoid cluttering the graph.
 
 ---
 
-## Checklist para nueva nota
+## Checklist for a new note
 
-- [ ] Elegí la plantilla correcta según el tipo de contenido
-- [ ] Completo el frontmatter YAML (title, type, created, modified, tags, status)
-- [ ] Incluí un TL;DR de 1-2 líneas
-- [ ] Agregué la descripción/contenido principal
-- [ ] Creé máximo 5 links en "Relaciones con otros módulos"
-- [ ] Guardé la nota con nombre: `[category]-[name].md`
-
----
-
-## Relación con outras carpetas
-
-Las plantillas generadas aquí se usan para crear notas en:
-- **IDENTITY/** — Para notas de tipo persona
-- **PROJECTS/** — Para notas de tipo project
-- **KNOWLEDGE/** — Para notas de tipo technical-concept y general-note
-- **AI-SYSTEM/CONTEXT/** — Para notas de contexto del agente
+- [ ] Chose the right template based on the type of content
+- [ ] Completed the YAML frontmatter (title, type, created, modified, tags, status)
+- [ ] Included a 1-2 line TL;DR
+- [ ] Added the main description/content
+- [ ] Created at most 5 links in "Relationships with other modules"
+- [ ] Saved the note with the name: `[category]-[name].md`
 
 ---
 
-## Nota para agente Claude
+## Relationship with other folders
 
-Este README contiene las instrucciones para determinar **cuándo y cómo usar cada plantilla**. Al crear nuevas notas:
-
-1. **Identifica el tipo de contenido** según los 5 tipos disponibles
-2. **Elige la plantilla correspondiente**
-3. **Respeta el frontmatter YAML** obligatorio
-4. **Usa el sistema de tags** de T0.1.1
-5. **Crea links relevantes** (máximo 5 por nota)
-
-Las plantillas facilitan contexto consistente y permiten búsqueda y filtrado automático.
+The templates generated here are used to create notes in:
+- **IDENTITY/** — For person-type notes
+- **PROJECTS/** — For project-type notes
+- **KNOWLEDGE/** — For technical-concept and general-note notes
+- **AI-SYSTEM/CONTEXT/** — For agent context notes
 
 ---
 
-**Creado:** {created}
-**Última actualización:** {created}
-**Versión:** 1.0.0
+## Note for the Claude agent
+
+This README contains the instructions for determining **when and how to use each template**. When creating new notes:
+
+1. **Identify the type of content** based on the 5 available types
+2. **Choose the corresponding template**
+3. **Respect the mandatory YAML frontmatter**
+4. **Use the T0.1.1 tag system**
+5. **Create relevant links** (at most 5 per note)
+
+The templates provide consistent context and enable automatic search and filtering.
+
+---
+
+**Created:** {created}
+**Last updated:** {created}
+**Version:** 1.0.0
 """.format(created=datetime.now().strftime("%Y-%m-%d"))
 
         readme_file.write_text(content, encoding="utf-8")

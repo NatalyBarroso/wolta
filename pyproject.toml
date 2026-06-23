@@ -30,3 +30,6 @@ dev = [
 
 [tool.setuptools]
 packages = ["wolta", "wolta.commands", "wolta.generators", "wolta.utils", "wolta.core", "wolta.migrations"]
+
+[tool.setuptools.package-data]
+"wolta.migrations" = ["data_v0_1_0/*.md"]

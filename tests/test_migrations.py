@@ -17,9 +17,10 @@ def _mig(target, min_version="0.0.0"):
     return _M()
 
 
-def test_no_migrations_by_default():
-    # the shipped package has no m_* modules yet (T2.3.4 adds the first)
-    assert reg.all_migrations() == []
+def test_first_migration_is_v010():
+    # T2.3.4 ships the first concrete migration (m_0_1_0, target 0.1.0)
+    targets = [m.target_version for m in reg.all_migrations()]
+    assert "0.1.0" in targets
 
 
 def test_pending_orders_by_semver(monkeypatch):
@@ -54,4 +55,5 @@ def test_pending_respects_min_version(monkeypatch):
 
 
 def test_min_upgradable_version_constant():
-    assert reg.MIN_UPGRADABLE_VERSION == "0.1.0"
+    # 0.0.0 so pre-versioning vaults are eligible for the 0.0.x -> 0.1.0 migration
+    assert reg.MIN_UPGRADABLE_VERSION == "0.0.0"
