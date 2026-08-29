@@ -102,12 +102,12 @@ Control hub for populating the personal KB from scratch. Operational resources f
 ## Next Actions
 
 - [ ] Answer BOOTSTRAP-QUESTIONNAIRE.md
-- [ ] Create notes in IDENTITY/ from P.ID.1-6
-- [ ] Create notes in PREFERENCES/ from P.PREF.1-6
-- [ ] Create notes in WORK/ from P.WORK.1-5
-- [ ] Create notes in PROJECTS/ from P.PROJ.1-4
-- [ ] Create notes in PERSONAL-SPACE/ from P.PERS.1-5
-- [ ] Create notes in KNOWLEDGE/ from P.KNOW.1-5
+- [ ] Create notes in SYSTEM/IDENTITY/ from P.ID.1-6
+- [ ] Create notes in SYSTEM/PREFERENCES/ from P.PREF.1-6
+- [ ] Create notes in SYSTEM/WORK/ from P.WORK.1-5
+- [ ] Create notes in SYSTEM/PROJECTS/ from P.PROJ.1-4
+- [ ] Create notes in SYSTEM/PERSONAL-SPACE/ from P.PERS.1-5
+- [ ] Create notes in SYSTEM/KNOWLEDGE/ from P.KNOW.1-5
 - [ ] Run `graphify . --update --no-cluster`
 - [ ] Validate in Obsidian that all notes load
 - [ ] Review graph.html to see the new connections
@@ -197,7 +197,7 @@ Control hub for populating the personal KB from scratch. Operational resources f
         lines.append("## IDENTITY — Who You Are (6 questions)")
         lines.append("")
         lines.append(
-            "*These answers will populate:* `IDENTITY/identity-profile.md`, `identity-values.md`, `identity-voice.md`, `identity-bio.md`"
+            "*These answers will populate:* `SYSTEM/IDENTITY/identity-profile.md`, `identity-values.md`, `identity-voice.md`, `identity-bio.md`"
         )
         lines.append("")
 
@@ -210,7 +210,7 @@ Control hub for populating the personal KB from scratch. Operational resources f
             "We are not talking about your job or your resume, but simply about who you are as a person."
         )
         lines.append("")
-        lines.append("*Target note:* `IDENTITY/identity-profile.md`")
+        lines.append("*Target note:* `SYSTEM/IDENTITY/identity-profile.md`")
         lines.append("")
         lines.append("**Your answer:**")
         lines.append("```")
@@ -227,7 +227,7 @@ Control hub for populating the personal KB from scratch. Operational resources f
             "The principles or values that truly guide your day-to-day decisions?"
         )
         lines.append("")
-        lines.append("*Target note:* `IDENTITY/identity-values.md`")
+        lines.append("*Target note:* `SYSTEM/IDENTITY/identity-values.md`")
         lines.append("")
         lines.append("**Your answer:**")
         lines.append("```")
@@ -244,7 +244,7 @@ Control hub for populating the personal KB from scratch. Operational resources f
             "Is there an event, place, or person that has shaped who you are today?"
         )
         lines.append("")
-        lines.append("*Target note:* `IDENTITY/identity-bio.md` (history section)")
+        lines.append("*Target note:* `SYSTEM/IDENTITY/identity-bio.md` (history section)")
         lines.append("")
         lines.append("**Your answer:**")
         lines.append("```")
@@ -261,7 +261,7 @@ Control hub for populating the personal KB from scratch. Operational resources f
             "What is your natural way of communicating, writing, and expressing what you think?"
         )
         lines.append("")
-        lines.append("*Target note:* `IDENTITY/identity-voice.md`")
+        lines.append("*Target note:* `SYSTEM/IDENTITY/identity-voice.md`")
         lines.append("")
         lines.append("**Your answer:**")
         lines.append("```")
@@ -280,7 +280,7 @@ Control hub for populating the personal KB from scratch. Operational resources f
             "Is there something you deeply reject or something you believe without question?"
         )
         lines.append("")
-        lines.append("*Target note:* `IDENTITY/identity-values.md` (beliefs)")
+        lines.append("*Target note:* `SYSTEM/IDENTITY/identity-values.md` (beliefs)")
         lines.append("")
         lines.append("**Your answer:**")
         lines.append("```")
@@ -295,7 +295,7 @@ Control hub for populating the personal KB from scratch. Operational resources f
         lines.append("**Is there a phrase, idea, or principle that defines you?**  ")
         lines.append("Something you would repeat to yourself in hard times.")
         lines.append("")
-        lines.append("*Target note:* `IDENTITY/identity-profile.md` (epigraph)")
+        lines.append("*Target note:* `SYSTEM/IDENTITY/identity-profile.md` (epigraph)")
         lines.append("")
         lines.append("**Your answer:**")
         lines.append("```")
@@ -313,7 +313,7 @@ Control hub for populating the personal KB from scratch. Operational resources f
         lines.append("## PREFERENCES — How You Like to Work and Live (6 questions)")
         lines.append("")
         lines.append(
-            "*These answers will populate:* `PREFERENCES/preferences-work-style.md`, `preferences-tools.md`, `preferences-lifestyle.md`"
+            "*These answers will populate:* `SYSTEM/PREFERENCES/preferences-work-style.md`, `preferences-tools.md`, `preferences-lifestyle.md`"
         )
         lines.append("")
 
@@ -324,7 +324,7 @@ Control hub for populating the personal KB from scratch. Operational resources f
             "What time do you wake up, how do you structure your time, when do you have energy for the important things?"
         )
         lines.append("")
-        lines.append("*Target note:* `PREFERENCES/preferences-lifestyle.md`")
+        lines.append("*Target note:* `SYSTEM/PREFERENCES/preferences-lifestyle.md`")
         lines.append("")
         lines.append("**Your answer:**")
         lines.append("```")
@@ -341,7 +341,7 @@ Control hub for populating the personal KB from scratch. Operational resources f
         lines.append("**What is the perfect environment for you to concentrate?**  ")
         lines.append("Noise, silence, coffee, home, office, nature?")
         lines.append("")
-        lines.append("*Target note:* `PREFERENCES/preferences-work-style.md`")
+        lines.append("*Target note:* `SYSTEM/PREFERENCES/preferences-work-style.md`")
         lines.append("")
         lines.append("**Your answer:**")
         lines.append("```")
@@ -358,7 +358,7 @@ Control hub for populating the personal KB from scratch. Operational resources f
         )
         lines.append("Why did you choose them over others?")
         lines.append("")
-        lines.append("*Target note:* `PREFERENCES/preferences-tools.md`")
+        lines.append("*Target note:* `SYSTEM/PREFERENCES/preferences-tools.md`")
         lines.append("")
         lines.append("**Your answer:**")
         lines.append("```")
@@ -375,7 +375,7 @@ Control hub for populating the personal KB from scratch. Operational resources f
         )
         lines.append("Synchronously or asynchronously?")
         lines.append("")
-        lines.append("*Target note:* `PREFERENCES/preferences-work-style.md`")
+        lines.append("*Target note:* `SYSTEM/PREFERENCES/preferences-work-style.md`")
         lines.append("")
         lines.append("**Your answer:**")
         lines.append("```")
@@ -392,7 +392,7 @@ Control hub for populating the personal KB from scratch. Operational resources f
             "(exercise, meditation, reading before sleep, a morning routine, etc.)"
         )
         lines.append("")
-        lines.append("*Target note:* `PREFERENCES/preferences-lifestyle.md`")
+        lines.append("*Target note:* `SYSTEM/PREFERENCES/preferences-lifestyle.md`")
         lines.append("")
         lines.append("**Your answer:**")
         lines.append("```")
@@ -407,7 +407,7 @@ Control hub for populating the personal KB from scratch. Operational resources f
         lines.append("**What is your relationship with money and owning things?**  ")
         lines.append("Do you care about having a lot, few things, or something in between?")
         lines.append("")
-        lines.append("*Target note:* `PREFERENCES/preferences-lifestyle.md`")
+        lines.append("*Target note:* `SYSTEM/PREFERENCES/preferences-lifestyle.md`")
         lines.append("")
         lines.append("**Your answer:**")
         lines.append("```")
@@ -425,7 +425,7 @@ Control hub for populating the personal KB from scratch. Operational resources f
         lines.append("## WORK — Your Professional Life (5 questions)")
         lines.append("")
         lines.append(
-            "*These answers will populate:* `WORK/work-current-role.md`, `work-company.md`, `work-overview.md`, `work-team.md`"
+            "*These answers will populate:* `SYSTEM/WORK/work-current-role.md`, `work-company.md`, `work-overview.md`, `work-team.md`"
         )
         lines.append("")
 
@@ -435,7 +435,7 @@ Control hub for populating the personal KB from scratch. Operational resources f
             "Where do you work, what do you do, and in which areas do you feel you contribute most?"
         )
         lines.append("")
-        lines.append("*Target note:* `WORK/work-overview.md`")
+        lines.append("*Target note:* `SYSTEM/WORK/work-overview.md`")
         lines.append("")
         lines.append("**Your answer:**")
         lines.append("```")
@@ -451,7 +451,7 @@ Control hub for populating the personal KB from scratch. Operational resources f
         lines.append("**What would your ideal work day look like, and what would a bad one look like?**  ")
         lines.append("What conditions or circumstances make you give your best?")
         lines.append("")
-        lines.append("*Target note:* `WORK/work-current-role.md`")
+        lines.append("*Target note:* `SYSTEM/WORK/work-current-role.md`")
         lines.append("")
         lines.append("**Your answer:**")
         lines.append("```")
@@ -465,7 +465,7 @@ Control hub for populating the personal KB from scratch. Operational resources f
         lines.append("**What is your technical background or area of specialty?**  ")
         lines.append("In which topics do you feel truly comfortable and confident?")
         lines.append("")
-        lines.append("*Target note:* `WORK/work-current-role.md` (expertise)")
+        lines.append("*Target note:* `SYSTEM/WORK/work-current-role.md` (expertise)")
         lines.append("")
         lines.append("**Your answer:**")
         lines.append("```")
@@ -479,7 +479,7 @@ Control hub for populating the personal KB from scratch. Operational resources f
         lines.append("**Who are the key people in your professional life?**  ")
         lines.append("What are your relationships with colleagues, boss, and team like?")
         lines.append("")
-        lines.append("*Target note:* `WORK/work-team.md`")
+        lines.append("*Target note:* `SYSTEM/WORK/work-team.md`")
         lines.append("")
         lines.append("**Your answer:**")
         lines.append("```")
@@ -494,7 +494,7 @@ Control hub for populating the personal KB from scratch. Operational resources f
             "**Thinking about your career so far, what roles have you had and what did you learn from each experience?**"
         )
         lines.append("")
-        lines.append("*Target note:* `WORK/work-overview.md` (history section)")
+        lines.append("*Target note:* `SYSTEM/WORK/work-overview.md` (history section)")
         lines.append("")
         lines.append("**Your answer:**")
         lines.append("```")
@@ -512,7 +512,7 @@ Control hub for populating the personal KB from scratch. Operational resources f
         lines.append("## PROJECTS — What You Are Doing (4 questions)")
         lines.append("")
         lines.append(
-            "*These answers will populate:* `PROJECTS/[project-name].md` (new notes per project)"
+            "*These answers will populate:* `SYSTEM/PROJECTS/[project-name].md` (new notes per project)"
         )
         lines.append("")
 
@@ -523,7 +523,7 @@ Control hub for populating the personal KB from scratch. Operational resources f
         lines.append("What state are they in?")
         lines.append("")
         lines.append(
-            "*Target note:* `PROJECTS/[project-name].md` (create one per project)"
+            "*Target note:* `SYSTEM/PROJECTS/[project-name].md` (create one per project)"
         )
         lines.append("")
         lines.append("**Your answer:**")
@@ -539,7 +539,7 @@ Control hub for populating the personal KB from scratch. Operational resources f
             "**Is there a personal or creative project you would be excited to pursue in the coming months?**"
         )
         lines.append("")
-        lines.append("*Target note:* `PROJECTS/[project-name].md` (ideation)")
+        lines.append("*Target note:* `SYSTEM/PROJECTS/[project-name].md` (ideation)")
         lines.append("")
         lines.append("**Your answer:**")
         lines.append("```")
@@ -556,7 +556,7 @@ Control hub for populating the personal KB from scratch. Operational resources f
         lines.append("What made it special?")
         lines.append("")
         lines.append(
-            "*Target note:* `PROJECTS/[project-name].md` (archived with reflection)"
+            "*Target note:* `SYSTEM/PROJECTS/[project-name].md` (archived with reflection)"
         )
         lines.append("")
         lines.append("**Your answer:**")
@@ -575,7 +575,7 @@ Control hub for populating the personal KB from scratch. Operational resources f
         )
         lines.append("Where do you want to go?")
         lines.append("")
-        lines.append("*Target note:* `PROJECTS/INDEX-PROJECTS.md` (vision section)")
+        lines.append("*Target note:* `SYSTEM/PROJECTS/INDEX-PROJECTS.md` (vision section)")
         lines.append("")
         lines.append("**Your answer:**")
         lines.append("```")
@@ -593,7 +593,7 @@ Control hub for populating the personal KB from scratch. Operational resources f
         lines.append("## PERSONAL-SPACE — Your Leisure and Entertainment (5 questions)")
         lines.append("")
         lines.append(
-            "*These answers will populate:* `PERSONAL-SPACE/personal-hobbies.md`, `personal-interests.md`"
+            "*These answers will populate:* `SYSTEM/PERSONAL-SPACE/personal-hobbies.md`, `personal-interests.md`"
         )
         lines.append("")
 
@@ -604,7 +604,7 @@ Control hub for populating the personal KB from scratch. Operational resources f
         lines.append("What is it about them that marked you or still draws you in?")
         lines.append("")
         lines.append(
-            "*Target note:* `PERSONAL-SPACE/personal-interests.md` (watchlist)"
+            "*Target note:* `SYSTEM/PERSONAL-SPACE/personal-interests.md` (watchlist)"
         )
         lines.append("")
         lines.append("**Your answer:**")
@@ -620,7 +620,7 @@ Control hub for populating the personal KB from scratch. Operational resources f
         lines.append("Is there one you reread or recommend?")
         lines.append("")
         lines.append(
-            "*Target note:* `PERSONAL-SPACE/personal-interests.md` (readlist)"
+            "*Target note:* `SYSTEM/PERSONAL-SPACE/personal-interests.md` (readlist)"
         )
         lines.append("")
         lines.append("**Your answer:**")
@@ -635,7 +635,7 @@ Control hub for populating the personal KB from scratch. Operational resources f
         lines.append("**How do you spend your free time when you are not working?**  ")
         lines.append("What activities make you feel most alive?")
         lines.append("")
-        lines.append("*Target note:* `PERSONAL-SPACE/personal-hobbies.md`")
+        lines.append("*Target note:* `SYSTEM/PERSONAL-SPACE/personal-hobbies.md`")
         lines.append("")
         lines.append("**Your answer:**")
         lines.append("```")
@@ -649,7 +649,7 @@ Control hub for populating the personal KB from scratch. Operational resources f
         lines.append("**Are there phrases, quotes, or ideas that especially inspire you?**  ")
         lines.append("Something you repeat in your head when you need it?")
         lines.append("")
-        lines.append("*Target note:* `PERSONAL-SPACE/personal-interests.md` (quotes)")
+        lines.append("*Target note:* `SYSTEM/PERSONAL-SPACE/personal-interests.md` (quotes)")
         lines.append("")
         lines.append("**Your answer:**")
         lines.append("```")
@@ -663,7 +663,7 @@ Control hub for populating the personal KB from scratch. Operational resources f
         lines.append("**What kind of music or podcasts do you usually listen to?**  ")
         lines.append("Are there topics that spark your curiosity, laughter, or calm?")
         lines.append("")
-        lines.append("*Target note:* `PERSONAL-SPACE/personal-interests.md` (audio)")
+        lines.append("*Target note:* `SYSTEM/PERSONAL-SPACE/personal-interests.md` (audio)")
         lines.append("")
         lines.append("**Your answer:**")
         lines.append("```")
@@ -681,7 +681,7 @@ Control hub for populating the personal KB from scratch. Operational resources f
         lines.append("## KNOWLEDGE — What You Learn (5 questions)")
         lines.append("")
         lines.append(
-            "*These answers will populate:* `KNOWLEDGE/[specialty].md` (notes by area of specialization)"
+            "*These answers will populate:* `SYSTEM/KNOWLEDGE/[specialty].md` (notes by area of specialization)"
         )
         lines.append("")
 
@@ -689,7 +689,7 @@ Control hub for populating the personal KB from scratch. Operational resources f
         lines.append("**Is there something you are learning right now?**  ")
         lines.append("A course, a language, a skill you are pursuing.")
         lines.append("")
-        lines.append("*Target note:* `KNOWLEDGE/knowledge-current-learning.md`")
+        lines.append("*Target note:* `SYSTEM/KNOWLEDGE/knowledge-current-learning.md`")
         lines.append("")
         lines.append("**Your answer:**")
         lines.append("```")
@@ -705,7 +705,7 @@ Control hub for populating the personal KB from scratch. Operational resources f
         )
         lines.append("Even if right now it is only a vague interest.")
         lines.append("")
-        lines.append("*Target note:* `KNOWLEDGE/knowledge-interests.md`")
+        lines.append("*Target note:* `SYSTEM/KNOWLEDGE/knowledge-interests.md`")
         lines.append("")
         lines.append("**Your answer:**")
         lines.append("```")
@@ -719,7 +719,7 @@ Control hub for populating the personal KB from scratch. Operational resources f
         lines.append("**On which topics do you feel you really know what you are talking about?**  ")
         lines.append("And which ones would you like to improve?")
         lines.append("")
-        lines.append("*Target note:* `KNOWLEDGE/knowledge-expertise.md`")
+        lines.append("*Target note:* `SYSTEM/KNOWLEDGE/knowledge-expertise.md`")
         lines.append("")
         lines.append("**Your answer:**")
         lines.append("```")
@@ -735,7 +735,7 @@ Control hub for populating the personal KB from scratch. Operational resources f
             "Blogs, books, YouTube, online communities, talking with others?"
         )
         lines.append("")
-        lines.append("*Target note:* `KNOWLEDGE/knowledge-sources.md`")
+        lines.append("*Target note:* `SYSTEM/KNOWLEDGE/knowledge-sources.md`")
         lines.append("")
         lines.append("**Your answer:**")
         lines.append("```")
@@ -750,7 +750,7 @@ Control hub for populating the personal KB from scratch. Operational resources f
             "**Is there a concept, insight, or idea you have learned that you consider fundamental and want to retain?**"
         )
         lines.append("")
-        lines.append("*Target note:* `KNOWLEDGE/knowledge-insights.md`")
+        lines.append("*Target note:* `SYSTEM/KNOWLEDGE/knowledge-insights.md`")
         lines.append("")
         lines.append("**Your answer:**")
         lines.append("```")
@@ -781,7 +781,7 @@ Control hub for populating the personal KB from scratch. Operational resources f
         lines.append("")
         lines.append("### Step 3: Create the Notes")
         lines.append("In Obsidian:")
-        lines.append("1. Go to the correct folder (e.g. IDENTITY/)")
+        lines.append("1. Go to the correct folder (e.g. SYSTEM/IDENTITY/)")
         lines.append("2. Create a new file")
         lines.append("3. Name it according to the convention")
         lines.append("4. Copy the standard frontmatter")
@@ -1021,22 +1021,22 @@ def update_bootstrap(file_path: str, responses: Dict[str, str]) -> bool:
         lines.append("| # | Question | Target Note | Section |")
         lines.append("|---|----------|-------------|---------|")
         lines.append(
-            "| P.ID.1 | How would you describe yourself? | `IDENTITY/identity-profile.md` | Main profile |"
+            "| P.ID.1 | How would you describe yourself? | `SYSTEM/IDENTITY/identity-profile.md` | Main profile |"
         )
         lines.append(
-            "| P.ID.2 | What are your values? | `IDENTITY/identity-values.md` | Core values |"
+            "| P.ID.2 | What are your values? | `SYSTEM/IDENTITY/identity-values.md` | Core values |"
         )
         lines.append(
-            '| P.ID.3 | Moments that shaped you | `IDENTITY/identity-bio.md` | Section: "My History" |'
+            '| P.ID.3 | Moments that shaped you | `SYSTEM/IDENTITY/identity-bio.md` | Section: "My History" |'
         )
         lines.append(
-            "| P.ID.4 | How do you prefer to be addressed? | `IDENTITY/identity-voice.md` | Your voice and communication |"
+            "| P.ID.4 | How do you prefer to be addressed? | `SYSTEM/IDENTITY/identity-voice.md` | Your voice and communication |"
         )
         lines.append(
-            "| P.ID.5 | What do you believe about work/success? | `IDENTITY/identity-values.md` | Deep beliefs |"
+            "| P.ID.5 | What do you believe about work/success? | `SYSTEM/IDENTITY/identity-values.md` | Deep beliefs |"
         )
         lines.append(
-            "| P.ID.6 | Your personal phrase/principle? | `IDENTITY/identity-profile.md` | Epigraph or motto |"
+            "| P.ID.6 | Your personal phrase/principle? | `SYSTEM/IDENTITY/identity-profile.md` | Epigraph or motto |"
         )
         lines.append("")
         lines.append("---")
@@ -1047,22 +1047,22 @@ def update_bootstrap(file_path: str, responses: Dict[str, str]) -> bool:
         lines.append("| # | Question | Target Note | Section |")
         lines.append("|---|----------|-------------|---------|")
         lines.append(
-            "| P.PREF.1 | What would your ideal day be? | `PREFERENCES/preferences-lifestyle.md` | Daily routine |"
+            "| P.PREF.1 | What would your ideal day be? | `SYSTEM/PREFERENCES/preferences-lifestyle.md` | Daily routine |"
         )
         lines.append(
-            "| P.PREF.2 | Perfect environment | `PREFERENCES/preferences-work-style.md` | Work environment |"
+            "| P.PREF.2 | Perfect environment | `SYSTEM/PREFERENCES/preferences-work-style.md` | Work environment |"
         )
         lines.append(
-            "| P.PREF.3 | Essential tools | `PREFERENCES/preferences-tools.md` | Tool stack |"
+            "| P.PREF.3 | Essential tools | `SYSTEM/PREFERENCES/preferences-tools.md` | Tool stack |"
         )
         lines.append(
-            "| P.PREF.4 | Communication mode | `PREFERENCES/preferences-work-style.md` | Communication preferences |"
+            "| P.PREF.4 | Communication mode | `SYSTEM/PREFERENCES/preferences-work-style.md` | Communication preferences |"
         )
         lines.append(
-            "| P.PREF.5 | Non-negotiable habits | `PREFERENCES/preferences-lifestyle.md` | Routines and habits |"
+            "| P.PREF.5 | Non-negotiable habits | `SYSTEM/PREFERENCES/preferences-lifestyle.md` | Routines and habits |"
         )
         lines.append(
-            "| P.PREF.6 | Relationship with money | `PREFERENCES/preferences-lifestyle.md` | Personal philosophy |"
+            "| P.PREF.6 | Relationship with money | `SYSTEM/PREFERENCES/preferences-lifestyle.md` | Personal philosophy |"
         )
         lines.append("")
         lines.append("---")
@@ -1073,19 +1073,19 @@ def update_bootstrap(file_path: str, responses: Dict[str, str]) -> bool:
         lines.append("| # | Question | Target Note | Section |")
         lines.append("|---|----------|-------------|---------|")
         lines.append(
-            "| P.WORK.1 | Your current job | `WORK/work-overview.md` | General context |"
+            "| P.WORK.1 | Your current job | `SYSTEM/WORK/work-overview.md` | General context |"
         )
         lines.append(
-            "| P.WORK.2 | Ideal vs bad day | `WORK/work-current-role.md` | Energy dynamics |"
+            "| P.WORK.2 | Ideal vs bad day | `SYSTEM/WORK/work-current-role.md` | Energy dynamics |"
         )
         lines.append(
-            "| P.WORK.3 | Your background/specialty | `WORK/work-current-role.md` | Expertise |"
+            "| P.WORK.3 | Your background/specialty | `SYSTEM/WORK/work-current-role.md` | Expertise |"
         )
         lines.append(
-            "| P.WORK.4 | Key people | `WORK/work-team.md` | Professional relationships |"
+            "| P.WORK.4 | Key people | `SYSTEM/WORK/work-team.md` | Professional relationships |"
         )
         lines.append(
-            "| P.WORK.5 | Professional trajectory | `WORK/work-overview.md` | Professional history |"
+            "| P.WORK.5 | Professional trajectory | `SYSTEM/WORK/work-overview.md` | Professional history |"
         )
         lines.append("")
         lines.append("---")
@@ -1096,16 +1096,16 @@ def update_bootstrap(file_path: str, responses: Dict[str, str]) -> bool:
         lines.append("| # | Question | Target Note | Type |")
         lines.append("|---|----------|-------------|------|")
         lines.append(
-            "| P.PROJ.1 | Active projects | `PROJECTS/[project-name].md` | One per project |"
+            "| P.PROJ.1 | Active projects | `SYSTEM/PROJECTS/[project-name].md` | One per project |"
         )
         lines.append(
-            "| P.PROJ.2 | Future projects | `PROJECTS/[project-name].md` | One per ideated project |"
+            "| P.PROJ.2 | Future projects | `SYSTEM/PROJECTS/[project-name].md` | One per ideated project |"
         )
         lines.append(
-            "| P.PROJ.3 | Proud projects | `PROJECTS/[project-name].md` | One per archived project |"
+            "| P.PROJ.3 | Proud projects | `SYSTEM/PROJECTS/[project-name].md` | One per archived project |"
         )
         lines.append(
-            '| P.PROJ.4 | Long-term vision | `PROJECTS/INDEX-PROJECTS.md` | Section: "2-3 year vision" |'
+            '| P.PROJ.4 | Long-term vision | `SYSTEM/PROJECTS/INDEX-PROJECTS.md` | Section: "2-3 year vision" |'
         )
         lines.append("")
         lines.append("---")
@@ -1118,19 +1118,19 @@ def update_bootstrap(file_path: str, responses: Dict[str, str]) -> bool:
         lines.append("| # | Question | Target Note | Subsection |")
         lines.append("|---|----------|-------------|-----------|")
         lines.append(
-            "| P.PERS.1 | Favorite movies/series | `PERSONAL-SPACE/personal-interests.md` | Watchlist |"
+            "| P.PERS.1 | Favorite movies/series | `SYSTEM/PERSONAL-SPACE/personal-interests.md` | Watchlist |"
         )
         lines.append(
-            "| P.PERS.2 | Impactful books | `PERSONAL-SPACE/personal-interests.md` | Readlist |"
+            "| P.PERS.2 | Impactful books | `SYSTEM/PERSONAL-SPACE/personal-interests.md` | Readlist |"
         )
         lines.append(
-            "| P.PERS.3 | Free time and hobbies | `PERSONAL-SPACE/personal-hobbies.md` | Main activities |"
+            "| P.PERS.3 | Free time and hobbies | `SYSTEM/PERSONAL-SPACE/personal-hobbies.md` | Main activities |"
         )
         lines.append(
-            "| P.PERS.4 | Inspiring phrases/quotes | `PERSONAL-SPACE/personal-interests.md` | Quotes |"
+            "| P.PERS.4 | Inspiring phrases/quotes | `SYSTEM/PERSONAL-SPACE/personal-interests.md` | Quotes |"
         )
         lines.append(
-            "| P.PERS.5 | Music and podcasts | `PERSONAL-SPACE/personal-interests.md` | Audio |"
+            "| P.PERS.5 | Music and podcasts | `SYSTEM/PERSONAL-SPACE/personal-interests.md` | Audio |"
         )
         lines.append("")
         lines.append("---")
@@ -1141,19 +1141,19 @@ def update_bootstrap(file_path: str, responses: Dict[str, str]) -> bool:
         lines.append("| # | Question | Target Note | Content |")
         lines.append("|---|----------|-------------|----------|")
         lines.append(
-            "| P.KNOW.1 | Current learning | `KNOWLEDGE/knowledge-current-learning.md` | Courses, languages, skills in progress |"
+            "| P.KNOW.1 | Current learning | `SYSTEM/KNOWLEDGE/knowledge-current-learning.md` | Courses, languages, skills in progress |"
         )
         lines.append(
-            "| P.KNOW.2 | Future specialization | `KNOWLEDGE/knowledge-interests.md` | Areas to explore |"
+            "| P.KNOW.2 | Future specialization | `SYSTEM/KNOWLEDGE/knowledge-interests.md` | Areas to explore |"
         )
         lines.append(
-            "| P.KNOW.3 | Your current expertise | `KNOWLEDGE/knowledge-expertise.md` | What you know well + areas for improvement |"
+            "| P.KNOW.3 | Your current expertise | `SYSTEM/KNOWLEDGE/knowledge-expertise.md` | What you know well + areas for improvement |"
         )
         lines.append(
-            "| P.KNOW.4 | Learning sources | `KNOWLEDGE/knowledge-sources.md` | Channels: blogs, books, YouTube, etc. |"
+            "| P.KNOW.4 | Learning sources | `SYSTEM/KNOWLEDGE/knowledge-sources.md` | Channels: blogs, books, YouTube, etc. |"
         )
         lines.append(
-            "| P.KNOW.5 | Fundamental concepts | `KNOWLEDGE/knowledge-insights.md` | Key ideas to retain |"
+            "| P.KNOW.5 | Fundamental concepts | `SYSTEM/KNOWLEDGE/knowledge-insights.md` | Key ideas to retain |"
         )
         lines.append("")
         lines.append("---")

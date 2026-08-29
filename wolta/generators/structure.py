@@ -4,6 +4,7 @@ from datetime import datetime
 from pathlib import Path
 
 from wolta import __version__ as CLI_VERSION
+from wolta.core.layout import HUMAN_ROOT, SYSTEM_ROOT
 from wolta.utils.version_manager import VersionManager
 
 
@@ -22,7 +23,13 @@ def _inject_wolta_version(content: str, version: str) -> str:
 
 
 class StructureGenerator:
-    """Generates the complete folder and file structure for a Wolta vault."""
+    """Generates the complete folder and file structure for a Wolta vault.
+
+    Writes to two bases (v0.2.0 D-08): `vault_path` for the artifacts that stay
+    at the root, and `system_path` for the agent space. Pointing the whole
+    generator at `SYSTEM/` would drag `.wolta/`, `CLAUDE.md` and `README.md`
+    down with it, so both bases are needed.
+    """
 
     # Main categories from T0.1.1
     MAIN_CATEGORIES = [
@@ -95,15 +102,20 @@ class StructureGenerator:
             vault_path: Path to the vault root directory
         """
         self.vault_path = Path(vault_path)
+        self.system_path = self.vault_path / SYSTEM_ROOT
 
     def generate(self) -> None:
         """Generate the complete vault structure."""
+        # Create the two root spaces before anything is written into them
+        self._create_human_folder()
+        self.system_path.mkdir(parents=True, exist_ok=True)
+
         # Create main categories
         for category in self.MAIN_CATEGORIES:
             self._create_category(category)
 
         # Create AI-SYSTEM subcategories
-        ai_system_path = self.vault_path / "AI-SYSTEM"
+        ai_system_path = self.system_path / "AI-SYSTEM"
         for subcategory in self.AI_SYSTEM_SUBCATEGORIES:
             self._create_subcategory(ai_system_path, subcategory)
 
@@ -125,9 +137,23 @@ class StructureGenerator:
         self._create_source_adapter_template()
         self._create_source_files_adapter()
 
+    def _create_human_folder(self) -> None:
+        """Create the user space (v0.2.0 D-06).
+
+        `HUMAN/` is born empty and without a fixed structure: the user shapes it.
+        Only a `.gitkeep` goes in, so the directory survives in git. Seeding a
+        wolta-authored README here would contradict the ownership model.
+        """
+        human_path = self.vault_path / HUMAN_ROOT
+        human_path.mkdir(parents=True, exist_ok=True)
+
+        keep_path = human_path / ".gitkeep"
+        if not keep_path.exists():
+            keep_path.touch()
+
     def _create_category(self, category: str) -> None:
         """Create a main category folder with its files."""
-        category_path = self.vault_path / category
+        category_path = self.system_path / category
         category_path.mkdir(parents=True, exist_ok=True)
 
         # Create files for this category
@@ -156,7 +182,7 @@ class StructureGenerator:
 
     def _create_templates_folder(self) -> None:
         """Create TEMPLATES folder with a base template."""
-        templates_path = self.vault_path / "TEMPLATES"
+        templates_path = self.system_path / "TEMPLATES"
         templates_path.mkdir(parents=True, exist_ok=True)
 
         template_file = templates_path / "template-note.md"
@@ -206,7 +232,7 @@ This folder contains Wolta-specific configuration files and metadata.
 ## Next Steps
 
 1. Configure Obsidian vault settings
-2. Complete bootstrap questions in AI-SYSTEM/BOOTSTRAP/BOOTSTRAP-QUESTIONNAIRE.md
+2. Complete bootstrap questions in SYSTEM/AI-SYSTEM/BOOTSTRAP/BOOTSTRAP-QUESTIONNAIRE.md
 3. Populate knowledge base categories
 """.format(created=datetime.now().isoformat())
             config_file.write_text(content, encoding="utf-8")
@@ -226,7 +252,7 @@ This folder contains Wolta-specific configuration files and metadata.
         raw/processed/ - Processed source files (audit trail, never deleted)
         raw/.gitkeep   - Keeps raw/ tracked in git even when empty
         """
-        raw_path = self.vault_path / "raw"
+        raw_path = self.system_path / "raw"
         processed_path = raw_path / "processed"
 
         raw_path.mkdir(parents=True, exist_ok=True)
@@ -312,8 +338,8 @@ status: "active"
         file_path.write_text(frontmatter, encoding="utf-8")
 
     def _create_design_file(self) -> None:
-        """Create DESIGN.md specification file in vault root."""
-        design_file = self.vault_path / "DESIGN.md"
+        """Create the DESIGN.md specification file in the agent space."""
+        design_file = self.system_path / "DESIGN.md"
         if design_file.exists():
             return
 
@@ -678,7 +704,7 @@ If `kb_populated: true`, the vault has already been populated. If not, the notes
         file when /bootstrap-generate is triggered and follows its instructions
         to populate the vault from the completed questionnaire.
         """
-        skill_file = self.vault_path / "AI-SYSTEM" / "SKILLS" / "bootstrap-generate.md"
+        skill_file = self.system_path / "AI-SYSTEM" / "SKILLS" / "bootstrap-generate.md"
         if skill_file.exists():
             return
 
@@ -923,7 +949,7 @@ Then update the frontmatter of `BOOTSTRAP-QUESTIONNAIRE.md` by adding:
         when /raw-ingest is triggered and follows its instructions to process
         files from raw/ into valid KB notes.
         """
-        skill_file = self.vault_path / "AI-SYSTEM" / "SKILLS" / "raw-ingest.md"
+        skill_file = self.system_path / "AI-SYSTEM" / "SKILLS" / "raw-ingest.md"
         if skill_file.exists():
             return
 
@@ -1161,7 +1187,7 @@ Pending items recorded in AI-SYSTEM/CONTEXT/ingestion-backlog.md: [N]
 
     def _create_ingest_protocol(self) -> None:
         """Create AI-SYSTEM/SKILLS/INGEST-PROTOCOL.md — canonical source-agnostic ingestion pipeline."""
-        skills_dir = self.vault_path / "AI-SYSTEM" / "SKILLS"
+        skills_dir = self.system_path / "AI-SYSTEM" / "SKILLS"
         skills_dir.mkdir(parents=True, exist_ok=True)
         protocol_file = skills_dir / "INGEST-PROTOCOL.md"
         if protocol_file.exists():
@@ -1304,7 +1330,7 @@ Pending items recorded in AI-SYSTEM/CONTEXT/ingestion-backlog.md: [N]
 
     def _create_source_adapter_template(self) -> None:
         """Create TEMPLATES/template-source-adapter.md — template for building new source adapters."""
-        templates_dir = self.vault_path / "TEMPLATES"
+        templates_dir = self.system_path / "TEMPLATES"
         templates_dir.mkdir(parents=True, exist_ok=True)
         template_file = templates_dir / "template-source-adapter.md"
         if template_file.exists():
@@ -1408,7 +1434,7 @@ Examples:
 
     def _create_source_files_adapter(self) -> None:
         """Create AI-SYSTEM/SKILLS/source-files.md — reference adapter for raw/ and local directories."""
-        skills_dir = self.vault_path / "AI-SYSTEM" / "SKILLS"
+        skills_dir = self.system_path / "AI-SYSTEM" / "SKILLS"
         skills_dir.mkdir(parents=True, exist_ok=True)
         adapter_file = skills_dir / "source-files.md"
         if adapter_file.exists():

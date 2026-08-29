@@ -7,6 +7,7 @@ from typing import Optional
 import click
 
 from wolta.core import files as core_files
+from wolta.core.layout import SYSTEM_ROOT
 from wolta.core.manifest import MANIFEST, Policy
 from wolta.generators.bootstrap import BootstrapGenerator
 from wolta.generators.structure import StructureGenerator
@@ -44,10 +45,12 @@ def init_command(
     """
     Initialize a new Obsidian vault for personal knowledge base.
 
-    Creates folder structure based on T0.1.1 specification:
-    - IDENTITY, PREFERENCES, WORK, PROJECTS, PERSONAL-SPACE, KNOWLEDGE, AI-SYSTEM
-    - Generates bootstrap questions from official specification
-    - Prepares for Claude agent integration
+    Creates two root spaces (v0.2.0):
+    - HUMAN/  the user's space, born empty and without a fixed structure
+    - SYSTEM/ the agent's space: IDENTITY, PREFERENCES, WORK, PROJECTS,
+      PERSONAL-SPACE, KNOWLEDGE, AI-SYSTEM, TEMPLATES and raw/
+
+    Also generates bootstrap questions and prepares Claude agent integration.
     """
     # Determine vault path
     if vault_path is None:
@@ -100,6 +103,11 @@ def init_command(
         click.echo(click.style(f"Error creating vault directory: {e}", fg="red"), err=True)
         raise SystemExit(1)
 
+    # StructureGenerator receives the vault root because it writes on both sides
+    # of the HUMAN/SYSTEM split. The other two only ever write inside the agent
+    # space, so they receive SYSTEM/ directly and need no changes of their own.
+    system_path = full_vault_path / SYSTEM_ROOT
+
     with click.progressbar(
         length=4,
         label="Initializing vault",
@@ -116,7 +124,7 @@ def init_command(
 
         # Step 2: Generate bootstrap questions
         try:
-            bootstrap_gen = BootstrapGenerator(str(full_vault_path))
+            bootstrap_gen = BootstrapGenerator(str(system_path))
             bootstrap_gen.generate()
             bar.update(1)
         except Exception as e:
@@ -128,7 +136,7 @@ def init_command(
 
         # Step 3: Generate note templates
         try:
-            template_gen = TemplateGenerator(str(full_vault_path))
+            template_gen = TemplateGenerator(str(system_path))
             template_gen.generate()
             bar.update(1)
         except Exception as e:
@@ -162,4 +170,7 @@ def init_command(
     click.echo("Next steps:")
     click.echo("  1. Open the vault in Obsidian: File → Open folder as vault")
     click.echo(f"  2. Navigate to: {full_vault_path}")
-    click.echo("  3. Complete the bootstrap questions in AI-SYSTEM/BOOTSTRAP/BOOTSTRAP-QUESTIONNAIRE.md")
+    click.echo(
+        "  3. Complete the bootstrap questions in "
+        "SYSTEM/AI-SYSTEM/BOOTSTRAP/BOOTSTRAP-QUESTIONNAIRE.md"
+    )

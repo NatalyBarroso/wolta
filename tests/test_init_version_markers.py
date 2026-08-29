@@ -11,11 +11,11 @@ from wolta.generators.structure import StructureGenerator
 
 # Managed full-file artifacts that must carry `wolta_version` in frontmatter.
 MANAGED_FRONTMATTER_FILES = [
-    "AI-SYSTEM/SKILLS/bootstrap-generate.md",
-    "AI-SYSTEM/SKILLS/raw-ingest.md",
-    "AI-SYSTEM/SKILLS/INGEST-PROTOCOL.md",
-    "AI-SYSTEM/SKILLS/source-files.md",
-    "TEMPLATES/template-source-adapter.md",
+    "SYSTEM/AI-SYSTEM/SKILLS/bootstrap-generate.md",
+    "SYSTEM/AI-SYSTEM/SKILLS/raw-ingest.md",
+    "SYSTEM/AI-SYSTEM/SKILLS/INGEST-PROTOCOL.md",
+    "SYSTEM/AI-SYSTEM/SKILLS/source-files.md",
+    "SYSTEM/TEMPLATES/template-source-adapter.md",
 ]
 
 
@@ -40,6 +40,7 @@ def test_version_file_written_with_cli_version(vault):
 
 
 def test_claude_md_has_balanced_managed_markers(vault):
+    # CLAUDE.md must stay at the vault root: it is auto-loaded from there (D-08).
     text = (vault / "CLAUDE.md").read_text(encoding="utf-8")
     assert text.count('wolta:managed:start id="agent-instructions"') == 1
     assert text.count('wolta:managed:end id="agent-instructions"') == 1
@@ -48,7 +49,7 @@ def test_claude_md_has_balanced_managed_markers(vault):
 
 
 def test_design_md_has_balanced_managed_markers(vault):
-    text = (vault / "DESIGN.md").read_text(encoding="utf-8")
+    text = (vault / "SYSTEM" / "DESIGN.md").read_text(encoding="utf-8")
     assert text.count('wolta:managed:start id="vault-spec"') == 1
     assert text.count('wolta:managed:end id="vault-spec"') == 1
 
