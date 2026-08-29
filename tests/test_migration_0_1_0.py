@@ -83,9 +83,14 @@ def test_dry_run_writes_nothing(tmp_path):
 
 
 def test_end_to_end_upgrade_from_legacy(tmp_path):
-    # pre-versioning vault (no .wolta/version) -> 0.0.0
+    # pre-versioning vault (no .wolta/version) -> 0.0.0. Pinned to 0.1.0 so
+    # this file keeps testing one hop; the full chain is covered in
+    # test_upgrade.py, which owns the runner.
     (tmp_path / ".wolta").mkdir()
-    result = CliRunner().invoke(upgrade_mod.upgrade_command, ["--vault-path", str(tmp_path)])
+    result = CliRunner().invoke(
+        upgrade_mod.upgrade_command,
+        ["--vault-path", str(tmp_path), "--to-version", "0.1.0"],
+    )
 
     assert result.exit_code == 0
     data = json.loads((tmp_path / ".wolta" / "version").read_text(encoding="utf-8"))

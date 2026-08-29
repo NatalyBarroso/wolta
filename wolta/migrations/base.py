@@ -81,3 +81,15 @@ class Migration:
     def up(self, ctx: MigrationContext) -> List[str]:
         """Apply the migration. Return the list of relative paths modified."""
         raise NotImplementedError
+
+    def planned_moves(self, ctx: MigrationContext) -> List[Move]:
+        """The relocations `up()` would still perform on `ctx.vault`.
+
+        Reported separately from `up()`'s return value because the two answer
+        different questions. That list is the set of files whose *bytes* change
+        and is what the runner snapshots; a rename changes no bytes, so putting
+        moves in there would have the runner back up paths for no reason. This
+        is what `--dry-run` needs in order to show the user where their notes
+        are about to go.
+        """
+        return []

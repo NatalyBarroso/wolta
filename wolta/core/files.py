@@ -16,6 +16,8 @@ import shutil
 from pathlib import Path
 from typing import Dict, Iterable, Optional
 
+from wolta.core import moves as core_moves
+
 
 def sha256_text(text: str) -> str:
     return hashlib.sha256(text.encode("utf-8")).hexdigest()
@@ -72,7 +74,12 @@ def write_managed(
             shutil.copy2(target, backup)
 
     target.parent.mkdir(parents=True, exist_ok=True)
-    target.write_text(content, encoding="utf-8")
+    # Written as bytes, not text: text mode translates "\n" to the platform
+    # line ending, so on Windows the file on disk would never hash to the
+    # `sha256_text` just recorded for it. Every later upgrade would then read
+    # a mismatch, take it for a user edit, and leave a `.bak` behind for a
+    # file nobody had touched.
+    target.write_bytes(content.encode("utf-8"))
     sums[rel] = new_sum
     save_checksums(vault, sums)
     return rel
@@ -112,7 +119,7 @@ def rekey_checksums(
     renames = {}
     for key in sums:
         for move in moves:
-            relocated = _relocate(key, move)
+            relocated = core_moves.relocate(key, move)
             if relocated is not None and relocated != key:
                 renames[key] = relocated
                 break
@@ -134,14 +141,28 @@ def rekey_checksums(
     return renames
 
 
-def _relocate(key: str, move) -> Optional[str]:
-    """The key's path after `move`, or None if the move does not cover it."""
-    key = key.replace("\\", "/")
-    if key == move.src:
-        return move.dst
-    # Compared with the separator attached so that moving `WORK` leaves a
-    # sibling like `WORK-ARCHIVE/notes.md` alone.
-    prefix = move.src + "/"
-    if key.startswith(prefix):
-        return f"{move.dst}/{key[len(prefix):]}"
-    return None
+def inventory(vault: Path, *, skip: Iterable[str] = ()) -> Dict[str, str]:
+    """Hash every file in the vault, keyed by vault-relative path.
+
+    The raw material for the post-migration integrity check (v0.2.0, task
+    3.4): taken before and after a structural migration, the two inventories
+    answer the only question that matters — did a single byte of the user's
+    content change while the tree was being rearranged?
+
+    `skip` lists vault-relative prefixes to leave out. Callers pass `.wolta/`
+    at minimum: the schema pointer, the checksum store and the snapshot
+    directory are all *supposed* to change during an upgrade, so hashing them
+    would report the migration doing its job as corruption.
+    """
+    vault = Path(vault)
+    prefixes = tuple(str(p).replace("\\", "/").rstrip("/") + "/" for p in skip)
+
+    result: Dict[str, str] = {}
+    for path in vault.rglob("*"):
+        if not path.is_file():
+            continue
+        rel = path.relative_to(vault).as_posix()
+        if rel.startswith(prefixes):
+            continue
+        result[rel] = sha256(path)
+    return result

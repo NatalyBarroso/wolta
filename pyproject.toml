@@ -4,7 +4,7 @@ build-backend = "setuptools.build_meta"
 
 [project]
 name = "wolta"
-version = "0.1.0"
+version = "0.2.0"
 description = "CLI tool for initializing a personal knowledge base in Obsidian"
 readme = "README.md"
 requires-python = ">=3.9"
@@ -32,4 +32,4 @@ dev = [
 packages = ["wolta", "wolta.commands", "wolta.generators", "wolta.utils", "wolta.core", "wolta.migrations"]
 
 [tool.setuptools.package-data]
-"wolta.migrations" = ["data_v0_1_0/*.md"]
+"wolta.migrations" = ["data_v0_1_0/*.md", "data_v0_2_0/*.md"]

@@ -2,6 +2,7 @@
 
 import hashlib
 import json
+from pathlib import Path
 
 from click.testing import CliRunner
 
@@ -46,15 +47,27 @@ def test_upgrade_up_to_date_is_noop(tmp_path):
     assert not (vault / ".wolta" / "backups").exists()
 
 
-def test_legacy_vault_without_version_migrates_to_010(tmp_path):
+def test_legacy_vault_runs_the_whole_chain(tmp_path):
+    """A pre-versioning vault crosses both hops in one command (D-11).
+
+    0.0.0 -> 0.1.0 creates the ingest files at the old root paths, and
+    0.1.0 -> 0.2.0 relocates them under SYSTEM/. Asserting the final location
+    is what proves the two migrations ran in sequence rather than the runner
+    stopping at the first one.
+    """
     (tmp_path / ".wolta").mkdir()
     (tmp_path / "CLAUDE.md").write_text("# CLAUDE\n\nold instructions\n", encoding="utf-8")
     result = CliRunner().invoke(upgrade_mod.upgrade_command, ["--vault-path", str(tmp_path)])
     assert result.exit_code == 0
     assert "UPGRADE APPLIED" in result.output
     data = json.loads((tmp_path / ".wolta" / "version").read_text(encoding="utf-8"))
-    assert data["schema_version"] == "0.1.0"
-    assert (tmp_path / "AI-SYSTEM" / "SKILLS" / "INGEST-PROTOCOL.md").exists()
+    assert data["schema_version"] == "0.2.0"
+    assert [m["target"] for m in data["applied_migrations"]] == ["0.1.0", "0.2.0"]
+
+    assert (tmp_path / "SYSTEM" / "AI-SYSTEM" / "SKILLS" / "INGEST-PROTOCOL.md").exists()
+    assert not (tmp_path / "AI-SYSTEM").exists()
+    assert (tmp_path / "HUMAN").is_dir()
+
     claude = (tmp_path / "CLAUDE.md").read_text(encoding="utf-8")
     assert "old instructions" in claude
     assert 'wolta:managed:start id="agent-instructions"' in claude
@@ -115,6 +128,25 @@ def test_corrupt_markers_abort_in_preflight(tmp_path, monkeypatch):
     assert "markers" in result.output.lower()
     assert not (vault / ".wolta" / "backups").exists()
     assert not (vault / _ApplyMig.REL).exists()
+
+
+def test_sync_client_is_named_from_the_path(monkeypatch):
+    """8.2.4: a vault in OneDrive is normal; the warning is the whole check."""
+    monkeypatch.setattr(
+        upgrade_mod.Path,
+        "resolve",
+        lambda self: Path("C:/Users/me/OneDrive/Documents/wolta-joanna"),
+    )
+    assert upgrade_mod._sync_client(Path("C:/vault")) == "OneDrive"
+
+
+def test_sync_client_is_silent_on_an_unrelated_path(monkeypatch):
+    monkeypatch.setattr(
+        upgrade_mod.Path,
+        "resolve",
+        lambda self: Path("C:/WOLTA-MIGRATION-TEST/baseline-v0.1.0"),
+    )
+    assert upgrade_mod._sync_client(Path("C:/vault")) is None
 
 
 # --- 2.4: migrations relocate only through the context ---------------------

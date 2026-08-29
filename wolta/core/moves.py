@@ -80,6 +80,34 @@ class MovePlan:
         return len(self.moves)
 
 
+def relocate(rel: str, move: Move) -> Optional[str]:
+    """Where the vault-relative path `rel` ends up after `move`.
+
+    Returns None when the move does not cover `rel`, which lets a caller tell
+    "unchanged" from "changed to the same thing". Used to follow a path across
+    a structural migration: by the checksum store to re-key itself, and by the
+    integrity check to know where a file it hashed before is supposed to be.
+    """
+    rel = str(rel).replace("\\", "/")
+    if rel == move.src:
+        return move.dst
+    # Compared with the separator attached so that moving `WORK` leaves a
+    # sibling like `WORK-ARCHIVE/notes.md` alone.
+    prefix = move.src + "/"
+    if rel.startswith(prefix):
+        return f"{move.dst}/{rel[len(prefix):]}"
+    return None
+
+
+def relocate_all(rel: str, moves: Iterable[Move]) -> str:
+    """`rel` after the first move that covers it, or `rel` itself."""
+    for move in moves:
+        moved = relocate(rel, move)
+        if moved is not None:
+            return moved
+    return rel
+
+
 def state(vault: Path, move: Move) -> MoveState:
     """Classify a move from what is on disk right now."""
     vault = Path(vault)

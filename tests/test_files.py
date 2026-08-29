@@ -40,6 +40,33 @@ def test_dry_run_does_not_write(tmp_path):
     assert not (vault / rel).exists()
 
 
+def test_the_bytes_written_hash_to_the_checksum_recorded(tmp_path):
+    """No line-ending translation between the write and the hash.
+
+    Text mode would turn "\\n" into the platform separator on Windows, so the
+    file would never hash to the value just stored for it -- and every later
+    upgrade would read that as a user edit and drop a needless `.bak`.
+    """
+    vault = _vault(tmp_path)
+    rel = "README.md"
+    content = "line one\nline two\n"
+
+    files.write_managed(vault, rel, content)
+
+    assert (vault / rel).read_bytes() == content.encode("utf-8")
+    assert files.sha256(vault / rel) == files.load_checksums(vault)[rel]
+
+
+def test_no_spurious_backup_on_an_untouched_managed_file(tmp_path):
+    vault = _vault(tmp_path)
+    rel = "README.md"
+    files.write_managed(vault, rel, "v1\nwith a newline\n")
+
+    files.write_managed(vault, rel, "v2\nwith a newline\n")
+
+    assert not (vault / (rel + ".bak")).exists()
+
+
 def test_backup_created_when_user_edited(tmp_path):
     vault = _vault(tmp_path)
     rel = "AI-SYSTEM/SKILLS/source-files.md"
