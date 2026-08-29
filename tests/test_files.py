@@ -1,6 +1,9 @@
-"""Unit tests for checksum-guarded writes (T2.3.3)."""
+"""Unit tests for checksum-guarded writes (T2.3.3) and re-keying (v0.2.0 2.2)."""
 
-from wolta.core import files
+from wolta.core import files, moves
+from wolta.core.moves import Move
+
+MOVE = Move(src="IDENTITY", dst="SYSTEM/IDENTITY")
 
 
 def _vault(tmp_path):
@@ -65,3 +68,129 @@ def test_seed_checksums(tmp_path):
     sums = files.load_checksums(vault)
     assert sums[rel] == files.sha256_text("seeded")
     assert "does/not/exist.md" not in sums
+
+
+# --- re-keying after a move (v0.2.0 task 2.2) ------------------------------
+
+
+def test_keys_under_a_moved_directory_follow_it(tmp_path):
+    vault = _vault(tmp_path)
+    files.save_checksums(vault, {
+        "IDENTITY/identity-profile.md": "aaa",
+        "IDENTITY/nested/deep.md": "bbb",
+    })
+
+    renamed = files.rekey_checksums(vault, [MOVE])
+
+    assert renamed == {
+        "IDENTITY/identity-profile.md": "SYSTEM/IDENTITY/identity-profile.md",
+        "IDENTITY/nested/deep.md": "SYSTEM/IDENTITY/nested/deep.md",
+    }
+    assert files.load_checksums(vault) == {
+        "SYSTEM/IDENTITY/identity-profile.md": "aaa",
+        "SYSTEM/IDENTITY/nested/deep.md": "bbb",
+    }
+
+
+def test_no_key_is_left_pointing_at_an_old_path(tmp_path):
+    """The done criteria of 2.2, stated as its own assertion."""
+    vault = _vault(tmp_path)
+    categories = ["IDENTITY", "PREFERENCES", "WORK", "PROJECTS",
+                  "PERSONAL-SPACE", "KNOWLEDGE", "AI-SYSTEM"]
+    files.save_checksums(
+        vault, {f"{name}/note.md": "x" for name in categories}
+    )
+
+    files.rekey_checksums(
+        vault, [Move(name, f"SYSTEM/{name}") for name in categories]
+    )
+
+    assert all(
+        key.startswith("SYSTEM/") for key in files.load_checksums(vault)
+    )
+
+
+def test_a_moved_file_is_rekeyed_exactly(tmp_path):
+    """DESIGN.md moves on its own (8.3 step 3), not as part of a directory."""
+    vault = _vault(tmp_path)
+    files.save_checksums(vault, {"DESIGN.md": "aaa"})
+
+    files.rekey_checksums(vault, [Move("DESIGN.md", "SYSTEM/DESIGN.md")])
+
+    assert files.load_checksums(vault) == {"SYSTEM/DESIGN.md": "aaa"}
+
+
+def test_keys_outside_the_move_are_untouched(tmp_path):
+    """CLAUDE.md and README.md stay at the root (D-08)."""
+    vault = _vault(tmp_path)
+    files.save_checksums(vault, {"CLAUDE.md": "aaa", "README.md": "bbb"})
+
+    assert files.rekey_checksums(vault, [MOVE]) == {}
+    assert files.load_checksums(vault) == {"CLAUDE.md": "aaa", "README.md": "bbb"}
+
+
+def test_a_similarly_named_sibling_is_not_dragged_along(tmp_path):
+    """`IDENTITY` must not match `IDENTITY-ARCHIVE`, the classic prefix bug."""
+    vault = _vault(tmp_path)
+    files.save_checksums(vault, {"IDENTITY-ARCHIVE/old.md": "aaa"})
+
+    assert files.rekey_checksums(vault, [MOVE]) == {}
+    assert "IDENTITY-ARCHIVE/old.md" in files.load_checksums(vault)
+
+
+def test_rekeying_twice_changes_nothing_the_second_time(tmp_path):
+    vault = _vault(tmp_path)
+    files.save_checksums(vault, {"IDENTITY/profile.md": "aaa"})
+
+    files.rekey_checksums(vault, [MOVE])
+    assert files.rekey_checksums(vault, [MOVE]) == {}
+    assert files.load_checksums(vault) == {"SYSTEM/IDENTITY/profile.md": "aaa"}
+
+
+def test_a_key_already_at_the_destination_wins(tmp_path):
+    """Only a half-finished rekey can produce this; keep what it wrote."""
+    vault = _vault(tmp_path)
+    files.save_checksums(vault, {
+        "IDENTITY/profile.md": "stale",
+        "SYSTEM/IDENTITY/profile.md": "current",
+    })
+
+    files.rekey_checksums(vault, [MOVE])
+
+    assert files.load_checksums(vault) == {"SYSTEM/IDENTITY/profile.md": "current"}
+
+
+def test_dry_run_reports_without_writing(tmp_path):
+    vault = _vault(tmp_path)
+    files.save_checksums(vault, {"IDENTITY/profile.md": "aaa"})
+
+    renamed = files.rekey_checksums(vault, [MOVE], dry_run=True)
+
+    assert renamed == {"IDENTITY/profile.md": "SYSTEM/IDENTITY/profile.md"}
+    assert files.load_checksums(vault) == {"IDENTITY/profile.md": "aaa"}
+
+
+def test_a_vault_with_no_checksums_file_is_not_given_one(tmp_path):
+    vault = _vault(tmp_path)
+
+    assert files.rekey_checksums(vault, [MOVE]) == {}
+    assert not (vault / ".wolta" / "checksums.json").exists()
+
+
+def test_the_guard_still_backs_up_after_a_move(tmp_path):
+    """Why 2.2 exists: skip the rekey and the next upgrade eats a user edit."""
+    vault = _vault(tmp_path)
+    rel = "IDENTITY/profile.md"
+    files.write_managed(vault, rel, "v1")
+
+    plan = moves.MovePlan()
+    moves.apply(vault, MOVE, plan=plan)
+    files.rekey_checksums(vault, plan)
+
+    moved = "SYSTEM/IDENTITY/profile.md"
+    (vault / moved).write_text("user edit", encoding="utf-8")
+    files.write_managed(vault, moved, "v2")
+
+    backup = vault / (moved + ".bak")
+    assert backup.exists(), "the user's edit was overwritten without a backup"
+    assert backup.read_text(encoding="utf-8") == "user edit"

@@ -35,13 +35,14 @@ def _managed_section_files(vault: Path) -> List[str]:
     ]
 
 
-def _make_context(vault: Path, dry_run: bool) -> MigrationContext:
+def _make_context(vault: Path, dry_run: bool, snapshot_dir=None) -> MigrationContext:
     return MigrationContext(
         vault=vault,
         manifest=core_manifest,
         sections=core_sections,
         files=core_files,
         dry_run=dry_run,
+        snapshot_dir=snapshot_dir,
     )
 
 
@@ -136,7 +137,7 @@ def upgrade_command(vault_path, dry_run, to_version) -> None:
     snap = core_snapshot.create_snapshot(vault, files_to_change)
 
     # ---------------- Phase 3: apply ----------------
-    real_ctx = _make_context(vault, dry_run=False)
+    real_ctx = _make_context(vault, dry_run=False, snapshot_dir=snap)
     changed_all: List[str] = []
     try:
         for migration in pend:

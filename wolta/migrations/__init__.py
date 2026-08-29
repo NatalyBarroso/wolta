@@ -45,14 +45,20 @@ def all_migrations() -> List[Migration]:
 def pending(current: str, target: str) -> List[Migration]:
     """Migrations to apply to move a vault from `current` up to `target`.
 
-    Selects those with `current < target_version <= target` and whose
-    `min_version` precondition is satisfied (`current >= min_version`),
-    in ascending semver order.
+    Walks the registry in semver order and keeps each migration whose
+    `target_version` sits in `(running, target]` and whose `min_version` is
+    satisfied by `running` -- the version the vault will be at when that
+    migration fires, not the version it started the run at (D-11). Without
+    that accumulation a 0.0.0 vault would pick `m_0_1_0` and drop
+    `m_0_2_0` (`min_version = 0.1.0`), then report success at 0.2.0 while
+    still sitting on 0.1.0.
     """
-    cur = Version(current)
+    running = Version(current)
     tgt = Version(target)
-    return [
-        m
-        for m in all_migrations()
-        if cur < Version(m.target_version) <= tgt and cur >= Version(m.min_version)
-    ]
+    selected: List[Migration] = []
+    for m in all_migrations():
+        target_v = Version(m.target_version)
+        if running < target_v <= tgt and running >= Version(m.min_version):
+            selected.append(m)
+            running = target_v
+    return selected

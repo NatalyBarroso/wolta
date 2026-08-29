@@ -3,14 +3,18 @@
 A managed full-file may be overwritten on upgrade, but never silently over a
 user's edit: if the on-disk checksum no longer matches the one wolta last
 wrote, the current file is copied to `<file>.bak` before being replaced.
-Checksums live in `.wolta/checksums.json`.
+Checksums live in `.wolta/checksums.json`, keyed by vault-relative path.
+
+Because the key is the path, a structural migration that relocates files has to
+re-key the store along with them (`rekey_checksums`); see the note there for
+what happens if it does not.
 """
 
 import hashlib
 import json
 import shutil
 from pathlib import Path
-from typing import Dict, Optional
+from typing import Dict, Iterable, Optional
 
 
 def sha256_text(text: str) -> str:
@@ -83,3 +87,61 @@ def seed_checksums(vault: Path, rel_paths) -> None:
         if target.exists():
             sums[rel] = sha256(target)
     save_checksums(vault, sums)
+
+
+def rekey_checksums(
+    vault: Path, moves: Iterable, *, dry_run: bool = False
+) -> Dict[str, str]:
+    """Point every recorded checksum at the path its file now has.
+
+    Takes the moves that were applied -- anything with `.src` and `.dst`
+    vault-relative attributes, such as `wolta.core.moves.Move` -- and returns
+    the `{old key: new key}` it rewrote.
+
+    This is not bookkeeping, it is the other half of the move. A managed file
+    whose key is left behind looks unrecorded to `write_managed`, and an
+    unrecorded file is overwritten with no `.bak`: the guard against clobbering
+    a user's edit turns itself off, silently, at the next upgrade.
+
+    The recorded value never changes. A rename does not touch content, so the
+    checksum that was true before the move is still true after it.
+    """
+    sums = load_checksums(vault)
+    moves = list(moves)
+
+    renames = {}
+    for key in sums:
+        for move in moves:
+            relocated = _relocate(key, move)
+            if relocated is not None and relocated != key:
+                renames[key] = relocated
+                break
+
+    if not renames or dry_run:
+        return renames
+
+    for old, new in renames.items():
+        value = sums.pop(old)
+        # If the destination key is already there, an earlier run of this same
+        # rekey wrote it -- two genuinely different files cannot reach here,
+        # since the move primitive refuses to run when both ends exist. Keeping
+        # what is already recorded is the conservative half of that choice: a
+        # stale value costs at most one needless `.bak`, while dropping the key
+        # would cost the backup itself.
+        sums.setdefault(new, value)
+
+    save_checksums(vault, sums)
+    return renames
+
+
+def _relocate(key: str, move) -> Optional[str]:
+    """The key's path after `move`, or None if the move does not cover it."""
+    key = key.replace("\\", "/")
+    if key == move.src:
+        return move.dst
+    # Compared with the separator attached so that moving `WORK` leaves a
+    # sibling like `WORK-ARCHIVE/notes.md` alone.
+    prefix = move.src + "/"
+    if key.startswith(prefix):
+        return f"{move.dst}/{key[len(prefix):]}"
+    return None

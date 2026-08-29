@@ -54,6 +54,45 @@ def test_pending_respects_min_version(monkeypatch):
     assert [m.target_version for m in reg.pending("0.3.0", "0.5.0")] == ["0.5.0"]
 
 
+def test_pending_evaluates_min_version_against_the_running_version(monkeypatch):
+    """D-11 / task 2.5: a 0.0.0 vault must pick both hops in one call.
+
+    The old filter compared every `min_version` to the *starting* version, so
+    `m_0_2_0` (`min_version = 0.1.0`) was dropped for a legacy vault and the
+    run reported 0.2.0 while the vault sat at 0.1.0.
+    """
+    migs = [_mig("0.1.0", min_version="0.0.0"), _mig("0.2.0", min_version="0.1.0")]
+    monkeypatch.setattr(reg, "all_migrations", lambda: migs)
+
+    assert [m.target_version for m in reg.pending("0.0.0", "0.2.0")] == [
+        "0.1.0",
+        "0.2.0",
+    ]
+
+
+def test_pending_chains_three_hops(monkeypatch):
+    migs = [
+        _mig("0.1.0"),
+        _mig("0.2.0", min_version="0.1.0"),
+        _mig("0.3.0", min_version="0.2.0"),
+    ]
+    monkeypatch.setattr(reg, "all_migrations", lambda: migs)
+
+    assert [m.target_version for m in reg.pending("0.0.0", "0.3.0")] == [
+        "0.1.0",
+        "0.2.0",
+        "0.3.0",
+    ]
+
+
+def test_pending_does_not_skip_a_missing_prerequisite(monkeypatch):
+    """A hop whose floor is not met must not let a later hop sneak through."""
+    migs = [_mig("0.2.0", min_version="0.1.0")]
+    monkeypatch.setattr(reg, "all_migrations", lambda: migs)
+
+    assert reg.pending("0.0.0", "0.2.0") == []
+
+
 def test_min_upgradable_version_constant():
     # 0.0.0 so pre-versioning vaults are eligible for the 0.0.x -> 0.1.0 migration
     assert reg.MIN_UPGRADABLE_VERSION == "0.0.0"
