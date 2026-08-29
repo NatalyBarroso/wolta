@@ -9,6 +9,7 @@ import click
 from wolta.core import files as core_files
 from wolta.core.layout import SYSTEM_ROOT
 from wolta.core.manifest import MANIFEST, Policy
+from wolta.utils.console import echo
 from wolta.generators.bootstrap import BootstrapGenerator
 from wolta.generators.structure import StructureGenerator
 from wolta.generators.templates import TemplateGenerator
@@ -59,13 +60,13 @@ def init_command(
     # Validate vault path
     is_valid, error_msg = validate_vault_path(vault_path)
     if not is_valid:
-        click.echo(click.style(f"Error: {error_msg}", fg="red"), err=True)
+        echo(click.style(f"Error: {error_msg}", fg="red"), err=True)
         raise SystemExit(1)
 
     # Validate vault name
     is_valid, error_msg = validate_vault_name(name)
     if not is_valid:
-        click.echo(click.style(f"Error: {error_msg}", fg="red"), err=True)
+        echo(click.style(f"Error: {error_msg}", fg="red"), err=True)
         raise SystemExit(1)
 
     # Construct full vault path
@@ -75,32 +76,32 @@ def init_command(
     # Check if vault already exists
     if full_vault_path.exists():
         if is_vault_initialized(str(full_vault_path)) and not force:
-            click.echo(
+            echo(
                 click.style(
                     f"Error: Vault already initialized at {full_vault_path}",
                     fg="red",
                 ),
                 err=True,
             )
-            click.echo("Use --force to re-initialize", err=True)
+            echo("Use --force to re-initialize", err=True)
             raise SystemExit(1)
 
         if not force:
-            click.echo(
+            echo(
                 click.style(
                     f"Error: Directory already exists: {full_vault_path}",
                     fg="red",
                 ),
                 err=True,
             )
-            click.echo("Use --force to overwrite", err=True)
+            echo("Use --force to overwrite", err=True)
             raise SystemExit(1)
 
     # Create vault directory
     try:
         full_vault_path.mkdir(parents=True, exist_ok=True)
     except (PermissionError, OSError) as e:
-        click.echo(click.style(f"Error creating vault directory: {e}", fg="red"), err=True)
+        echo(click.style(f"Error creating vault directory: {e}", fg="red"), err=True)
         raise SystemExit(1)
 
     # StructureGenerator receives the vault root because it writes on both sides
@@ -119,7 +120,7 @@ def init_command(
             structure_gen.generate()
             bar.update(1)
         except Exception as e:
-            click.echo(click.style(f"Error generating structure: {e}", fg="red"), err=True)
+            echo(click.style(f"Error generating structure: {e}", fg="red"), err=True)
             raise SystemExit(1)
 
         # Step 2: Generate bootstrap questions
@@ -128,7 +129,7 @@ def init_command(
             bootstrap_gen.generate()
             bar.update(1)
         except Exception as e:
-            click.echo(
+            echo(
                 click.style(f"Error generating bootstrap questions: {e}", fg="red"),
                 err=True,
             )
@@ -140,7 +141,7 @@ def init_command(
             template_gen.generate()
             bar.update(1)
         except Exception as e:
-            click.echo(
+            echo(
                 click.style(f"Error generating templates: {e}", fg="red"),
                 err=True,
             )
@@ -158,19 +159,19 @@ def init_command(
             core_files.seed_checksums(full_vault_path, managed)
             bar.update(1)
         except Exception as e:
-            click.echo(click.style(f"Error creating marker file: {e}", fg="red"), err=True)
+            echo(click.style(f"Error creating marker file: {e}", fg="red"), err=True)
             raise SystemExit(1)
 
     # Success message
-    click.echo()
-    click.echo(click.style("✓ Vault initialized successfully!", fg="green", bold=True))
-    click.echo(f"  Vault location: {click.style(str(full_vault_path), fg='cyan')}")
-    click.echo(f"  Vault name: {click.style(vault_folder_name, fg='cyan')}")
-    click.echo()
-    click.echo("Next steps:")
-    click.echo("  1. Open the vault in Obsidian: File → Open folder as vault")
-    click.echo(f"  2. Navigate to: {full_vault_path}")
-    click.echo(
+    echo()
+    echo(click.style("✓ Vault initialized successfully!", fg="green", bold=True))
+    echo(f"  Vault location: {click.style(str(full_vault_path), fg='cyan')}")
+    echo(f"  Vault name: {click.style(vault_folder_name, fg='cyan')}")
+    echo()
+    echo("Next steps:")
+    echo("  1. Open the vault in Obsidian: File → Open folder as vault")
+    echo(f"  2. Navigate to: {full_vault_path}")
+    echo(
         "  3. Complete the bootstrap questions in "
         "SYSTEM/AI-SYSTEM/BOOTSTRAP/BOOTSTRAP-QUESTIONNAIRE.md"
     )
