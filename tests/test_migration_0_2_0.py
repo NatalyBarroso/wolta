@@ -44,6 +44,20 @@ _DESIGN_010 = (
     "## User notes\n\nMY DESIGN ADDENDUM\n"
 )
 
+# Files m_0_2_0 rewrites on purpose. Verify must skip them or it reports the
+# refresh itself as corruption.
+_REWRITTEN_020 = [
+    "CLAUDE.md",
+    "README.md",
+    "SYSTEM/DESIGN.md",
+    "SYSTEM/raw/README.md",
+    "SYSTEM/AI-SYSTEM/SKILLS/bootstrap-generate.md",
+    "SYSTEM/AI-SYSTEM/SKILLS/raw-ingest.md",
+    "SYSTEM/AI-SYSTEM/SKILLS/INGEST-PROTOCOL.md",
+    "SYSTEM/AI-SYSTEM/SKILLS/source-files.md",
+    "SYSTEM/TEMPLATES/template-source-adapter.md",
+]
+
 
 @pytest.fixture
 def vault(tmp_path):
@@ -114,7 +128,17 @@ def _run(vault, *args):
 def test_frozen_documents_exist_and_do_not_import_the_generator():
     """Done criteria of 3.1: data_v0_2_0/ is self-contained (D-02)."""
     data = Path(m_0_2_0.__file__).parent / "data_v0_2_0"
-    for name in ("README.md", "claude-agent-instructions.md", "design-vault-spec.md"):
+    for name in (
+        "README.md",
+        "claude-agent-instructions.md",
+        "design-vault-spec.md",
+        "raw-readme.md",
+        "bootstrap-generate.md",
+        "raw-ingest.md",
+        "INGEST-PROTOCOL.md",
+        "source-files.md",
+        "template-source-adapter.md",
+    ):
         assert (data / name).is_file(), name
     source = Path(m_0_2_0.__file__).read_text(encoding="utf-8")
     assert "wolta.generators" not in source
@@ -308,6 +332,12 @@ def test_the_documents_describe_the_new_tree(vault):
     assert "SYSTEM/DESIGN.md" in readme
     assert "HUMAN/" in readme
 
+    skill = (vault / "SYSTEM" / "AI-SYSTEM" / "SKILLS" / "raw-ingest.md").read_text(
+        encoding="utf-8"
+    )
+    assert "SYSTEM/raw/" in skill
+    assert "see `AI-SYSTEM/SKILLS/" not in skill
+
 
 def test_running_it_twice_changes_nothing_the_second_time(vault):
     MigrationV020().up(_ctx(vault))
@@ -330,6 +360,8 @@ def test_dry_run_touches_nothing_and_reports_pre_move_paths(vault):
     assert not (vault / "HUMAN").exists()
     assert "DESIGN.md" in changed
     assert "SYSTEM/DESIGN.md" not in changed
+    assert "AI-SYSTEM/SKILLS/raw-ingest.md" in changed
+    assert "SYSTEM/AI-SYSTEM/SKILLS/raw-ingest.md" not in changed
 
 
 def test_dry_run_lists_the_planned_moves(vault, monkeypatch):
@@ -365,8 +397,7 @@ def test_verify_accepts_a_move_that_preserved_everything(vault):
     migration.up(_ctx(vault))
 
     # No exception: every hashed file was found again at its relocated path.
-    migration._verify(_ctx(vault), baseline, rewritten=["CLAUDE.md", "README.md",
-                                                        "SYSTEM/DESIGN.md"])
+    migration._verify(_ctx(vault), baseline, rewritten=_REWRITTEN_020)
 
 
 def test_verify_reports_a_file_that_lost_its_content(vault):
@@ -376,8 +407,7 @@ def test_verify_reports_a_file_that_lost_its_content(vault):
     (vault / "SYSTEM" / "WORK" / "note-work.md").write_text("rewritten\n", encoding="utf-8")
 
     with pytest.raises(IntegrityError, match="altered"):
-        migration._verify(_ctx(vault), baseline, rewritten=["CLAUDE.md", "README.md",
-                                                            "SYSTEM/DESIGN.md"])
+        migration._verify(_ctx(vault), baseline, rewritten=_REWRITTEN_020)
 
 
 def test_verify_reports_a_file_that_went_missing(vault):
@@ -387,8 +417,7 @@ def test_verify_reports_a_file_that_went_missing(vault):
     (vault / "SYSTEM" / "WORK" / "note-work.md").unlink()
 
     with pytest.raises(IntegrityError, match="missing"):
-        migration._verify(_ctx(vault), baseline, rewritten=["CLAUDE.md", "README.md",
-                                                            "SYSTEM/DESIGN.md"])
+        migration._verify(_ctx(vault), baseline, rewritten=_REWRITTEN_020)
 
 
 def test_a_digest_that_does_not_match_rolls_the_whole_upgrade_back(vault, monkeypatch):

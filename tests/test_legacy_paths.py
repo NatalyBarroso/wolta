@@ -38,32 +38,25 @@ LEGACY_PATH = re.compile(
 # underneath a `SYSTEM/` branch is correct and must not be reported.
 TREE_GLYPHS = set("├└│")
 
-# Documents whose prose still belongs to Fase 4. The map is a ratchet: it may
-# only shrink, and an entry must be deleted as soon as its file comes back
-# clean, so the remaining debt is always visible and always accurate.
-PENDING_PHASE_4 = {
-    "CLAUDE.md": "4.1 - ownership rules for HUMAN/ and SYSTEM/",
-    "README.md": "4.2 - new tree and ownership section",
-    "SYSTEM/DESIGN.md": "4.2 - new tree and ownership section",
-    "SYSTEM/AI-SYSTEM/SKILLS/raw-ingest.md": "4.3 - embedded paths in skills",
-    "SYSTEM/AI-SYSTEM/SKILLS/source-files.md": "4.3 - embedded paths in skills",
-    "SYSTEM/AI-SYSTEM/SKILLS/INGEST-PROTOCOL.md": "4.3 - embedded paths in skills",
-    "SYSTEM/AI-SYSTEM/SKILLS/bootstrap-generate.md": "4.3 - embedded paths in skills",
-    "SYSTEM/raw/README.md": "4.3 - embedded paths in skills",
-    "SYSTEM/TEMPLATES/template-source-adapter.md": "4.3 - embedded paths in skills",
-}
+# Ratchet left over from Fase 1. Fase 4 emptied it; it must stay empty.
+# A new file with a legacy path fails test_no_unexpected_legacy_paths, and
+# a stale entry here fails test_pending_list_has_no_stale_entries.
+PENDING_PHASE_4 = {}
 
 
 @pytest.fixture(scope="module")
-def legacy_hits(tmp_path_factory):
-    """Map every generated file to the legacy references it still contains."""
+def generated_vault(tmp_path_factory):
     root = tmp_path_factory.mktemp("sweep")
     result = CliRunner().invoke(init_command, ["--vault-path", str(root), "--name", "sweep"])
     assert result.exit_code == 0, result.output
-    vault = root / "wolta-sweep"
+    return root / "wolta-sweep"
 
+
+@pytest.fixture(scope="module")
+def legacy_hits(generated_vault):
+    """Map every generated file to the legacy references it still contains."""
     hits = {}
-    for path in sorted(vault.rglob("*")):
+    for path in sorted(generated_vault.rglob("*")):
         if not path.is_file():
             continue
         try:
@@ -76,7 +69,7 @@ def legacy_hits(tmp_path_factory):
             if not TREE_GLYPHS & set(line) and LEGACY_PATH.search(line)
         ]
         if offending:
-            hits[path.relative_to(vault).as_posix()] = offending
+            hits[path.relative_to(generated_vault).as_posix()] = offending
     return hits
 
 
@@ -110,3 +103,29 @@ def test_the_sweep_would_actually_catch_a_regression():
     # ...and does not fire on paths that were already migrated.
     assert not LEGACY_PATH.search("see `SYSTEM/AI-SYSTEM/SKILLS/raw-ingest.md`")
     assert not LEGACY_PATH.search("the user's own `HUMAN/PROJECTS/` folder")
+
+
+def test_claude_states_the_write_boundary(generated_vault):
+    """4.1: the managed block is enough to know where the agent may write."""
+    text = (generated_vault / "CLAUDE.md").read_text(encoding="utf-8")
+    start = text.index('wolta:managed:start id="agent-instructions"')
+    end = text.index('wolta:managed:end id="agent-instructions"')
+    block = text[start:end]
+    assert "## The two spaces of the vault" in block
+    assert "Freely — add, edit, and remove as the work requires" in block
+    assert "**Only** on an explicit instruction from the user" in block
+    assert "`HUMAN/` is not part of the knowledge base." in block
+    assert "The boundary is a policy, not a lock." in block
+
+
+def test_design_and_readme_describe_the_two_spaces(generated_vault):
+    """4.2: DESIGN.md and README.md name both spaces and the write rule."""
+    design = (generated_vault / "SYSTEM" / "DESIGN.md").read_text(encoding="utf-8")
+    assert "## 2. The two spaces" in design
+    assert "Only when the user asks" in design
+    assert "not part of the knowledge base" in design
+
+    readme = (generated_vault / "README.md").read_text(encoding="utf-8")
+    assert "## The two spaces" in readme
+    assert "The agent only writes here when you ask it to" in readme
+    assert "not part of the knowledge base" in readme

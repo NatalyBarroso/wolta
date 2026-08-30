@@ -56,10 +56,15 @@ MOVES: Tuple[Move, ...] = tuple(Move(rel, system(rel)) for rel in _RELOCATED)
 _GITKEEP = f"{HUMAN_ROOT}/.gitkeep"
 
 # Managed full-files rewritten from the frozen content, keyed by where they
-# live once the moves are done. Fase 4 extends this map as it finishes the
-# remaining documents; no other part of the migration changes when it does.
+# live once the moves are done.
 _MANAGED_FILES: Dict[str, str] = {
     "README.md": "README.md",
+    system("raw/README.md"): "raw-readme.md",
+    system("AI-SYSTEM/SKILLS/bootstrap-generate.md"): "bootstrap-generate.md",
+    system("AI-SYSTEM/SKILLS/raw-ingest.md"): "raw-ingest.md",
+    system("AI-SYSTEM/SKILLS/INGEST-PROTOCOL.md"): "INGEST-PROTOCOL.md",
+    system("AI-SYSTEM/SKILLS/source-files.md"): "source-files.md",
+    system("TEMPLATES/template-source-adapter.md"): "template-source-adapter.md",
 }
 
 # Managed sections: (destination, block id, frozen body). Only the text
