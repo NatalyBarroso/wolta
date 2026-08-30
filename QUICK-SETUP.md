@@ -7,9 +7,9 @@
 ## What is Wolta?
 
 A CLI tool that creates an Obsidian vault with a predefined structure for your personal knowledge base. A single run generates:
-- 16 folders (7 categories + AI-SYSTEM)
-- 24 markdown files with frontmatter
-- 27 bootstrap questions to complete your KB
+- `HUMAN/` (yours, empty) and `SYSTEM/` (the knowledge base)
+- 7 categories plus AI-SYSTEM under `SYSTEM/`
+- Bootstrap questions to complete your KB
 - A structure ready for Claude agents
 
 ---
@@ -66,21 +66,27 @@ python main.py init --name joanna --force
 
 ```
 wolta-[name]/
-├── IDENTITY/              (Who you are)
-├── PREFERENCES/           (How you like to work)
-├── WORK/                  (Your professional life)
-├── PROJECTS/              (Current projects)
-├── PERSONAL-SPACE/        (Hobbies and interests)
-├── KNOWLEDGE/             (Learning areas)
-├── AI-SYSTEM/
-│   ├── BOOTSTRAP/         (27 questions)
-│   ├── CONTEXT/
-│   ├── AGENTS/
-│   ├── SESSIONS/
-│   ├── SKILLS/
-│   └── WORKFLOWS/
-├── TEMPLATES/             (Templates)
-└── .wolta/                (Metadata)
+├── HUMAN/                 (Yours. Starts empty)
+├── SYSTEM/                (The knowledge base)
+│   ├── IDENTITY/          (Who you are)
+│   ├── PREFERENCES/       (How you like to work)
+│   ├── WORK/              (Your professional life)
+│   ├── PROJECTS/          (Current projects)
+│   ├── PERSONAL-SPACE/    (Hobbies and interests)
+│   ├── KNOWLEDGE/         (Learning areas)
+│   ├── AI-SYSTEM/
+│   │   ├── BOOTSTRAP/     (questionnaire)
+│   │   ├── CONTEXT/
+│   │   ├── AGENTS/
+│   │   ├── SESSIONS/
+│   │   ├── SKILLS/
+│   │   └── WORKFLOWS/
+│   ├── TEMPLATES/
+│   ├── raw/
+│   └── DESIGN.md
+├── .wolta/                (Metadata)
+├── CLAUDE.md
+└── README.md
 ```
 
 **Total:** 24 markdown files ready
@@ -91,7 +97,7 @@ wolta-[name]/
 
 They are generated automatically in:
 ```
-AI-SYSTEM/BOOTSTRAP/bootstrap-questions.md
+SYSTEM/AI-SYSTEM/BOOTSTRAP/BOOTSTRAP-QUESTIONNAIRE.md
 ```
 
 Organized into 6 categories:
@@ -113,15 +119,16 @@ Organized into 6 categories:
 
 2. **Complete the Bootstrap Questions**
    ```
-   Edit: AI-SYSTEM/BOOTSTRAP/bootstrap-questions.md
-   Answer: All 27 questions
+   Edit: SYSTEM/AI-SYSTEM/BOOTSTRAP/BOOTSTRAP-QUESTIONNAIRE.md
    ```
 
 3. **Fill in the Categories**
    ```
-   Complete the information in each folder
+   Complete the information under SYSTEM/
    (IDENTITY, PREFERENCES, WORK, etc.)
    ```
+
+Coming from 0.1.0? Run `wolta upgrade --vault-path <vault>`, then see `CHANGELOG.md` for the three manual steps (Obsidian paths, graphify, `HUMAN/`).
 
 4. **Use with Claude**
    ```
