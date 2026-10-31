@@ -429,7 +429,7 @@ status: "active | archived | draft"
 5. Fill in the content
 
 ### Option 2: Copy manually
-1. Open the template file at `TEMPLATES/[Template-Name].md`
+1. Open the template file at `SYSTEM/TEMPLATES/[Template-Name].md`
 2. Copy all the content
 3. Create a new note in the appropriate folder
 4. Paste the content and customize it
@@ -523,10 +523,10 @@ The templates include a "Relationships with other modules" section to create bac
 ## Relationship with other folders
 
 The templates generated here are used to create notes in:
-- **IDENTITY/** — For person-type notes
-- **PROJECTS/** — For project-type notes
-- **KNOWLEDGE/** — For technical-concept and general-note notes
-- **AI-SYSTEM/CONTEXT/** — For agent context notes
+- **SYSTEM/IDENTITY/** — For person-type notes
+- **SYSTEM/PROJECTS/** — For project-type notes
+- **SYSTEM/KNOWLEDGE/** — For technical-concept and general-note notes
+- **SYSTEM/AI-SYSTEM/CONTEXT/** — For agent context notes
 
 ---
 

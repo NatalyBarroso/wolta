@@ -56,6 +56,7 @@ env/
 # IDEs
 .vscode/
 .idea/
+.cursor/
 *.swp
 *.swo
 *~
@@ -73,3 +74,14 @@ wolta-*/
 
 # Backups
 *.bak
+
+# Secrets and local environment
+.env
+.env.*
+!.env.example
+*.pem
+credentials.json
+
+# Tooling caches
+.mypy_cache/
+.ruff_cache/

@@ -91,7 +91,14 @@ def replace_block(
         end = _keyed_end(block_id).search(text, start.end())
         if not end:
             raise MarkerError(f"managed:start id={block_id!r} has no matching end")
-        start_marker = text[start.start():start.end()]
+        # The `v=` attribute records which version of wolta wrote the body
+        # below it, so replacing the body without restamping it would leave
+        # the marker asserting something that is no longer true.
+        start_marker = (
+            f'<!-- wolta:managed:start id="{block_id}" v="{version}" -->'
+            if version
+            else text[start.start():start.end()]
+        )
         end_marker = text[end.start():end.end()]
         return (
             text[: start.start()]

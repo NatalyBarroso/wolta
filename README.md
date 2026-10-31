@@ -6,7 +6,12 @@ Command-line tool to initialize and manage a personal knowledge base in Obsidian
 
 Wolta creates a structured Obsidian vault with predefined categories and bootstrap questions to complete your knowledge base from day one. The vault is designed to be queried by Claude agents with full contextual understanding.
 
-**Vault Structure:**
+**Two spaces (v0.2.0):**
+- **`HUMAN/`** — yours. Born empty. The agent writes here only when you ask. Not automatic KB context.
+- **`SYSTEM/`** — the knowledge base and the agent's tooling. The agent reads and writes here freely.
+- **Root** — `.wolta/`, `CLAUDE.md`, `README.md` stay here.
+
+**Inside `SYSTEM/`:**
 - **IDENTITY** - Personal profile, values, voice
 - **PREFERENCES** - Tools, work style, lifestyle
 - **WORK** - Current role, company, team information
@@ -137,43 +142,57 @@ After a successful initialization:
 Next steps:
   1. Open the vault in Obsidian: File → Open folder as vault
   2. Navigate to: ~/Documents/wolta-joanna
-  3. Complete the bootstrap questions in AI-SYSTEM/BOOTSTRAP/bootstrap-questions.md
+  3. Complete the bootstrap questions in SYSTEM/AI-SYSTEM/BOOTSTRAP/BOOTSTRAP-QUESTIONNAIRE.md
 ```
+
+### Upgrade an existing vault
+
+```bash
+wolta upgrade --vault-path ~/Documents/wolta-joanna
+wolta upgrade --vault-path ~/Documents/wolta-joanna --dry-run
+```
+
+A 0.1.0 vault is relocated under `SYSTEM/`, `HUMAN/` is created empty, and the generated docs are refreshed. User notes keep their bytes. See `CHANGELOG.md` for the three manual steps after upgrading (Obsidian paths, graphify, moving work into `HUMAN/`).
 
 ## Generated Structure
 
-### Folders (8 main + subfolders)
 ```
 wolta-[name]/
-├── IDENTITY/
-├── PREFERENCES/
-├── WORK/
-├── PROJECTS/
-├── PERSONAL-SPACE/
-├── KNOWLEDGE/
-├── AI-SYSTEM/
-│   ├── AGENTS/
-│   ├── BOOTSTRAP/
-│   ├── CONTEXT/
-│   ├── SESSIONS/
-│   ├── SKILLS/
-│   └── WORKFLOWS/
-├── TEMPLATES/
-└── .wolta/
+├── HUMAN/                    # yours; born empty
+├── SYSTEM/                   # the knowledge base
+│   ├── IDENTITY/
+│   ├── PREFERENCES/
+│   ├── WORK/
+│   ├── PROJECTS/
+│   ├── PERSONAL-SPACE/
+│   ├── KNOWLEDGE/
+│   ├── AI-SYSTEM/
+│   │   ├── AGENTS/
+│   │   ├── BOOTSTRAP/
+│   │   ├── CONTEXT/
+│   │   ├── SESSIONS/
+│   │   ├── SKILLS/
+│   │   └── WORKFLOWS/
+│   ├── TEMPLATES/
+│   ├── raw/
+│   └── DESIGN.md
+├── .wolta/
+├── CLAUDE.md
+└── README.md
 ```
 
 ### Created Files
 - INDEX files for each category (e.g. `INDEX-IDENTITY.md`)
 - Category-specific files with YAML frontmatter
-- Bootstrap questions file: `AI-SYSTEM/BOOTSTRAP/bootstrap-questions.md`
-- Template file: `TEMPLATES/template-note.md`
+- Bootstrap questions file: `SYSTEM/AI-SYSTEM/BOOTSTRAP/BOOTSTRAP-QUESTIONNAIRE.md`
+- Template file: `SYSTEM/TEMPLATES/template-note.md`
 - Configuration marker: `.wolta/initialized`
 
 ## Bootstrap Questions
 
 After initialization, complete the bootstrap questions in:
 ```
-AI-SYSTEM/BOOTSTRAP/bootstrap-questions.md
+SYSTEM/AI-SYSTEM/BOOTSTRAP/BOOTSTRAP-QUESTIONNAIRE.md
 ```
 
 Or ask the agent to start generating the note templates.
@@ -240,8 +259,8 @@ After initializing your vault:
 
 1. **Open in Obsidian** - File → Open folder as vault
 2. **Configure Obsidian** - Settings → Configure the vault name, templates, attachments
-3. **Answer the Bootstrap Questions** - Complete `AI-SYSTEM/BOOTSTRAP/bootstrap-questions.md`
-4. **Populate Categories** - Fill in your information across all categories
+3. **Answer the Bootstrap Questions** - Complete `SYSTEM/AI-SYSTEM/BOOTSTRAP/BOOTSTRAP-QUESTIONNAIRE.md`
+4. **Populate Categories** - Fill in your information under `SYSTEM/`
 5. **Generate the Knowledge Graph** - Use the Graphify CLI for a queryable representation
 
 ## License

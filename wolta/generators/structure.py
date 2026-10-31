@@ -4,6 +4,7 @@ from datetime import datetime
 from pathlib import Path
 
 from wolta import __version__ as CLI_VERSION
+from wolta.core.layout import HUMAN_ROOT, SYSTEM_ROOT
 from wolta.utils.version_manager import VersionManager
 
 
@@ -22,7 +23,13 @@ def _inject_wolta_version(content: str, version: str) -> str:
 
 
 class StructureGenerator:
-    """Generates the complete folder and file structure for a Wolta vault."""
+    """Generates the complete folder and file structure for a Wolta vault.
+
+    Writes to two bases (v0.2.0 D-08): `vault_path` for the artifacts that stay
+    at the root, and `system_path` for the agent space. Pointing the whole
+    generator at `SYSTEM/` would drag `.wolta/`, `CLAUDE.md` and `README.md`
+    down with it, so both bases are needed.
+    """
 
     # Main categories from T0.1.1
     MAIN_CATEGORIES = [
@@ -95,15 +102,20 @@ class StructureGenerator:
             vault_path: Path to the vault root directory
         """
         self.vault_path = Path(vault_path)
+        self.system_path = self.vault_path / SYSTEM_ROOT
 
     def generate(self) -> None:
         """Generate the complete vault structure."""
+        # Create the two root spaces before anything is written into them
+        self._create_human_folder()
+        self.system_path.mkdir(parents=True, exist_ok=True)
+
         # Create main categories
         for category in self.MAIN_CATEGORIES:
             self._create_category(category)
 
         # Create AI-SYSTEM subcategories
-        ai_system_path = self.vault_path / "AI-SYSTEM"
+        ai_system_path = self.system_path / "AI-SYSTEM"
         for subcategory in self.AI_SYSTEM_SUBCATEGORIES:
             self._create_subcategory(ai_system_path, subcategory)
 
@@ -125,9 +137,23 @@ class StructureGenerator:
         self._create_source_adapter_template()
         self._create_source_files_adapter()
 
+    def _create_human_folder(self) -> None:
+        """Create the user space (v0.2.0 D-06).
+
+        `HUMAN/` is born empty and without a fixed structure: the user shapes it.
+        Only a `.gitkeep` goes in, so the directory survives in git. Seeding a
+        wolta-authored README here would contradict the ownership model.
+        """
+        human_path = self.vault_path / HUMAN_ROOT
+        human_path.mkdir(parents=True, exist_ok=True)
+
+        keep_path = human_path / ".gitkeep"
+        if not keep_path.exists():
+            keep_path.touch()
+
     def _create_category(self, category: str) -> None:
         """Create a main category folder with its files."""
-        category_path = self.vault_path / category
+        category_path = self.system_path / category
         category_path.mkdir(parents=True, exist_ok=True)
 
         # Create files for this category
@@ -150,13 +176,13 @@ class StructureGenerator:
                 if not file_path.exists():
                     self._create_file_with_frontmatter(
                         file_path,
-                        f"AI-SYSTEM/{subcategory}",
+                        f"SYSTEM/AI-SYSTEM/{subcategory}",
                         filename,
                     )
 
     def _create_templates_folder(self) -> None:
         """Create TEMPLATES folder with a base template."""
-        templates_path = self.vault_path / "TEMPLATES"
+        templates_path = self.system_path / "TEMPLATES"
         templates_path.mkdir(parents=True, exist_ok=True)
 
         template_file = templates_path / "template-note.md"
@@ -206,7 +232,7 @@ This folder contains Wolta-specific configuration files and metadata.
 ## Next Steps
 
 1. Configure Obsidian vault settings
-2. Complete bootstrap questions in AI-SYSTEM/BOOTSTRAP/BOOTSTRAP-QUESTIONNAIRE.md
+2. Complete bootstrap questions in SYSTEM/AI-SYSTEM/BOOTSTRAP/BOOTSTRAP-QUESTIONNAIRE.md
 3. Populate knowledge base categories
 """.format(created=datetime.now().isoformat())
             config_file.write_text(content, encoding="utf-8")
@@ -220,13 +246,13 @@ This folder contains Wolta-specific configuration files and metadata.
         VersionManager(str(self.vault_path)).initialize(CLI_VERSION)
 
     def _create_raw_folder(self) -> None:
-        """Create raw/ staging directory for unprocessed source files.
+        """Create SYSTEM/raw/ staging directory for unprocessed source files.
 
-        raw/           - Drop zone for source files before ingestion
-        raw/processed/ - Processed source files (audit trail, never deleted)
-        raw/.gitkeep   - Keeps raw/ tracked in git even when empty
+        SYSTEM/raw/           - Drop zone for source files before ingestion
+        SYSTEM/raw/processed/ - Processed source files (audit trail, never deleted)
+        SYSTEM/raw/.gitkeep   - Keeps SYSTEM/raw/ tracked in git even when empty
         """
-        raw_path = self.vault_path / "raw"
+        raw_path = self.system_path / "raw"
         processed_path = raw_path / "processed"
 
         raw_path.mkdir(parents=True, exist_ok=True)
@@ -237,11 +263,11 @@ This folder contains Wolta-specific configuration files and metadata.
             if not keep_path.exists():
                 keep_path.touch()
 
-        # README inside raw/ so the agent and user know the rules
+        # README inside SYSTEM/raw/ so the agent and user know the rules
         readme = raw_path / "README.md"
         if not readme.exists():
             today = datetime.now().strftime("%Y-%m-%d")
-            content = f"""# raw/ — Staging Zone for Ingestion
+            content = f"""# SYSTEM/raw/ — Staging Zone for Ingestion
 
 This directory receives **unprocessed** source files that the agent will turn into valid KB notes.
 
@@ -249,7 +275,7 @@ This directory receives **unprocessed** source files that the agent will turn in
 
 - Drop here any file you want to ingest: `.md`, `.txt`, `.pdf`, `.docx`
 - Files here are **not valid KB notes**: they have no frontmatter and do not appear in the Graph View
-- Once a file is processed, the agent moves it to `raw/processed/` — it does not delete it
+- Once a file is processed, the agent moves it to `SYSTEM/raw/processed/` — it does not delete it
 - If you cannot export a source (e.g. WhatsApp, Notion with restrictions), paste the content manually into a new `.md` here
 
 ## How to trigger the ingestion
@@ -262,7 +288,7 @@ Once you have dropped your files, tell the agent:
 
 ## Full flow
 
-See `AI-SYSTEM/SKILLS/raw-ingest.md` for the runbook the agent follows.
+See `SYSTEM/AI-SYSTEM/SKILLS/raw-ingest.md` for the runbook the agent follows.
 
 ---
 
@@ -312,8 +338,8 @@ status: "active"
         file_path.write_text(frontmatter, encoding="utf-8")
 
     def _create_design_file(self) -> None:
-        """Create DESIGN.md specification file in vault root."""
-        design_file = self.vault_path / "DESIGN.md"
+        """Create the DESIGN.md specification file in the agent space."""
+        design_file = self.system_path / "DESIGN.md"
         if design_file.exists():
             return
 
@@ -331,6 +357,7 @@ status: "active"
 # DESIGN — KB-PERSONAL Specification
 
 **Vault:** KB-PERSONAL
+**Schema:** {version}
 **Status:** Active
 
 ---
@@ -341,62 +368,87 @@ Centralize personal and professional information in a Knowledge Base that Claude
 
 ---
 
-## 2. Folder Structure
+## 2. The two spaces
+
+From schema 0.2.0 the vault is split at the root by **ownership**:
+
+| Space | Owner | Policy | Agent reads | Agent writes |
+| --- | --- | --- | --- | --- |
+| `SYSTEM/` | wolta and the agent | managed, managed-section and user-owned, per file | Freely | Freely |
+| `HUMAN/` | The user | User-owned, in full and explicitly | On request | Only when the user asks |
+
+`HUMAN/` is born empty and has no fixed structure — the user shapes it. It is **not part of the knowledge base**: it is an ingestion source, raw material the agent may be pointed at, not curated truth. The knowledge base proper is everything under `SYSTEM/`.
+
+The boundary is a **policy, not a technical lock**. Nothing in the filesystem prevents a write into `HUMAN/`; the rule lives in `CLAUDE.md` and is enforced by the agent's own discipline.
+
+Three artifacts stay at the root and belong to neither space: `.wolta/` marks the vault and stores its schema state, `CLAUDE.md` is auto-loaded when the vault is opened as a project, and `README.md` is the entry point for a person.
+
+---
+
+## 3. Folder Structure
 
 ```
 wolta-vault/
-├── IDENTITY/               # Who you are: profile, values, history, voice
-│   ├── INDEX-IDENTITY.md
-│   ├── identity-profile.md
-│   ├── identity-values.md
-│   ├── identity-voice.md
-│   └── identity-bio.md
+├── HUMAN/                  # The user's space — born empty, no fixed structure
+│   └── .gitkeep
 │
-├── PREFERENCES/            # Tastes, habits, personal settings
-│   ├── INDEX-PREFERENCES.md
-│   ├── preferences-tools.md
-│   ├── preferences-work-style.md
-│   └── preferences-lifestyle.md
+├── SYSTEM/                 # The agent's space — this is the knowledge base
+│   ├── IDENTITY/           # Who you are: profile, values, history, voice
+│   │   ├── INDEX-IDENTITY.md
+│   │   ├── identity-profile.md
+│   │   ├── identity-values.md
+│   │   ├── identity-voice.md
+│   │   └── identity-bio.md
+│   │
+│   ├── PREFERENCES/        # Tastes, habits, personal settings
+│   │   ├── INDEX-PREFERENCES.md
+│   │   ├── preferences-tools.md
+│   │   ├── preferences-work-style.md
+│   │   └── preferences-lifestyle.md
+│   │
+│   ├── WORK/               # Professional context: company, role, team
+│   │   ├── INDEX-WORK.md
+│   │   ├── work-overview.md
+│   │   ├── work-current-role.md
+│   │   ├── work-company.md
+│   │   └── work-team.md
+│   │
+│   ├── PROJECTS/           # Active and past projects
+│   │   └── INDEX-PROJECTS.md
+│   │
+│   ├── PERSONAL-SPACE/     # Everyday content: movies, books, quotes
+│   │   ├── INDEX-PERSONAL-SPACE.md
+│   │   ├── personal-hobbies.md
+│   │   └── personal-interests.md
+│   │
+│   ├── KNOWLEDGE/          # Educational content: courses, studies, research
+│   │   └── INDEX-KNOWLEDGE.md
+│   │
+│   ├── AI-SYSTEM/          # Operational resources for the agent
+│   │   ├── INDEX-AI-SYSTEM.md
+│   │   ├── BOOTSTRAP/      # Initial population of the KB
+│   │   │   ├── INDEX-BOOTSTRAP.md
+│   │   │   ├── BOOTSTRAP-QUESTIONNAIRE.md
+│   │   │   └── BOOTSTRAP-MAPPING.md
+│   │   ├── AGENTS/         # Agent definitions
+│   │   ├── CONTEXT/        # Current agent context
+│   │   │   └── context-current.md
+│   │   ├── SESSIONS/       # Session history
+│   │   ├── SKILLS/         # Available skills and prompts
+│   │   └── WORKFLOWS/      # Workflows and automations
+│   │
+│   ├── TEMPLATES/          # Templates for new notes
+│   │   ├── template-note.md
+│   │   └── template-source-adapter.md
+│   │
+│   ├── raw/                # Staging for unprocessed source files
+│   │   ├── processed/      # Already processed files (audit)
+│   │   └── README.md       # Directory rules
+│   │
+│   └── DESIGN.md           # This document (vault specification)
 │
-├── WORK/                   # Professional context: company, role, team
-│   ├── INDEX-WORK.md
-│   ├── work-overview.md
-│   ├── work-current-role.md
-│   ├── work-company.md
-│   └── work-team.md
-│
-├── PROJECTS/               # Active and past projects
-│   └── INDEX-PROJECTS.md
-│
-├── PERSONAL-SPACE/         # Everyday content: movies, books, quotes
-│   ├── INDEX-PERSONAL-SPACE.md
-│   ├── personal-hobbies.md
-│   └── personal-interests.md
-│
-├── KNOWLEDGE/              # Educational content: courses, studies, research
-│   └── INDEX-KNOWLEDGE.md
-│
-├── AI-SYSTEM/              # Operational resources for the agent
-│   ├── INDEX-AI-SYSTEM.md
-│   ├── BOOTSTRAP/          # Initial population of the KB
-│   │   ├── INDEX-BOOTSTRAP.md
-│   │   ├── BOOTSTRAP-QUESTIONNAIRE.md    # 27 questions
-│   │   └── BOOTSTRAP-MAPPING.md          # Question→note mapping
-│   ├── AGENTS/             # Agent definitions
-│   ├── CONTEXT/            # Current agent context
-│   │   └── context-current.md
-│   ├── SESSIONS/           # Session history
-│   ├── SKILLS/             # Available skills and prompts
-│   └── WORKFLOWS/          # Workflows and automations
-│
-├── TEMPLATES/              # Templates for new notes
-│   └── template-note.md
-│
-├── raw/                    # Staging for unprocessed source files
-│   ├── processed/          # Already processed files (audit)
-│   └── README.md           # Directory rules
-│
-├── DESIGN.md               # This document (vault specification)
+├── .wolta/                 # Vault marker and schema state
+├── CLAUDE.md               # Instructions loaded by the agent
 ├── README.md               # Quick start guide
 │
 └── graphify-out/           # Generated knowledge graph
@@ -407,9 +459,9 @@ wolta-vault/
 
 ---
 
-## 3. Standard Frontmatter
+## 4. Standard Frontmatter
 
-Every .md file must include:
+Every .md file under `SYSTEM/` must include:
 
 ```yaml
 ---
@@ -427,9 +479,11 @@ context_for_claude: true | false
 - `index_module`: For INDEX files, indicate the main module
 - `related_notes`: Array of related notes
 
+Files in `HUMAN/` have no frontmatter requirement. They are the user's, in whatever shape the user wants.
+
 ---
 
-## 4. Tag System
+## 5. Tag System
 
 **Domains:**
 - `identity` / `personal` / `work` / `ai` — main category
@@ -447,14 +501,14 @@ context_for_claude: true | false
 
 ---
 
-## 5. Bootstrap: Initial Population
+## 6. Bootstrap: Initial Population
 
-### Folder: `AI-SYSTEM/BOOTSTRAP/`
+### Folder: `SYSTEM/AI-SYSTEM/BOOTSTRAP/`
 
 **Operational hub for the initial population of the KB.**
 
 1. **INDEX-BOOTSTRAP.md** — Navigation hub and checklist
-2. **BOOTSTRAP-QUESTIONNAIRE.md** — 27 reflective questions (45-90 minutes)
+2. **BOOTSTRAP-QUESTIONNAIRE.md** — Reflective questions (45-90 minutes)
 3. **BOOTSTRAP-MAPPING.md** — Question → note reference
 
 ### Process
@@ -470,7 +524,7 @@ context_for_claude: true | false
 
 ---
 
-## 6. Knowledge Graph (Graphify)
+## 7. Knowledge Graph (Graphify)
 
 **Tool:** Graphify CLI
 **Output:** `graphify-out/`
@@ -487,18 +541,28 @@ graphify /path/to/vault --update --no-cluster
 
 ---
 
-## 7. Next Steps
+## 8. Upgrading from 0.1.0
+
+A vault created before 0.2.0 kept the seven categories at the root. `wolta upgrade` relocates them under `SYSTEM/` with a single rename each, creates the empty `HUMAN/`, and refreshes this document. Nothing is copied and nothing is merged: if a destination already exists, the upgrade stops and asks for a human decision rather than guessing.
+
+Two things the upgrade deliberately leaves alone, because they are not wolta's to touch:
+
+- **Obsidian configuration** (`.obsidian/`). Saved searches, starred notes, and workspace layouts may point at the old root paths. Review them after upgrading.
+- **The generated graph** (`graphify-out/`). Re-run graphify to regenerate it against the new paths.
+
+---
+
+## 9. Next Steps
 
 1. Open the vault in Obsidian
 2. Explore the structure in the File Explorer
 3. Read README.md for a quick guide
-4. Navigate to AI-SYSTEM/BOOTSTRAP/INDEX-BOOTSTRAP.md to begin
+4. Navigate to `SYSTEM/AI-SYSTEM/BOOTSTRAP/INDEX-BOOTSTRAP.md` to begin
 5. Answer BOOTSTRAP-QUESTIONNAIRE.md
 6. Run graphify to update the graph
 
 ---
 
-**Last updated:** {created}
 **Status:** Active — Ready for use once bootstrap is completed
 
 <!-- wolta:managed:end id="vault-spec" -->
@@ -514,18 +578,35 @@ graphify /path/to/vault --update --no-cluster
         """Create CLAUDE.md project instructions in vault root.
 
         This file is loaded automatically by Claude agents when the vault
-        is connected as a project in Cowork. It registers available commands
-        and tells the agent how to operate within the vault context.
+        is connected as a project. The managed block is the only place the
+        agent is told the HUMAN/SYSTEM write boundary (D-09).
         """
         claude_file = self.vault_path / "CLAUDE.md"
         if claude_file.exists():
             return
 
-        today = datetime.now().strftime("%Y-%m-%d")
         content = f"""# WOLTA — Project Instructions for the Claude Agent
 
 <!-- wolta:managed:start id="agent-instructions" v="{CLI_VERSION}" -->
 This vault is a **personal knowledge base** built with Obsidian and designed to be queried and operated by Claude agents. It contains the owner's personal, professional, and learning information.
+
+---
+
+## The two spaces of the vault
+
+A 0.2.0 vault has two root folders, and the difference between them is one of **ownership**, not of content:
+
+| Space | Owner | The agent reads | The agent writes |
+| --- | --- | --- | --- |
+| `SYSTEM/` | wolta and the agent | Freely — this is the knowledge base | Freely — add, edit, and remove as the work requires |
+| `HUMAN/` | The user | Freely, but **only when asked** | **Only** on an explicit instruction from the user, or inside an automated flow the user started |
+
+Two consequences that change how you must behave:
+
+1. **`HUMAN/` is not part of the knowledge base.** A file is not context just because it sits there. `HUMAN/` is an *ingestion source*: raw, uncurated material the user keeps for themselves. Never load it as background context, never cite it as the vault's answer, and never let it override a curated note in `SYSTEM/`.
+2. **The boundary is a policy, not a lock.** Nothing in the filesystem stops you from writing into `HUMAN/`. This document is the only thing that does. Treat a write into the user's space as you would any destructive action: ask first.
+
+`.wolta/`, `CLAUDE.md`, and `README.md` stay at the root. `.wolta/` identifies the vault and holds its schema state, this file is loaded automatically when the vault is opened as a project, and `README.md` is the first thing a person sees when they open the folder.
 
 ---
 
@@ -534,9 +615,9 @@ This vault is a **personal knowledge base** built with Obsidian and designed to 
 When the user connects this vault as a project, this file is loaded automatically. The agent must:
 
 1. Recognize that it is operating inside a WOLTA vault
-2. Read the files with `context_for_claude: true` to build the user's context
+2. Read the files with `context_for_claude: true` under `SYSTEM/` to build the user's context
 3. Answer queries using the vault content as the primary source of truth
-4. Use the skills available in `AI-SYSTEM/SKILLS/` for structured operations
+4. Use the skills available in `SYSTEM/AI-SYSTEM/SKILLS/` for structured operations
 
 ---
 
@@ -544,7 +625,7 @@ When the user connects this vault as a project, this file is loaded automaticall
 
 ### `/bootstrap-generate`
 
-**File:** `AI-SYSTEM/SKILLS/bootstrap-generate.md`
+**File:** `SYSTEM/AI-SYSTEM/SKILLS/bootstrap-generate.md`
 **When:** When the user has completed the bootstrap questionnaire and wants to turn their answers into vault notes.
 
 Triggers:
@@ -558,15 +639,15 @@ Triggers:
 
 ## Ingestion from external sources
 
-The vault uses an extensible ingestion system. The core protocol is in `AI-SYSTEM/SKILLS/INGEST-PROTOCOL.md`. The **source adapters** are skills in `AI-SYSTEM/SKILLS/` with the `source-` prefix that describe how to extract information from a specific source and produce blocks compatible with the protocol.
+The vault uses an extensible ingestion system. The core protocol is in `SYSTEM/AI-SYSTEM/SKILLS/INGEST-PROTOCOL.md`. The **source adapters** are skills in `SYSTEM/AI-SYSTEM/SKILLS/` with the `source-` prefix that describe how to extract information from a specific source and produce blocks compatible with the protocol.
 
 ### How to respond when the user asks to ingest information
 
 **Step 1 — Identify the source**
-Determine where the information comes from: local files, a directory, an external app (Notion, Discord, etc.), content from the active conversation, or any other origin.
+Determine where the information comes from: local files, a directory, the user's own `HUMAN/` space, an external app (Notion, Discord, etc.), content from the active conversation, or any other origin.
 
 **Step 2 — Look for an adapter for that source**
-List the files in `AI-SYSTEM/SKILLS/` that match the `source-*.md` pattern.
+List the files in `SYSTEM/AI-SYSTEM/SKILLS/` that match the `source-*.md` pattern.
 Read the one that corresponds to the requested source.
 
 **Step 3 — If the adapter exists**
@@ -577,8 +658,8 @@ Present the user with two options:
 ```
 I do not have an adapter configured for [source].
 Options:
-  a) Export the content manually to raw/ and run /raw-ingest
-  b) Create an adapter for [source] using TEMPLATES/template-source-adapter.md
+  a) Export the content manually to SYSTEM/raw/ and run /raw-ingest
+  b) Create an adapter for [source] using SYSTEM/TEMPLATES/template-source-adapter.md
      (you only need to fill in the marked sections — takes ~10 minutes)
 ```
 
@@ -590,6 +671,9 @@ Do you want me to add it to [suggested target note]?
 ```
 Do not ingest without the user's confirmation. Information from the active conversation does not need to go through a source file.
 
+**Step 6 — Ingestion from `HUMAN/`**
+If the user asks you to feed the KB from their own space, read the files they point at and run them through the same protocol. The result lands in `SYSTEM/`; the originals in `HUMAN/` are left exactly as they were. Do not go looking through `HUMAN/` on your own initiative.
+
 ### General ingestion triggers (any source)
 
 - "ingest my information from [source]"
@@ -600,69 +684,73 @@ Do not ingest without the user's confirmation. Information from the active conve
 
 ---
 
-## raw/ directory
+## The staging directory
 
-`raw/` is the **universal fallback adapter**: any source without an adapter can use this directory as a manual bridge. The corresponding adapter is `AI-SYSTEM/SKILLS/source-files.md`.
+`SYSTEM/raw/` is the **universal fallback adapter**: any source without an adapter can use this directory as a manual bridge. The corresponding adapter is `SYSTEM/AI-SYSTEM/SKILLS/source-files.md`.
 
 Operational rules:
-1. Files in `raw/` are not valid notes — do not read them as KB context
+1. Files in `SYSTEM/raw/` are not valid notes — do not read them as KB context
 2. Do not write to the vault without the user's approval (gate in INGEST-PROTOCOL.md)
-3. When processing a file, move it to `raw/processed/` — never delete it
-4. Attribute the source: add `source` and `ingested` to the frontmatter of notes created from `raw/`
+3. When processing a file, move it to `SYSTEM/raw/processed/` — never delete it
+4. Attribute the source: add `source` and `ingested` to the frontmatter of notes created this way
 
 ---
 
 ## How to query the KB
 
 1. Always prioritize the vault content over your training knowledge for the user's data
-2. Files with `context_for_claude: true` are primary sources
+2. Files under `SYSTEM/` with `context_for_claude: true` are primary sources
 3. If the information is not in the vault, say so explicitly instead of inferring it
+4. Never answer from `HUMAN/` unless the user pointed you at it in this conversation
 
 ---
 
 ## Vault structure
 
 ```
-IDENTITY/           → Owner's profile, values, history, voice
-PREFERENCES/        → Work style, tools, habits
-WORK/               → Current role, company, team, career
-PROJECTS/           → Active, future, and proud projects
-PERSONAL-SPACE/     → Hobbies, cultural interests, quotes
-KNOWLEDGE/          → Current learning, expertise, sources
-AI-SYSTEM/          → Operational resources for the agent
-  BOOTSTRAP/        → Initial ingestion questionnaire and mapping
-  SKILLS/           → Agent skills
-    INGEST-PROTOCOL.md     → Canonical ingestion pipeline (source-agnostic)
-    source-*.md            → Source adapters (one per source)
-    bootstrap-generate.md  → Initial population skill
-  CONTEXT/          → Dynamic session context
-  SESSIONS/         → Session history
-  WORKFLOWS/        → Automated workflows
-TEMPLATES/
-  template-source-adapter.md  → Template for creating new adapters
-raw/                → Universal fallback staging (do NOT read as KB)
-  processed/        → Processed files (audit)
+├── HUMAN/                → The user's space. Not the KB. Read on request only
+│
+├── SYSTEM/               → The agent's space
+│   ├── IDENTITY/         → Owner's profile, values, history, voice
+│   ├── PREFERENCES/      → Work style, tools, habits
+│   ├── WORK/             → Current role, company, team, career
+│   ├── PROJECTS/         → Active, future, and proud projects
+│   ├── PERSONAL-SPACE/   → Hobbies, cultural interests, quotes
+│   ├── KNOWLEDGE/        → Current learning, expertise, sources
+│   ├── AI-SYSTEM/        → Operational resources for the agent
+│   │   ├── BOOTSTRAP/    → Initial ingestion questionnaire and mapping
+│   │   ├── SKILLS/       → Agent skills
+│   │   │   ├── INGEST-PROTOCOL.md     → Canonical ingestion pipeline
+│   │   │   ├── source-*.md            → Source adapters (one per source)
+│   │   │   └── bootstrap-generate.md  → Initial population skill
+│   │   ├── CONTEXT/      → Dynamic session context
+│   │   ├── SESSIONS/     → Session history
+│   │   └── WORKFLOWS/    → Automated workflows
+│   ├── TEMPLATES/        → template-source-adapter.md and note templates
+│   ├── raw/              → Universal fallback staging (do NOT read as KB)
+│   │   └── processed/    → Processed files (audit)
+│   └── DESIGN.md         → Vault specification
+│
+├── .wolta/               → Vault marker and schema state
+├── CLAUDE.md             → This file
+└── README.md             → Entry point for a person
 ```
 
 ---
 
 ## Bootstrap status
 
-Read `AI-SYSTEM/BOOTSTRAP/BOOTSTRAP-QUESTIONNAIRE.md` → `status` field in frontmatter.
+Read `SYSTEM/AI-SYSTEM/BOOTSTRAP/BOOTSTRAP-QUESTIONNAIRE.md` → `status` field in frontmatter.
 If `kb_populated: true`, the vault has already been populated. If not, the notes have not yet been generated.
 
 ---
 
 ## KB conventions
 
-- Every relevant file has `context_for_claude: true` in its frontmatter
+- Every relevant file under `SYSTEM/` has `context_for_claude: true` in its frontmatter
 - Internal links: `[[note-name]]`
 - `status`: `active`, `draft`, or `archived`
-- PROJECTS notes with `status: archived` are historical
-
----
-
-*Generated by wolta init · {today}*
+- Notes under `SYSTEM/PROJECTS/` with `status: archived` are historical
 <!-- wolta:managed:end id="agent-instructions" -->
 
 ## User notes
@@ -674,11 +762,11 @@ If `kb_populated: true`, the vault has already been populated. If not, the notes
     def _create_bootstrap_generate_skill(self) -> None:
         """Create the bootstrap-generate skill instruction file.
 
-        Lives at AI-SYSTEM/SKILLS/bootstrap-generate.md. The agent reads this
+        Lives at SYSTEM/AI-SYSTEM/SKILLS/bootstrap-generate.md. The agent reads this
         file when /bootstrap-generate is triggered and follows its instructions
         to populate the vault from the completed questionnaire.
         """
-        skill_file = self.vault_path / "AI-SYSTEM" / "SKILLS" / "bootstrap-generate.md"
+        skill_file = self.system_path / "AI-SYSTEM" / "SKILLS" / "bootstrap-generate.md"
         if skill_file.exists():
             return
 
@@ -719,13 +807,13 @@ Activate this skill when the user says any of the following:
 Before creating any file, verify that these conditions are met:
 
 **1. The questionnaire is complete**
-Read `AI-SYSTEM/BOOTSTRAP/BOOTSTRAP-QUESTIONNAIRE.md`.
+Read `SYSTEM/AI-SYSTEM/BOOTSTRAP/BOOTSTRAP-QUESTIONNAIRE.md`.
 Verify that the frontmatter contains `status: "completed"` and that all 31 questions have an answer (they must not be empty nor contain only the text `[Your answer here]`).
 
 If the questionnaire is not complete, respond:
 ```
 The bootstrap questionnaire is not complete yet.
-Navigate to AI-SYSTEM/BOOTSTRAP/BOOTSTRAP-QUESTIONNAIRE.md and answer
+Navigate to SYSTEM/AI-SYSTEM/BOOTSTRAP/BOOTSTRAP-QUESTIONNAIRE.md and answer
 all the questions before running this command.
 To answer conversationally, use: "start bootstrap"
 ```
@@ -739,7 +827,8 @@ Once validated, show this message and wait for confirmation:
 ```
 Ready to populate your knowledge base.
 I will create [N] notes in the folders:
-IDENTITY, PREFERENCES, WORK, PROJECTS, PERSONAL-SPACE, KNOWLEDGE
+SYSTEM/IDENTITY/, SYSTEM/PREFERENCES/, SYSTEM/WORK/,
+SYSTEM/PROJECTS/, SYSTEM/PERSONAL-SPACE/, SYSTEM/KNOWLEDGE/
 
 Shall I proceed? (yes / no)
 ```
@@ -748,8 +837,8 @@ Shall I proceed? (yes / no)
 
 ## Inputs you need to read
 
-1. `AI-SYSTEM/BOOTSTRAP/BOOTSTRAP-QUESTIONNAIRE.md` — source of all answers
-2. `AI-SYSTEM/BOOTSTRAP/BOOTSTRAP-MAPPING.md` — question → target note mapping table
+1. `SYSTEM/AI-SYSTEM/BOOTSTRAP/BOOTSTRAP-QUESTIONNAIRE.md` — source of all answers
+2. `SYSTEM/AI-SYSTEM/BOOTSTRAP/BOOTSTRAP-MAPPING.md` — question → target note mapping table
 
 ---
 
@@ -826,7 +915,7 @@ knowledge-insights.md         ← P.KNOW.5
 
 `P.PROJ.1` may mention multiple active projects. For each identified project, create an individual file:
 - File name: `project-[name-kebab-case].md`
-- Location: `PROJECTS/`
+- Location: `SYSTEM/PROJECTS/`
 - Extract from the text the name, status, and description of each project
 
 The same applies to future projects (`P.PROJ.2`) and proud projects (`P.PROJ.3`).
@@ -840,7 +929,7 @@ For each target note:
 2. **Write the frontmatter** with the correct type and tags for the category.
 3. **Organize the content** using `###` headings to separate subtopics when a note receives multiple answers.
 4. **Add tags** following the convention `[category, subtype, topic]`.
-5. **Report progress** to the user as you go: `Created: IDENTITY/identity-profile.md`
+5. **Report progress** to the user as you go: `Created: SYSTEM/IDENTITY/identity-profile.md`
 
 ### Step 6 — Add internal links
 
@@ -860,12 +949,12 @@ When finished, show a summary:
 Bootstrap completed.
 
 Notes created: [N]
-├── IDENTITY/          [N] notes
-├── PREFERENCES/       [N] notes
-├── WORK/              [N] notes
-├── PROJECTS/          [N] notes
-├── PERSONAL-SPACE/    [N] notes
-└── KNOWLEDGE/         [N] notes
+├── SYSTEM/IDENTITY/          [N] notes
+├── SYSTEM/PREFERENCES/       [N] notes
+├── SYSTEM/WORK/              [N] notes
+├── SYSTEM/PROJECTS/          [N] notes
+├── SYSTEM/PERSONAL-SPACE/    [N] notes
+└── SYSTEM/KNOWLEDGE/         [N] notes
 
 Recommended next step:
 Open the vault in Obsidian and review the Graph View
@@ -919,11 +1008,11 @@ Then update the frontmatter of `BOOTSTRAP-QUESTIONNAIRE.md` by adding:
     def _create_raw_ingest_skill(self) -> None:
         """Create the raw-ingest skill instruction file.
 
-        Lives at AI-SYSTEM/SKILLS/raw-ingest.md. The agent reads this file
+        Lives at SYSTEM/AI-SYSTEM/SKILLS/raw-ingest.md. The agent reads this file
         when /raw-ingest is triggered and follows its instructions to process
-        files from raw/ into valid KB notes.
+        files from SYSTEM/raw/ into valid KB notes.
         """
-        skill_file = self.vault_path / "AI-SYSTEM" / "SKILLS" / "raw-ingest.md"
+        skill_file = self.system_path / "AI-SYSTEM" / "SKILLS" / "raw-ingest.md"
         if skill_file.exists():
             return
 
@@ -940,7 +1029,7 @@ context_for_claude: true
 
 # SKILL: raw-ingest
 
-**Purpose:** Process files dropped in `raw/` and turn them into valid KB notes. This skill can be run multiple times over the life of the vault: every time the owner wants to ingest new material.
+**Purpose:** Process files dropped in `SYSTEM/raw/` and turn them into valid KB notes. This skill can be run multiple times over the life of the vault: every time the owner wants to ingest new material.
 
 **Executor:** Claude agent — not the user.
 **Timebox:** 2 hours maximum per ingestion session.
@@ -962,13 +1051,13 @@ Activate this skill when the user says any of the following:
 
 ## Pre-flight: Validation before running
 
-**1. Verify that there are files in `raw/`**
-List the files in `raw/` (exclude `raw/processed/`, `raw/README.md`, and `raw/.gitkeep`).
+**1. Verify that there are files in `SYSTEM/raw/`**
+List the files in `SYSTEM/raw/` (exclude `SYSTEM/raw/processed/`, `SYSTEM/raw/README.md`, and `SYSTEM/raw/.gitkeep`).
 
 If there are no files, respond:
 ```
-There are no files in raw/ to process.
-To start an ingestion, drop files in raw/ and run /raw-ingest again.
+There are no files in SYSTEM/raw/ to process.
+To start an ingestion, drop files in SYSTEM/raw/ and run /raw-ingest again.
 Supported formats: .md, .txt, .pdf, .docx
 ```
 And stop execution.
@@ -980,10 +1069,10 @@ Confirm that you can create and move files. If not, inform the user and stop.
 
 ## Step 1 — Inventory available files
 
-List all files in `raw/` with their name and extension. Present to the user:
+List all files in `SYSTEM/raw/` with their name and extension. Present to the user:
 
 ```
-Files found in raw/:
+Files found in SYSTEM/raw/:
 - [file-name-1].[ext]
 - [file-name-2].[ext]
 ...
@@ -1083,8 +1172,8 @@ Keep the rest of the note intact.
 
 Report to the user as you go:
 ```
-✓ Created: IDENTITY/identity-profile.md
-✓ Updated: WORK/work-current-role.md
+✓ Created: SYSTEM/IDENTITY/identity-profile.md
+✓ Updated: SYSTEM/WORK/work-current-role.md
 ...
 ```
 
@@ -1092,10 +1181,10 @@ Report to the user as you go:
 
 ## Step 5 — Move processed files
 
-When you finish processing each source file, move it from `raw/` to `raw/processed/`.
+When you finish processing each source file, move it from `SYSTEM/raw/` to `SYSTEM/raw/processed/`.
 
 ```
-raw/cv-nataly-2026.pdf  →  raw/processed/cv-nataly-2026.pdf
+SYSTEM/raw/cv-nataly-2026.pdf  →  SYSTEM/raw/processed/cv-nataly-2026.pdf
 ```
 
 **Do not delete the files.** They serve as an audit trail of what information entered the vault and when.
@@ -1104,7 +1193,7 @@ raw/cv-nataly-2026.pdf  →  raw/processed/cv-nataly-2026.pdf
 
 ## Step 6 — Record backlog (if applicable)
 
-If the 2h timebox runs out before processing everything, or if there are blocks the user rejected but are valid for the future, record them in `AI-SYSTEM/CONTEXT/ingestion-backlog.md`:
+If the 2h timebox runs out before processing everything, or if there are blocks the user rejected but are valid for the future, record them in `SYSTEM/AI-SYSTEM/CONTEXT/ingestion-backlog.md`:
 
 ```markdown
 ---
@@ -1140,10 +1229,10 @@ Operations executed: [N]
 └── Notes unchanged:    [N]
 
 Files processed: [N]
-└── Moved to raw/processed/
+└── Moved to SYSTEM/raw/processed/
 
 [If there is a backlog:]
-Pending items recorded in AI-SYSTEM/CONTEXT/ingestion-backlog.md: [N]
+Pending items recorded in SYSTEM/AI-SYSTEM/CONTEXT/ingestion-backlog.md: [N]
 ```
 
 ---
@@ -1152,16 +1241,16 @@ Pending items recorded in AI-SYSTEM/CONTEXT/ingestion-backlog.md: [N]
 
 - The Step 3 gate is mandatory. Do not write to the vault without the user's approval.
 - Detect overlap before creating: if a note about the same topic already exists, prefer APPEND or UPDATE over a duplicate CREATE.
-- If a file in `raw/` is not processable (incompatible format, corrupt, no useful content), inform the user and continue with the next one.
-- Do not modify files in `raw/processed/` or in `AI-SYSTEM/BOOTSTRAP/`.
+- If a file in `SYSTEM/raw/` is not processable (incompatible format, corrupt, no useful content), inform the user and continue with the next one.
+- Do not modify files in `SYSTEM/raw/processed/` or in `SYSTEM/AI-SYSTEM/BOOTSTRAP/`.
 - The `context_for_claude: true` field is mandatory in all notes created or updated.
 """
         content = _inject_wolta_version(content, CLI_VERSION)
         skill_file.write_text(content, encoding="utf-8")
 
     def _create_ingest_protocol(self) -> None:
-        """Create AI-SYSTEM/SKILLS/INGEST-PROTOCOL.md — canonical source-agnostic ingestion pipeline."""
-        skills_dir = self.vault_path / "AI-SYSTEM" / "SKILLS"
+        """Create SYSTEM/AI-SYSTEM/SKILLS/INGEST-PROTOCOL.md — canonical source-agnostic ingestion pipeline."""
+        skills_dir = self.system_path / "AI-SYSTEM" / "SKILLS"
         skills_dir.mkdir(parents=True, exist_ok=True)
         protocol_file = skills_dir / "INGEST-PROTOCOL.md"
         if protocol_file.exists():
@@ -1202,11 +1291,11 @@ If the adapter cannot determine `suggested_category` or `suggested_note`, it can
 
 ## Phase 1 — Extraction (adapter's responsibility)
 
-The agent reads the corresponding source adapter (`AI-SYSTEM/SKILLS/source-*.md`) and runs its instructions to produce a list of `IngestionBlock`.
+The agent reads the corresponding source adapter (`SYSTEM/AI-SYSTEM/SKILLS/source-*.md`) and runs its instructions to produce a list of `IngestionBlock`.
 
 If no adapter exists for the requested source, offer the user:
-- Drop the content in `raw/` and use `source-files.md` as a fallback
-- Create a new adapter from `TEMPLATES/template-source-adapter.md`
+- Drop the content in `SYSTEM/raw/` and use `source-files.md` as a fallback
+- Create a new adapter from `SYSTEM/TEMPLATES/template-source-adapter.md`
 
 ---
 
@@ -1273,9 +1362,9 @@ Rules:
 
 ## Phase 5 — Post-ingestion
 
-1. **Move processed source files** (if applicable): The adapter indicates whether the source files should be moved. For `raw/`, move to `raw/processed/`.
+1. **Move processed source files** (if applicable): The adapter indicates whether the source files should be moved. For `SYSTEM/raw/`, move to `SYSTEM/raw/processed/`.
 
-2. **Record in the backlog** the blocks that could not be processed (incompatible format, unresolved ambiguity, user rejection). File: `AI-SYSTEM/CONTEXT/ingestion-backlog.md`.
+2. **Record in the backlog** the blocks that could not be processed (incompatible format, unresolved ambiguity, user rejection). File: `SYSTEM/AI-SYSTEM/CONTEXT/ingestion-backlog.md`.
 
 3. **Closing report:**
 ```
@@ -1287,7 +1376,7 @@ Operations executed: [N]
 └── Notes unchanged:    [N]
 
 [If there is a backlog:]
-Pending items recorded in AI-SYSTEM/CONTEXT/ingestion-backlog.md: [N]
+Pending items recorded in SYSTEM/AI-SYSTEM/CONTEXT/ingestion-backlog.md: [N]
 ```
 
 ---
@@ -1296,15 +1385,15 @@ Pending items recorded in AI-SYSTEM/CONTEXT/ingestion-backlog.md: [N]
 
 - The Phase 3 gate is **mandatory**. Without the user's approval, there is no writing.
 - When in doubt about the target, prefer KNOWLEDGE over any other category.
-- Never modify files in `raw/processed/`, `AI-SYSTEM/BOOTSTRAP/`, or this file.
+- Never modify files in `SYSTEM/raw/processed/`, `SYSTEM/AI-SYSTEM/BOOTSTRAP/`, or this file.
 - If the adapter produces no blocks (empty source or no useful content), inform the user and finish without error.
 """
         content = _inject_wolta_version(content, CLI_VERSION)
         protocol_file.write_text(content, encoding="utf-8")
 
     def _create_source_adapter_template(self) -> None:
-        """Create TEMPLATES/template-source-adapter.md — template for building new source adapters."""
-        templates_dir = self.vault_path / "TEMPLATES"
+        """Create SYSTEM/TEMPLATES/template-source-adapter.md — template for building new source adapters."""
+        templates_dir = self.system_path / "TEMPLATES"
         templates_dir.mkdir(parents=True, exist_ok=True)
         template_file = templates_dir / "template-source-adapter.md"
         if template_file.exists():
@@ -1319,7 +1408,7 @@ status: "active"
 
 # Template: Source Adapter
 
-Copy this file to `AI-SYSTEM/SKILLS/source-[name].md` and complete the sections marked with `[FILL IN]`.
+Copy this file to `SYSTEM/AI-SYSTEM/SKILLS/source-[name].md` and complete the sections marked with `[FILL IN]`.
 Once completed, the agent will use it automatically when the user asks to ingest from that source.
 
 ---
@@ -1356,7 +1445,7 @@ Instructions for the agent to extract content from this source and turn it into 
 [FILL IN: what the user must have ready before the agent can extract]
 
 Examples:
-- Exported file dropped in `raw/`
+- Exported file dropped in `SYSTEM/raw/`
 - [name] MCP connected in Cowork
 - Authenticated access to [URL/app]
 
@@ -1388,7 +1477,7 @@ Examples:
 [FILL IN: what to do with the source files/data after extracting the blocks]
 
 Examples:
-- Move the exported file to `raw/processed/`
+- Move the exported file to `SYSTEM/raw/processed/`
 - No action required (external source remains unchanged)
 - Mark items in [source] as processed
 
@@ -1407,8 +1496,8 @@ Examples:
         template_file.write_text(content, encoding="utf-8")
 
     def _create_source_files_adapter(self) -> None:
-        """Create AI-SYSTEM/SKILLS/source-files.md — reference adapter for raw/ and local directories."""
-        skills_dir = self.vault_path / "AI-SYSTEM" / "SKILLS"
+        """Create SYSTEM/AI-SYSTEM/SKILLS/source-files.md — reference adapter for SYSTEM/raw/ and local directories."""
+        skills_dir = self.system_path / "AI-SYSTEM" / "SKILLS"
         skills_dir.mkdir(parents=True, exist_ok=True)
         adapter_file = skills_dir / "source-files.md"
         if adapter_file.exists():
@@ -1427,7 +1516,7 @@ requires_mcp: false
 
 # Source Adapter: Local Files and Directories
 
-Reference adapter for ingesting content from files dropped in `raw/` or from any local directory the agent has access to. It is the **universal fallback adapter**: use it when no specific adapter exists for the requested source.
+Reference adapter for ingesting content from files dropped in `SYSTEM/raw/` or from any local directory the agent has access to. It is the **universal fallback adapter**: use it when no specific adapter exists for the requested source.
 
 ---
 
@@ -1447,21 +1536,21 @@ Reference adapter for ingesting content from files dropped in `raw/` or from any
 
 ### Pre-requisites
 
-For files in `raw/`: the user must have dropped the files in the vault's `raw/` directory.
+For files in `SYSTEM/raw/`: the user must have dropped the files in the vault's `SYSTEM/raw/` directory.
 For external directories: the agent must have read access to the indicated path.
 
 ### Extraction steps
 
-**Case A — Files in `raw/`:**
+**Case A — Files in `SYSTEM/raw/`:**
 
-1. List all files in `raw/` (exclude `raw/processed/` and `.gitkeep`)
+1. List all files in `SYSTEM/raw/` (exclude `SYSTEM/raw/processed/` and `.gitkeep`)
 2. For each file, determine whether it is processable:
    - Supported formats: `.md`, `.txt`, `.pdf`, `.docx`, any plain text
    - If the format is not processable, inform the user and continue with the next one
 3. Read the content of each file
 4. Split the content into thematic blocks (one block per identifiable topic)
 5. For each block, build an `IngestionBlock`:
-   - `source_id`: relative path of the file (`raw/file-name.ext`)
+   - `source_id`: relative path of the file (`SYSTEM/raw/file-name.ext`)
    - `source_type`: "file"
    - `suggested_category`: infer from the identified topics
    - `suggested_note`: infer from the content (descriptive name in lowercase with hyphens)
@@ -1495,17 +1584,17 @@ Ignore:
 | Values, principles | IDENTITY | identity-values.md |
 | Work style, tools | PREFERENCES | preferences-work-style.md or preferences-tools.md |
 | Work context, company | WORK | work-company.md or work-current-role.md |
-| Specific project | PROJECTS | PROJECTS/[project-name]/ |
+| Specific project | PROJECTS | SYSTEM/PROJECTS/[project-name]/ |
 | Hobbies, personal interests | PERSONAL-SPACE | personal-hobbies.md or personal-interests.md |
-| Learning, concepts, resources | KNOWLEDGE | new note in KNOWLEDGE/ |
+| Learning, concepts, resources | KNOWLEDGE | new note in SYSTEM/KNOWLEDGE/ |
 
 ---
 
 ## Post-extraction phase
 
-For files processed from `raw/`:
-- Move each processed file to `raw/processed/`
-- Do not delete files in `raw/processed/`
+For files processed from `SYSTEM/raw/`:
+- Move each processed file to `SYSTEM/raw/processed/`
+- Do not delete files in `SYSTEM/raw/processed/`
 
 For files from external directories:
 - Do not move or modify the source files
@@ -1517,8 +1606,8 @@ For files from external directories:
 
 - A source file can produce multiple blocks and therefore multiple notes
 - If a file is very long (>1000 lines), process it by sections and confirm with the user before continuing
-- Files in `raw/` that the user marked as "do not process" (with the `_` prefix) must be ignored
-- This adapter is the fallback: if the user asks to ingest from a source without an adapter, offer to export the content to `raw/` to use it with this adapter
+- Files in `SYSTEM/raw/` that the user marked as "do not process" (with the `_` prefix) must be ignored
+- This adapter is the fallback: if the user asks to ingest from a source without an adapter, offer to export the content to `SYSTEM/raw/` to use it with this adapter
 """
         content = _inject_wolta_version(content, CLI_VERSION)
         adapter_file.write_text(content, encoding="utf-8")
@@ -1531,23 +1620,38 @@ For files from external directories:
 
         content = """# KB-PERSONAL: Quick Start Guide
 
-Welcome to your Personal Knowledge Base. This vault is designed to centralize personal and professional information so it can be queried by Claude agents.
+Welcome to your Personal Knowledge Base. This vault centralizes your personal and professional information so it can be queried by Claude agents.
 
 ---
 
-## What's here?
+## The two spaces
 
-**7 main modules + agent resources:**
+The vault has two folders at the root, and the difference between them is **who owns them**:
+
+| Space | Yours or the agent's | What goes in it |
+| --- | --- | --- |
+| `HUMAN/` | **Yours.** The agent only writes here when you ask it to | Anything you want, in any shape. Drafts, exports, working files |
+| `SYSTEM/` | The agent's. It reads and writes here freely | The knowledge base itself: the seven categories and the agent's tooling |
+
+`HUMAN/` starts empty and stays however you leave it — wolta does not impose a structure on your own space and will not reorganize it. It is also **not part of the knowledge base**: the agent will not read it as background context. Point the agent at a file there when you want it ingested, and the curated result lands in `SYSTEM/`.
+
+Three files stay at the root: `.wolta/` (how wolta recognizes the vault), `CLAUDE.md` (loaded automatically by the agent), and this README.
+
+---
+
+## What's in the agent's space?
+
+**7 main modules + agent resources, all under `SYSTEM/`:**
 
 | Folder | Purpose |
 |--------|---------|
-| **IDENTITY/** | Who you are (profile, values, voice, biography) |
-| **PREFERENCES/** | Tastes, tools, work style |
-| **WORK/** | Professional context (company, role, team) |
-| **PROJECTS/** | Active and past projects |
-| **PERSONAL-SPACE/** | Personal content (hobbies, interests) |
-| **KNOWLEDGE/** | Education (courses, research, learning) |
-| **AI-SYSTEM/** | Resources for Claude agents (bootstrap, context, workflows) |
+| **`SYSTEM/IDENTITY/`** | Who you are (profile, values, voice, biography) |
+| **`SYSTEM/PREFERENCES/`** | Tastes, tools, work style |
+| **`SYSTEM/WORK/`** | Professional context (company, role, team) |
+| **`SYSTEM/PROJECTS/`** | Active and past projects |
+| **`SYSTEM/PERSONAL-SPACE/`** | Personal content (hobbies, interests) |
+| **`SYSTEM/KNOWLEDGE/`** | Education (courses, research, learning) |
+| **`SYSTEM/AI-SYSTEM/`** | Resources for Claude agents (bootstrap, context, workflows) |
 
 ---
 
@@ -1560,11 +1664,11 @@ Welcome to your Personal Knowledge Base. This vault is designed to centralize pe
 
 ### 2. Explore the structure
 - Left panel: File Explorer
-- Open each folder (e.g. IDENTITY/, WORK/)
+- Open `SYSTEM/` and look through the categories
 - Note the INDEX-* files (they are the hubs of each module)
 
 ### 3. Read the DESIGN
-- Open `DESIGN.md` in the root
+- Open `SYSTEM/DESIGN.md`
 - It defines the complete specification of this vault
 - Reference for understanding frontmatter, tags, and structure
 
@@ -1572,16 +1676,16 @@ Welcome to your Personal Knowledge Base. This vault is designed to centralize pe
 
 ## Next: Bootstrap (45-90 minutes)
 
-The **AI-SYSTEM/BOOTSTRAP/** folder contains tools to populate your vault from day one.
+The `SYSTEM/AI-SYSTEM/BOOTSTRAP/` folder contains tools to populate your vault from day one.
 
 ### Flow:
 
-1. **Navigate to:** `AI-SYSTEM/BOOTSTRAP/INDEX-BOOTSTRAP.md`
+1. **Navigate to:** `SYSTEM/AI-SYSTEM/BOOTSTRAP/INDEX-BOOTSTRAP.md`
    - Read the bootstrap hub
    - Understand the flow
 
 2. **Answer:** `BOOTSTRAP-QUESTIONNAIRE.md`
-   - 27 reflective questions across 6 categories
+   - Reflective questions across 6 categories
    - 2-5 paragraphs per question
    - Estimated time: 45-90 minutes
 
@@ -1590,7 +1694,7 @@ The **AI-SYSTEM/BOOTSTRAP/** folder contains tools to populate your vault from d
    - Each question → target note
 
 4. **Create notes:**
-   - Use the template in `TEMPLATES/template-note.md`
+   - Use the template in `SYSTEM/TEMPLATES/template-note.md`
    - Follow the frontmatter pattern
    - Respect the folder structure
 
@@ -1605,59 +1709,65 @@ The **AI-SYSTEM/BOOTSTRAP/** folder contains tools to populate your vault from d
 
 ```
 vault/
-├── IDENTITY/
-│   ├── INDEX-IDENTITY.md         ← Start here to get to know yourself
-│   ├── identity-profile.md
-│   ├── identity-values.md
-│   ├── identity-voice.md
-│   └── identity-bio.md
+├── HUMAN/                        ← Your space. Starts empty, shaped by you
 │
-├── PREFERENCES/
-│   ├── INDEX-PREFERENCES.md      ← Your personal settings
-│   ├── preferences-tools.md
-│   ├── preferences-work-style.md
-│   └── preferences-lifestyle.md
+├── SYSTEM/                       ← The agent's space
+│   ├── IDENTITY/
+│   │   ├── INDEX-IDENTITY.md     ← Start here to get to know yourself
+│   │   ├── identity-profile.md
+│   │   ├── identity-values.md
+│   │   ├── identity-voice.md
+│   │   └── identity-bio.md
+│   │
+│   ├── PREFERENCES/
+│   │   ├── INDEX-PREFERENCES.md  ← Your personal settings
+│   │   ├── preferences-tools.md
+│   │   ├── preferences-work-style.md
+│   │   └── preferences-lifestyle.md
+│   │
+│   ├── WORK/
+│   │   ├── INDEX-WORK.md         ← Your professional context
+│   │   ├── work-overview.md
+│   │   ├── work-current-role.md
+│   │   ├── work-company.md
+│   │   └── work-team.md
+│   │
+│   ├── PROJECTS/
+│   │   └── INDEX-PROJECTS.md     ← Your projects (active/past)
+│   │
+│   ├── PERSONAL-SPACE/
+│   │   ├── INDEX-PERSONAL-SPACE.md
+│   │   ├── personal-hobbies.md
+│   │   └── personal-interests.md
+│   │
+│   ├── KNOWLEDGE/
+│   │   └── INDEX-KNOWLEDGE.md    ← Your learning and education
+│   │
+│   ├── AI-SYSTEM/                ← Resources for agents
+│   │   ├── INDEX-AI-SYSTEM.md
+│   │   ├── BOOTSTRAP/
+│   │   │   ├── INDEX-BOOTSTRAP.md         ← START HERE for bootstrap
+│   │   │   ├── BOOTSTRAP-QUESTIONNAIRE.md
+│   │   │   └── BOOTSTRAP-MAPPING.md
+│   │   ├── AGENTS/
+│   │   ├── CONTEXT/
+│   │   ├── SESSIONS/
+│   │   ├── SKILLS/
+│   │   │   ├── bootstrap-generate.md      ← Skill: /bootstrap-generate
+│   │   │   └── raw-ingest.md              ← Skill: /raw-ingest
+│   │   └── WORKFLOWS/
+│   │
+│   ├── TEMPLATES/
+│   │   └── template-note.md      ← Template for new notes
+│   │
+│   ├── raw/                      ← Staging for unprocessed files
+│   │   ├── processed/            ← Already processed files (audit)
+│   │   └── README.md             ← Directory rules
+│   │
+│   └── DESIGN.md                 ← Complete specification
 │
-├── WORK/
-│   ├── INDEX-WORK.md             ← Your professional context
-│   ├── work-overview.md
-│   ├── work-current-role.md
-│   ├── work-company.md
-│   └── work-team.md
-│
-├── PROJECTS/
-│   └── INDEX-PROJECTS.md         ← Your projects (active/past)
-│
-├── PERSONAL-SPACE/
-│   ├── INDEX-PERSONAL-SPACE.md   ← Your personal content
-│   ├── personal-hobbies.md
-│   └── personal-interests.md
-│
-├── KNOWLEDGE/
-│   └── INDEX-KNOWLEDGE.md        ← Your learning and education
-│
-├── AI-SYSTEM/                    ← Resources for agents
-│   ├── INDEX-AI-SYSTEM.md
-│   ├── BOOTSTRAP/
-│   │   ├── INDEX-BOOTSTRAP.md           ← START HERE for bootstrap
-│   │   ├── BOOTSTRAP-QUESTIONNAIRE.md   ← 27 questions
-│   │   └── BOOTSTRAP-MAPPING.md         ← Question→note mapping
-│   ├── AGENTS/
-│   ├── CONTEXT/
-│   ├── SESSIONS/
-│   ├── SKILLS/
-│   │   ├── bootstrap-generate.md        ← Skill: /bootstrap-generate
-│   │   └── raw-ingest.md                ← Skill: /raw-ingest
-│   └── WORKFLOWS/
-│
-├── TEMPLATES/
-│   └── template-note.md          ← Template for new notes
-│
-├── raw/                          ← Staging for unprocessed files
-│   ├── processed/                ← Already processed files (audit)
-│   └── README.md                 ← Directory rules
-│
-├── DESIGN.md                     ← Complete specification
+├── .wolta/                       ← Vault marker and schema state
+├── CLAUDE.md                     ← Instructions for the agent
 ├── README.md                     ← This file
 │
 └── graphify-out/                 ← Generated graph (queried by the agent)
@@ -1670,14 +1780,14 @@ vault/
 
 ## Frontmatter: The Foundation of Everything
 
-Every `.md` note needs YAML frontmatter:
+Every `.md` note under `SYSTEM/` needs YAML frontmatter:
 
 ```yaml
 ---
 title: "Your Note"
 type: "identity | preference | work | project | knowledge | personal"
-created: 2026-05-22
-modified: 2026-05-22
+created: 2026-01-15
+modified: 2026-01-15
 tags: [tag1, tag2]
 status: "active"
 context_for_claude: true
@@ -1685,6 +1795,8 @@ context_for_claude: true
 ```
 
 **Key field:** `context_for_claude: true` → The agent queries it
+
+Your own files in `HUMAN/` need none of this.
 
 ---
 
@@ -1703,29 +1815,40 @@ This generates:
 
 ---
 
+## Coming from a 0.1.0 vault?
+
+`wolta upgrade` moved the seven categories from the root into `SYSTEM/` and created your empty `HUMAN/`. Your notes were renamed, not copied — content, history, and timestamps are untouched.
+
+Two things the upgrade left alone on purpose, because they are not wolta's to change:
+
+- **Obsidian's own configuration** (`.obsidian/`). Saved searches, starred notes, and workspace layouts may still point at the old root paths. Worth a look.
+- **The generated graph** (`graphify-out/`). Re-run graphify to rebuild it against the new paths.
+
+Nothing else needs your attention: links between notes are relative to the vault and kept working through the move.
+
+---
+
 ## Checklist: First Session
 
 - [ ] Obsidian configured (File → Open folder as vault)
-- [ ] Read DESIGN.md (5 minutes)
+- [ ] Read `SYSTEM/DESIGN.md` (5 minutes)
 - [ ] Explored the structure in the File Explorer
-- [ ] Opened AI-SYSTEM/BOOTSTRAP/INDEX-BOOTSTRAP.md
+- [ ] Opened `SYSTEM/AI-SYSTEM/BOOTSTRAP/INDEX-BOOTSTRAP.md`
 - [ ] Started answering BOOTSTRAP-QUESTIONNAIRE.md
 
 ---
 
 ## Resources
 
-- **DESIGN.md** — Complete technical specification
-- **AI-SYSTEM/BOOTSTRAP/INDEX-BOOTSTRAP.md** — Bootstrap hub
-- **AI-SYSTEM/BOOTSTRAP/BOOTSTRAP-QUESTIONNAIRE.md** — The 27 questions
-- **AI-SYSTEM/BOOTSTRAP/BOOTSTRAP-MAPPING.md** — Mapping guide
-- **TEMPLATES/template-note.md** — Standard template
+- **`SYSTEM/DESIGN.md`** — Complete technical specification
+- **`SYSTEM/AI-SYSTEM/BOOTSTRAP/INDEX-BOOTSTRAP.md`** — Bootstrap hub
+- **`SYSTEM/AI-SYSTEM/BOOTSTRAP/BOOTSTRAP-QUESTIONNAIRE.md`** — The questions
+- **`SYSTEM/AI-SYSTEM/BOOTSTRAP/BOOTSTRAP-MAPPING.md`** — Mapping guide
+- **`SYSTEM/TEMPLATES/template-note.md`** — Standard template
 
 ---
 
-**Created:** {created}
-**Last updated:** {created}
-**Version:** 1.0.0
-""".format(created=datetime.now().strftime("%Y-%m-%d"))
-
+**Schema version:** 0.2.0
+"""
         readme_file.write_text(content, encoding="utf-8")
+
